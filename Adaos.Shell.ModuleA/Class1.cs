@@ -1,0 +1,145 @@
+﻿using System;
+using Adaos.Shell.Interface;
+using System.Collections.Generic;
+
+namespace ModuleA
+{
+    public class ModuleA : IModule
+    {
+        public System.Collections.Generic.IEnumerable<IEnvironment> Environments
+        {
+            get { yield return new TestEnv(); }
+        }
+
+        public string Name
+        {
+            get { return "modulea"; }
+        }
+
+        public System.Collections.Generic.IEnumerable<IModuleInstantiater> ModuleInstantiaters
+        {
+            get { throw new NotImplementedException(); }
+        }
+    }
+
+    public class TestEnv : IEnvironment
+    {
+        public bool AllowUnbinding
+        {
+            get { return false; }
+        }
+
+        public void Bind(Command command, params string[] commandNames)
+        {
+            throw new NotImplementedException();
+        }
+
+        public System.Collections.Generic.IEnumerable<string> Commands
+        {
+            get { yield return "test"; yield return "counter"; }
+        }
+
+        public System.Collections.Generic.IEnumerable<IEnvironmentUniqueIdentifier> Dependencies
+        {
+            get { yield break; }
+        }
+
+        public IEnvironmentUniqueIdentifier Identifier
+        {
+            get { return new EnvironmentUniqueIdentifier(Name); }
+        }
+
+        public bool IsRedoable(Command command)
+        {
+            return true;
+        }
+
+        public string Name
+        {
+            get { return "test"; }
+        }
+
+        public Command Retrieve(string commandName)
+        {
+            if (commandName == "test")
+            {
+                return x => x;
+            }
+            if (commandName == "counter")
+            {
+                return Counter;
+            }
+
+            return null;
+        }
+
+        private IEnumerable<IArgument> Counter(IEnumerable<IArgument> args)
+        {
+            for (int i = 0; i <= Math.Pow(2,20) ; i++)
+            {
+                //for (int j = 0; j <= Math.Pow(2, 31); j++)
+                {
+                }
+                yield return new Argument(i.ToString());
+            }
+        }
+
+        public void UnBind(string commandName)
+        {
+            return;
+        }
+
+        public void AddEnvironment(IEnvironment environment)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<IEnvironment> ChildEnvironments
+        {
+            get { yield break; }
+        }
+
+        public void RemoveEnvironment(IEnvironment environment)
+        {
+            return;
+        }
+    }
+
+    public class Argument : IArgument
+    {
+        public int Position
+        {
+            get { return -1; }
+        }
+
+        public bool ToExecute
+        {
+            get { return false; }
+        }
+
+        public string Value
+        {
+            get;
+            private set;
+        }
+
+        public Argument(string val)
+        {
+            Value = val;
+        }
+    }
+
+    public class EnvironmentUniqueIdentifier : IEnvironmentUniqueIdentifier
+    {
+        public EnvironmentUniqueIdentifier(string ident) 
+        {
+            Identifier = ident;
+        }
+
+        public string Identifier
+        {
+            get;
+            private set;
+        }
+    }
+}

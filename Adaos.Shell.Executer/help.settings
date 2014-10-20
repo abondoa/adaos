@@ -1,0 +1,52 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Adaos.Shell.Executer" GeneratedClassName="help">
+  <Profiles />
+  <Settings>
+    <Setting Name="MathMultiplication" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Usage: math.multiplication &lt;double | int | integer&gt; [number...]
+
+Example:
+    math.multiplication int 1 2 3</Value>
+    </Setting>
+    <Setting Name="MathSum" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Usage: math.sum &lt;double | int | integer&gt; [number...]
+
+Example:
+    math.sum double 3.5 4.2</Value>
+    </Setting>
+    <Setting Name="MathRandom" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Usage: math.rand [options...] [number] [number]
+
+Options:
+    width [number]                                    default: 0
+    mode [chars | double | int | integer]    default: int</Value>
+    </Setting>
+    <Setting Name="MathSqrt" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Usage: math.sqrt [number...]</Value>
+    </Setting>
+    <Setting Name="MathPow" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Usage: math.pow [base] [exponent]
+
+Base: [number]
+
+Exponent: [number]</Value>
+    </Setting>
+    <Setting Name="SystemRedo" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Usage: system.redo [option...]
+
+Options:
+    back [number]    default: 1
+    limit [number]    default: 1
+    times [number]    default: 1</Value>
+    </Setting>
+    <Setting Name="SystemEcho" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Usage: system.echo [args...]
+
+Example:
+    system.echo "In here the number      of space count     ." not out     here
+
+Result:
+    In here the number      of space count     . not out here</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
