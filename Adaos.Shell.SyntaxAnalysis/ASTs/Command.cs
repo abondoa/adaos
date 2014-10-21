@@ -24,11 +24,6 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
             get;
         }
 
-        public abstract string EnvironmentName
-        {
-            get;
-        }
-
         public abstract IEnumerable<string> EnvironmentNames
         {
             get;

@@ -28,6 +28,11 @@ namespace Adaos.Shell.Executer
             return false;
         }
 
+		override public int GetHashCode()
+		{
+			return this.Identifier.GetHashCode();
+		}
+
         public override string ToString()
         {
             return Identifier;

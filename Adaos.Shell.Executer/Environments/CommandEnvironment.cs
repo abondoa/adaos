@@ -31,13 +31,13 @@ namespace Adaos.Shell.Executer.Environments
         {
             _output = output;
             _vm = vm;
-            Bind(Commands, "commands", "cmds");
+            Bind(Cmds, "commands", "cmds");
             Bind(MakeCommand, "makecommand", "mkcmd");
             Bind(RemoveCommand, "removecommand", "rmcmd");
             Bind(Repeat, "repeat", "rep");
         }
 
-        private IEnumerable<IArgument> Commands(IEnumerable<IArgument> args)
+        private IEnumerable<IArgument> Cmds(IEnumerable<IArgument> args)
         {
             List<IArgument> result = new List<IArgument>();
             var flags = args.ParseFlagsWithAlias(CommonFlagsWithAlias.ToList(),false);
@@ -116,7 +116,7 @@ namespace Adaos.Shell.Executer.Environments
                 }
                 catch (VMException e)
                 {
-                    throw new SemanticException(e.Position + args.Second().Position - 1, "While resolving command '"+cmd.EnvironmentName+"."+cmd.CommandName+"' the following error was received: "+e.Message);
+					throw new SemanticException(e.Position + args.Second().Position - 1, "While resolving command '"+cmd.EnvironmentNames.Aggregate ((x,y) => x + _vm.Parser.ScannerTable.EnvironmentSeparator + y)+_vm.Parser.ScannerTable.EnvironmentSeparator+cmd.CommandName+"' the following error was received: "+e.Message);
                 }
             }
             ICommand last = commandSeq.Commands.Last();

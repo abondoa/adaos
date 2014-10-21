@@ -8,19 +8,7 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
 {
     public class CommandWithEnvironment : CommandBase
     {
-        public override string EnvironmentName
-        {
-            get
-            {
-                if (Environments.FirstOrDefault() == null)
-                {
-                    return "<no environment>";
-                }
-                return Environments.Select(x => x.Name).Aggregate((x,y) => x + "." + y);
-            }
-        }
-
-        public override IEnumerable<string> EnvironmentNames
+		public override IEnumerable<string> EnvironmentNames
         {
             get
             {

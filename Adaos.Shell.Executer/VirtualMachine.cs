@@ -289,13 +289,24 @@ namespace Adaos.Shell.Executer
         public string SuggestCommand(string partialCommand)
         {
             IProgramSequence prog = _parser.Parse(partialCommand);
-            var envs = Environments.Where(y => y.Name.StartsWith(partialCommand));
-            if (envs.FirstOrDefault() != null)
+			var lastCommand = prog.Commands.LastOrDefault();
+			if (lastCommand == null)
+				return null;
+			string qualifiedEnvName = lastCommand.EnvironmentNames.Aggregate (
+				(x,y) => x + Parser.ScannerTable.EnvironmentSeparator + y);
+            var envs = Environments.Where(y => y.Name.StartsWith(qualifiedEnvName));
+            if (envs.FirstOrDefault() != null && envs.Skip(1).FirstOrDefault() == null)
             {
-                if (envs.Skip(1).FirstOrDefault() == null)
-                {
-                    return envs.First().Name + Parser.ScannerTable.EnvironmentSeparator;
-                }
+				StringBuilder suggestion = new StringBuilder (envs.First().Name);
+				if (envs.First().Name == qualifiedEnvName) 
+				{
+					var cmds = envs.First ().Commands.Where(x => x.StartsWith(lastCommand.CommandName));
+					if (cmds.FirstOrDefault () != null && cmds.Skip (1).FirstOrDefault () == null) 
+					{
+					    suggestion.Append (_parser.ScannerTable.EnvironmentSeparator + cmds.First ());
+					}
+				}
+                return  suggestion.ToString();
             }
             return null;
         }

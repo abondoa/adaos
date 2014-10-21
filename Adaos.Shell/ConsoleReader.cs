@@ -162,7 +162,6 @@ namespace Adaos.Shell
                         }
                     }
                 }
-                Console.WriteLine();
             }
             catch (LoopBreakerException)
             { }

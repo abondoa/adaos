@@ -21,11 +21,6 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
             return visitor.Visit(this, obj);
         }
 
-        public override string EnvironmentName
-        {
-            get { return null; }
-        }
-
         public override IEnumerable<string> EnvironmentNames
         {
             get { yield break; }

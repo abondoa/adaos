@@ -49,7 +49,7 @@ namespace Adaos.Shell.Executer
                 result = env.Retrieve(command.CommandName);
                 if (result == null)
                 {
-                    throw new VMException(command.Position, "Command: '" + command.CommandName + "' was not found in environment: '" + command.EnvironmentName + "'");
+					throw new VMException(command.Position, "Command: '" + command.CommandName + "' was not found in environment: '" + env.Name + "'");
                 }
             }
             else
@@ -102,7 +102,7 @@ namespace Adaos.Shell.Executer
                 result = env.Retrieve(command.CommandName);
                 if (result == null)
                 {
-                    throw new VMException(command.Position, "Command: '" + command.CommandName + "' was not found in environment: '" + command.EnvironmentName + "'");
+                    throw new VMException(command.Position, "Command: '" + command.CommandName + "' was not found in environment: '" + env.Name + "'");
                 }
                 return env;
             }

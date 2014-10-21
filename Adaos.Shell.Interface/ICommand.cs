@@ -7,13 +7,11 @@ namespace Adaos.Shell.Interface
 {
     public interface ICommand
     {
-        string EnvironmentName { get; }
         IEnumerable<string> EnvironmentNames { get; }
         string CommandName { get; }
         IEnumerable<IArgument> Arguments { get; }
         int Position { get; }
         CommandRelation RelationToPrevious { get; }
-
     }
 
     public enum CommandRelation

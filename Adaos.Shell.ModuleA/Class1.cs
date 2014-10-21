@@ -34,7 +34,7 @@ namespace ModuleA
             throw new NotImplementedException();
         }
 
-        public System.Collections.Generic.IEnumerable<string> Commands
+        public System.Collections.Generic.IEnumerable<string> Cmds
         {
             get { yield return "test"; yield return "counter"; }
         }

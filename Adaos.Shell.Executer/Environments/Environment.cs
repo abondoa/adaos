@@ -86,7 +86,7 @@ namespace Adaos.Shell.Executer.Environments
         }
 
 
-        public IEnumerable<string> Commands
+        public virtual IEnumerable<string> Commands
         {
             get { return _nameToCommandDictionary.Select(x => x.Key).OrderBy(x => x); }
         }
