@@ -8,8 +8,8 @@
     <ProjectGuid>{303E6284-A7DA-4E1C-8FF8-3E0B59DE6CFB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Mophpez.Shell.SyntaxAnalysis</RootNamespace>
-    <AssemblyName>Mophpez.Shell.SyntaxAnalysis</AssemblyName>
+    <RootNamespace>Adaos.Shell.SyntaxAnalysis</RootNamespace>
+    <AssemblyName>Adaos.Shell.SyntaxAnalysis</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>

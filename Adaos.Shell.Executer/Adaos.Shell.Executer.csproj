@@ -8,8 +8,8 @@
     <ProjectGuid>{9C0DD7D3-1766-4F63-9849-98CEFCDF5DF6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Mophpez.Shell.Executer</RootNamespace>
-    <AssemblyName>Mophpez.Shell.Executer</AssemblyName>
+    <RootNamespace>Adaos.Shell.Executer</RootNamespace>
+    <AssemblyName>Adaos.Shell.Executer</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
