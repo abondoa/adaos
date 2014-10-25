@@ -9,6 +9,5 @@ namespace Adaos.Shell.Interface
     {
         IEnumerable<IEnvironment> Environments { get; }
         string Name { get; }
-        IEnumerable<IModuleInstantiater> ModuleInstantiaters { get; }
     }
 }

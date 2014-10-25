@@ -5,11 +5,12 @@ using System.Text;
 using NUnit.Framework;
 using Adaos.Shell.Interface;
 using System.IO;
-using Adaos.Shell.Executer.Environments;
 using Adaos.Shell.SyntaxAnalysis.Exceptions;
-using Adaos.Shell.Executer.Extenders;
+using Adaos.Common.Extenders;
+using Adaos.Shell.Interface.Exceptions;
+using Adaos.Shell.Library.Standard;
 
-namespace Adaos.Shell.Executer.Test
+namespace Adaos.Shell.Execution.Test
 {
     [TestFixture]
     public class VirtualMachineTest
@@ -30,7 +31,7 @@ namespace Adaos.Shell.Executer.Test
         {
             mathOut = new StreamWriter(new MemoryStream());
             mathOut.AutoFlush = true;
-            math = new Adaos.Shell.Executer.Environments.MathEnvironment(mathOut);
+            math = new MathEnvironment(mathOut);
             systemLog = new StreamWriter(new MemoryStream());
             systemLog.AutoFlush = true;
             systemOut = new StreamWriter(new MemoryStream());
@@ -286,7 +287,7 @@ namespace Adaos.Shell.Executer.Test
                 Assert.Fail();
                 
             }
-            catch (ShellException)
+            catch (AdaosException)
             {
                 Assert.AreEqual(temp, systemOut.BaseStream.Position);
             }

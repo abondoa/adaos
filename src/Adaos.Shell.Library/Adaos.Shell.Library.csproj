@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{03374E9C-9B88-41A8-9B19-41CFCD9F7EFF}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Adaos.Shell.Library</RootNamespace>
+    <AssemblyName>Adaos.Shell.Library</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="AdHoc\BareWord.cs" />
+    <Compile Include="AdHoc\EnvironmentContext.cs" />
+    <Compile Include="Standard\ArgumentEnvironment.cs" />
+    <Compile Include="Standard\BareWordsEnvironment.cs" />
+    <Compile Include="Standard\CommandEnvironment.cs" />
+    <Compile Include="Standard\ControlStructureEnvironment.cs" />
+    <Compile Include="Standard\CustomEnvironment.cs" />
+    <Compile Include="Standard\EnvironmentEnvironment.cs" />
+    <Compile Include="Standard\IOEnvironment.cs" />
+    <Compile Include="Standard\MathEnvironment.cs" />
+    <Compile Include="Standard\ModuleEnvironment.cs" />
+    <Compile Include="Standard\StandardEnvironment.cs" />
+    <Compile Include="Standard\SyntaxEnvironment.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Adaos.Common\Adaos.Common.csproj">
+      <Project>{594a1907-226d-4205-bd55-cd56ede35414}</Project>
+      <Name>Adaos.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Adaos.Shell.Core\Adaos.Shell.Core.csproj">
+      <Project>{ef0146e7-8ec0-4b44-8b83-87ceeaa5a2fb}</Project>
+      <Name>Adaos.Shell.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Adaos.Shell.Interface\Adaos.Shell.Interface.csproj">
+      <Project>{36761409-f8bb-4e79-8f7b-19ae64da255a}</Project>
+      <Name>Adaos.Shell.Interface</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

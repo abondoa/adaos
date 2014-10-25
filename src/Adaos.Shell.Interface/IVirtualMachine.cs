@@ -16,6 +16,12 @@ namespace Adaos.Shell.Interface
         void Execute(string command);
 
         /// <summary>
+        /// The virtual machine will execute the given parsed command.
+        /// </summary>
+        /// <param name="prog"></param>
+        IEnumerable<IArgument> Execute(IProgramSequence prog);
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="partialCommand"></param>
@@ -30,5 +36,7 @@ namespace Adaos.Shell.Interface
         IShellParser Parser { get; set; }
         StreamWriter Output { get; set; }
         StreamWriter Log { get; set; }
+        IModuleManager ModuleManager { get; set; }
+        IResolver Resolver { get; set; }
     }
 }

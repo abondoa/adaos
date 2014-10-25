@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Adaos.Shell.Interface;
+using Adaos.Shell.Interface.Exceptions;
 
-namespace Adaos.Shell.Executer.Exceptions
+namespace Adaos.Shell.Execution.Exceptions
 {
-    public class UndefinedException : ShellException
+    public class UndefinedException : AdaosException
     {
         public UndefinedException(int position, string message, Exception innerException)
             : base(message, innerException, position)

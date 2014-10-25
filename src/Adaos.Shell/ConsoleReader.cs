@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Adaos.Shell
+namespace Adaos.Shell.Terminal
 {
     public class ConsoleReader
     {

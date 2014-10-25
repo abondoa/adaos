@@ -5,5 +5,5 @@ using System.Text;
 
 namespace Adaos.Shell.Interface
 {
-    public delegate void ErrorHandler(ShellException e);
+    public delegate void ErrorHandler(Exceptions.AdaosException e);
 }

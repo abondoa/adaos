@@ -5,9 +5,9 @@ using System.Text;
 using Adaos.Shell.Interface;
 using Adaos.Shell.SyntaxAnalysis.Exceptions;
 
-namespace Adaos.Shell.Executer
+namespace Adaos.Shell.Execution
 {
-    class Resolver
+    class Resolver : IResolver
     {
         public Resolver()
         { }

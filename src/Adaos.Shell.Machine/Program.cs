@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-using Adaos.Shell.Executer;
-using Adaos.Shell.Executer.Extenders;
 using Adaos.Shell.Interface;
+using Adaos.Shell.Terminal;
+using Adaos.Common.Extenders;
 
 namespace Adaos.Shell.Machine
 {
@@ -37,7 +37,7 @@ namespace Adaos.Shell.Machine
                         break;
                 }
             }
-            IShell shell;
+            ITerminal shell;
             if (log == null)
             {
                 log = new StreamWriter(new FileStream("log.txt", FileMode.Append));
@@ -48,11 +48,11 @@ namespace Adaos.Shell.Machine
             }
             if (input == null)
             {
-                shell = new ConsoleShell(log);
+                shell = new ConsoleTerminal(log);
             }
             else
             {
-                shell = new Shell(input, output, log);
+                shell = new Adaos.Shell.Terminal.Terminal(input, output, log);
             }
             shell.Start();
         }

@@ -6,7 +6,7 @@ using System.IO;
 
 namespace Adaos.Shell.Interface
 {
-    public interface IShell
+    public interface ITerminal
     {
         StreamReader Input { get; set; }
         StreamWriter Output { get; set; }

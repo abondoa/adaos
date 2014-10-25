@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Adaos.Shell.Interface;
+using Adaos.Shell.Interface.Exceptions;
 
 namespace Adaos.Shell.SyntaxAnalysis.ASTs
 {
@@ -13,12 +14,12 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
         public ProgramSequence(int position) : base(position) { }
         public ProgramSequence() { }
 
-        IEnumerable<ICommand> IProgramSequence<ICommand, ShellException>.Commands
+        IEnumerable<ICommand> IProgramSequence<ICommand, AdaosException>.Commands
         {
             get { return Commands; }
         }
 
-        public IEnumerable<ShellException> Errors
+        public IEnumerable<AdaosException> Errors
         {
             get;
             internal set;

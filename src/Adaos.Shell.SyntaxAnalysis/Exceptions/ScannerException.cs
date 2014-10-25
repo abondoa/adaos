@@ -3,29 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Adaos.Shell.Interface;
+using Adaos.Shell.Interface.Exceptions;
 
 namespace Adaos.Shell.SyntaxAnalysis.Exceptions
 {
-    public class ScannerException : ShellException
+    public class ScannerException : SyntacticException
     {
         public ScannerException(int position) : base(position)
         {
         }
 
         public ScannerException(int position, string message)
-            : base(message,position)
+            : base(position,message)
         {
         }
 
         public ScannerException(int position, string message, Exception innerException)
-            : base(message, innerException, position)
+            : base(position,message, innerException)
         {
         }
 
         public ScannerException(int position,
             System.Runtime.Serialization.SerializationInfo info,
             System.Runtime.Serialization.StreamingContext context)
-            : base(info, context, position)
+            : base(position,info, context)
         {
         }
 
@@ -35,28 +36,20 @@ namespace Adaos.Shell.SyntaxAnalysis.Exceptions
         }
 
         public ScannerException(string message)
-            : base(message, -1)
+            : base(-1,message)
         {
         }
 
         public ScannerException(string message, Exception innerException)
-            : base(message, innerException, -1)
+            : base(-1, message, innerException)
         {
         }
 
         public ScannerException(
             System.Runtime.Serialization.SerializationInfo info,
             System.Runtime.Serialization.StreamingContext context)
-            : base(info, context, -1)
+            : base(-1, info, context)
         {
-        }
-
-        public override string Message
-        {
-            get
-            {
-                return "Syntactic Error: " + base.Message;
-            }
         }
     }
 }

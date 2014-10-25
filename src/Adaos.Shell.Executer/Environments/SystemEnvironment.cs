@@ -5,35 +5,26 @@ using System.Text;
 using Adaos.Shell.Interface;
 using System.IO;
 using Adaos.Shell.SyntaxAnalysis.Exceptions;
-using Adaos.Shell.Executer.Extenders;
 using Adaos.Shell.Core;
+using Adaos.Shell.Interface.Exceptions;
 
-namespace Adaos.Shell.Executer.Environments
+namespace Adaos.Shell.Execution.Environments
 {
-    class SystemEnvironment : Environment
+    class SystemEnvironment : BaseEnvironment
     {
-        virtual protected int _test {get;set;}
-        virtual protected IVirtualMachine _vm { get; private set; }
-        private readonly List<string[]> CommonFlagsWithAlias = new List<string[]>
-        { 
-            new string[]{"-silent","-si"},
-            new string[]{"-verbose","-v"}
-        };
-
         public override string Name
         {
             get { return "system"; } 
         }
 
-        public SystemEnvironment(IVirtualMachine vm = null)
+        public SystemEnvironment()
         {
-            _vm = vm;
             Bind(Exit,"exit","quit");
         }
 
         private IEnumerable<IArgument> Exit(IEnumerable<IArgument> args)
         {
-            throw new ExitShellException("Bye!");
+            throw new ExitTerminalException("Bye!");
         }
     }
 }

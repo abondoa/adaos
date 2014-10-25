@@ -10,12 +10,13 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Adaos.Shell.Interface</RootNamespace>
     <AssemblyName>Adaos.Shell.Interface</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -25,6 +26,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,6 +35,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -45,7 +48,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Command.cs" />
-    <Compile Include="ExitShellException.cs" />
+    <Compile Include="Exceptions\SyntacticException.cs" />
+    <Compile Include="Exceptions\ExitTerminalException.cs" />
     <Compile Include="IArgument.cs" />
     <Compile Include="IArgumentValueLookup.cs" />
     <Compile Include="ICommand.cs" />
@@ -53,16 +57,17 @@
     <Compile Include="ErrorHandler.cs" />
     <Compile Include="IEnvironmentContext.cs" />
     <Compile Include="IEnvironmentUniqueIdentifier.cs" />
-    <Compile Include="IModuleInstantiater.cs" />
+    <Compile Include="IModuleManager.cs" />
     <Compile Include="IProgramSequence.cs" />
     <Compile Include="IModule.cs" />
+    <Compile Include="IResolver.cs" />
     <Compile Include="IScanner.cs" />
     <Compile Include="IScannerFactory.cs" />
     <Compile Include="IScannerTable.cs" />
     <Compile Include="IShell.cs" />
-    <Compile Include="ModuleMangingException.cs" />
-    <Compile Include="SemanticException.cs" />
-    <Compile Include="ShellException.cs" />
+    <Compile Include="Exceptions\ModuleMangingException.cs" />
+    <Compile Include="Exceptions\SemanticException.cs" />
+    <Compile Include="Exceptions\AdaosException.cs" />
     <Compile Include="IShellParser.cs" />
     <Compile Include="IVirtualMachine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

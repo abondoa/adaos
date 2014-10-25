@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Adaos.Shell.Interface;
+using Adaos.Shell.Interface.Exceptions;
 
 namespace Adaos.Shell.SyntaxAnalysis.Exceptions
 {
-    public class VMException : ShellException
+    public class VMException : AdaosException
     {
         public VMException(int position)
             : base(position)

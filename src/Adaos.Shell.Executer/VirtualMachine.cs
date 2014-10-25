@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Adaos.Shell.Interface;
+using Adaos.Shell.Interface.Exceptions;
 using Adaos.Shell.SyntaxAnalysis.Parsing;
 using Adaos.Shell.SyntaxAnalysis;
 using Adaos.Shell.SyntaxAnalysis.ASTs;
 using Adaos.Shell.SyntaxAnalysis.Exceptions;
-using Adaos.Shell.Executer.Extenders;
 using System.IO;
-using Adaos.Shell.Executer.Exceptions;
+using Adaos.Shell.Execution.Exceptions;
 using Adaos.Shell.Core;
+using Adaos.Common.Extenders;
+using Adaos.Shell.Library.Standard;
 
-namespace Adaos.Shell.Executer
+namespace Adaos.Shell.Execution
 {
     public class VirtualMachine : IVirtualMachine
     {
@@ -20,7 +22,8 @@ namespace Adaos.Shell.Executer
         private IShellParser _parser;
         private StreamWriter _output;
         private StreamWriter _log;
-        private Resolver _resolver;
+        private IResolver _resolver;
+        private IModuleManager _moduleManager;
 
         public VirtualMachine(StreamWriter output, StreamWriter log, params IEnvironment[] environments)
         {
@@ -40,8 +43,8 @@ namespace Adaos.Shell.Executer
             _log = log;
             _environments = new List<IEnvironment>();
             Environments = environments;
-            _environments.Add(new Environments.SystemEnvironment(this));
-            _environments.Add(new Environments.StandardEnvironment(this));
+            _environments.Add(new Environments.SystemEnvironment());
+            _environments.Add(new StandardEnvironment(this));
             _parser = new Parser();
             _resolver = new Resolver();
         }
@@ -52,11 +55,11 @@ namespace Adaos.Shell.Executer
             {
                 InternExecute(command).ToArray();
             }
-            catch (ExitShellException)
+            catch (ExitTerminalException)
             {
                 throw;
             }
-            catch (ShellException e)
+            catch (AdaosException e)
             {
                 HandleError(e);
             }
@@ -65,6 +68,36 @@ namespace Adaos.Shell.Executer
                 HandleError(new UndefinedException(-1,"Unknown", e));
             }*/
         }
+
+        public virtual IEnumerable<IArgument> Execute(IProgramSequence prog)
+        {
+            if (prog.Errors.Count() > 0)
+            {
+                foreach (var error in prog.Errors)
+                {
+                    HandleError(error);
+                }
+                return new IArgument[0];
+            }
+            try
+            {
+                return InternExecute(prog).ToArray();
+            }
+            catch (ExitTerminalException)
+            {
+                throw;
+            }
+            catch (AdaosException e)
+            {
+                HandleError(e);
+                return new IArgument[0];
+            }
+            /*catch (Exception e)
+            {
+                HandleError(new UndefinedException(-1,"Unknown", e));
+            }*/
+        }
+
 
         internal IEnumerable<IArgument> InternExecute(string command, int initialPosition = 0)
         {
@@ -153,7 +186,7 @@ namespace Adaos.Shell.Executer
             {
                 if (_handleError == null)
                 {
-                    _handleError = (ShellException e) => { throw e; }; 
+                    _handleError = (AdaosException e) => { throw e; }; 
                 }
                 return _handleError;
             }
@@ -226,6 +259,8 @@ namespace Adaos.Shell.Executer
             _environments.Remove(environment);
         }
 
+        #region Properties
+
         public IEnvironment PrimaryEnvironment
         {
             get
@@ -258,7 +293,6 @@ namespace Adaos.Shell.Executer
             }
         }
 
-
         public StreamWriter Output
         {
             get
@@ -285,6 +319,33 @@ namespace Adaos.Shell.Executer
             }
         }
 
+        public IModuleManager ModuleManager
+        {
+            get
+            {
+                return _moduleManager;
+            }
+            set
+            {
+                if (value == null) throw new ArgumentNullException("ModuleManager");
+                _moduleManager = value;
+            }
+        }
+
+        public IResolver Resolver
+        {
+            get
+            {
+                return _resolver;
+            }
+            set
+            {
+                if (value == null) throw new ArgumentNullException("Resolver");
+                _resolver = value;
+            }
+        }
+
+        #endregion Properties
 
         public string SuggestCommand(string partialCommand)
         {

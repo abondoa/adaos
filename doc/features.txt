@@ -3,3 +3,9 @@
  - Multi in-stream
  - Multi out-stream
  - Dynamic module loading
+ - Placeholders
+ - Auto-echo
+ - String command-template
+ - Recognize command-templates in ADAOS
+ - Attributes for command-templates
+ - Nesting of environments

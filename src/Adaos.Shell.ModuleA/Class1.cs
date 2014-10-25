@@ -16,11 +16,6 @@ namespace ModuleA
         {
             get { return "modulea"; }
         }
-
-        public System.Collections.Generic.IEnumerable<IModuleInstantiater> ModuleInstantiaters
-        {
-            get { throw new NotImplementedException(); }
-        }
     }
 
     public class TestEnv : IEnvironment
