@@ -75,5 +75,16 @@ namespace Adaos.Shell.Executer.Extenders
         {
             return self.Skip(1).SecondOrDefault();
         }
+
+        public static IEnumerable<T> Flatten<T>(this IEnumerable<IEnumerable<T>> self)
+        {
+            foreach(var inner in self)
+            {
+                foreach(var item in inner)
+                {
+                    yield return item;
+                }
+            }
+        }
     }
 }

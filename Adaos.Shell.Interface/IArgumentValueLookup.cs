@@ -5,6 +5,7 @@ namespace Adaos.Shell.Interface
     public interface IValueLookup<TArgumentType> : IEnumerable<KeyValuePair<string, TArgumentType>>
     {
         TArgumentType this[string name] { get; }
+        System.Linq.ILookup<string, TArgumentType> Lookup { get; }
     }
 
     public interface IArgumentValueLookup : IValueLookup<IArgument>

@@ -5,6 +5,7 @@ using System.Text;
 using Adaos.Shell.Interface;
 using System.IO;
 using Adaos.Shell.SyntaxAnalysis.Exceptions;
+using Adaos.Shell.Executer.Extenders;
 
 namespace Adaos.Shell.Executer.Environments
 {
@@ -22,18 +23,21 @@ namespace Adaos.Shell.Executer.Environments
         {
             _output = output;
             _logStream = log;
-            Bind(Echo, "echo");
+            Bind(Echo, "echo line-breaks/n=1 output/*");
             Bind(ClearScreen, "clearscreeen", "clear", "cls");
             Bind(Log, "log");
         }
 
-        private IEnumerable<IArgument> Echo(IEnumerable<IArgument> args)
+        private IEnumerable<IArgument> Echo(IArgumentValueLookup lookup, params IEnumerable<IArgument>[] args)
         {
-            foreach (var arg in args)
+            foreach (var arg in lookup.Lookup["output"].Then(args.Flatten()))
             {
                 _output.Write(arg.Value + " ");
             }
-            _output.WriteLine();
+            int max;
+            if (lookup["line-breaks"].TryParseTo(out max))
+                for (int i = 0; i < max; i++ )
+                    _output.WriteLine();
             yield break;
         }
 

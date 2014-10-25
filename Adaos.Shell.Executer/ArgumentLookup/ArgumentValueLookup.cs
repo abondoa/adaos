@@ -51,6 +51,8 @@ namespace Adaos.Shell.Executer.ArgumentLookup
         private IEnumerable<KeyValuePair<string, TArgumentType>> _table;
         private ILookup<string, TArgumentType> _lookup;
 
+        public ILookup<string, TArgumentType> Lookup { get { return _lookup; } }
+
         /// <summary>
         /// A constructor for the ValueLookup taking an anonymous object as values.
         /// </summary>

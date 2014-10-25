@@ -123,11 +123,12 @@ namespace Adaos.Shell.Executer.Environments
         {
             List<KeyValuePair<string, IArgument>> list = new List<KeyValuePair<string, IArgument>>();
             List<IArgument> argsList = new List<IArgument>(args);
+            bool hasCatchAll = segments.Last().IsCatchAll;
             foreach (var segment in segments)
             {
                 if (segment.IsCatchAll)
                 {
-                    list.AddRange(argsList.Select(x => new KeyValuePair<string, IArgument>(x.Name,x)));
+                    list.AddRange(argsList.Select(x => new KeyValuePair<string, IArgument>(segment.Names.First(), x)));
                     argsList.Clear();
                     break;
                 }
@@ -139,7 +140,7 @@ namespace Adaos.Shell.Executer.Environments
                 }
                 else
                 {
-                    if (argsList.Any())
+                    if (segment.IsRequired || (argsList.Any(x => !x.HasName) && !hasCatchAll))
                     {
                         value = argsList.FirstOrDefault(x => !x.HasName);
                         if(value == null)
@@ -165,7 +166,7 @@ namespace Adaos.Shell.Executer.Environments
         private ArgumentTemplateSegment[] Parse(string commandTemplate)
         {
             // Split the template string - it's whitespace separated. 
-            var args = commandTemplate.Split(' ').Select(x => new ArgumentTemplateSegment(x.Trim()));
+            var args = commandTemplate.Split(' ').Select(x => new ArgumentTemplateSegment(x.Trim())).ToList();
 
             // Check for at least one argument
             if (!args.Any())
@@ -183,17 +184,17 @@ namespace Adaos.Shell.Executer.Environments
                     "Only one segment of the commandTemplate may be catch-all.");
 
             // Check that the catch-all attribute is the last.
-            if (args.Any(x => x.IsCatchAll)
-                && args.First() == args.SingleOrDefault(x => x.IsCatchAll))
-                throw new ArgumentException(
-                    "The first element is the commandname and cannot be a catch-all segment.");
+            if (args.Any(x => x.IsCatchAll))
+            {
+                if (args.First() == args.SingleOrDefault(x => x.IsCatchAll))
+                    throw new ArgumentException(
+                        "The first element is the commandname and cannot be a catch-all segment.");
 
-            // Check that the catch-all attribute is the last.
-            if (args.Any(x => x.IsCatchAll)
-                && args.Last() != args.SingleOrDefault(x => x.IsCatchAll))
-                throw new ArgumentException(
-                    "The catch-all segment of the commandTemplate must be the last.");
-
+                // Check that the catch-all attribute is the last.
+                if (args.Last() != args.SingleOrDefault(x => x.IsCatchAll))
+                    throw new ArgumentException(
+                        "The catch-all segment of the commandTemplate must be the last.");
+            }
             // return as array.
             return args.ToArray();
         }

@@ -46,10 +46,7 @@ namespace Adaos.Shell.Executer.ArgumentLookup
                     "ArgumentTemplateSegment cannot be empty or all whitespace.");
 
             string[] namesValue = argumentTemplateSegment.Split("=".ToCharArray(),2);
-            Names = namesValue.First().TrimEnd('*').Split('/');
-
-            if (namesValue.First().Last() == '*') //string[] -> string -> char
-                IsCatchAll = true;
+            Names = namesValue.First().Split('/');
 
             if (namesValue.Count() == 2)
             {
@@ -60,6 +57,10 @@ namespace Adaos.Shell.Executer.ArgumentLookup
             {
                 IsRequired = true;
                 DefaultValue = String.Empty;
+            }
+            if (Names.Contains("*"))
+            {
+                IsCatchAll = true;
             }
         }
 
