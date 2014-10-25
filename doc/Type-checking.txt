@@ -1,0 +1,6 @@
+=============
+Type-checking
+=============
+ - Make types part of the language
+ - Allow definition of arguments type when using command templates
+ - Make checks before calling the defined command

@@ -1,0 +1,10 @@
+===============
+Multi in-stream
+===============
+ - Commands take a number of argument streams as input. The first stream contains the command line arguments, the subsequent streams are from piped commands.
+ - Commands should be able to read the streams a one stream, if so desired, e.g. echo
+ - All stream except the command line arguments (cla stream) must be lazy loaded.
+ 
+E.g.
+sum 2 2, mult 3 3 | echo test => test 4 9
+echo reads the command line argument stream followed by the streams, which are output from the piped commands before.

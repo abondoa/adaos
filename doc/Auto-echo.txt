@@ -1,0 +1,8 @@
+=========
+Auto-echo
+=========
+ - Automatically insert '| echo' in the end of all open command sequences (not ending in ;).
+ - Make all commands silent as standard, except for echo of course
+ 
+E.g.
+sum 2 2 => 4

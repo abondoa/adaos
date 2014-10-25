@@ -1,0 +1,12 @@
+==============
+Tab-completion
+==============
+Use tab to finish environments, commands, and argument names.
+
+E.g.
+std.env[tab] => std.environment
+
+Consider making spell-checking to make suggestions which are not strictly equal to whatever is written.
+
+E.g.
+std.enirnment[tab] => std.environment

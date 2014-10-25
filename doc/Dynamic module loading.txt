@@ -1,0 +1,10 @@
+======================
+Dynamic module loading
+======================
+On runtime it should be possible to load a dll which contains environments
+
+E.g.
+module.load 'some.dll'
+All environments stored in some.dll are loaded into the virtual machine
+
+Consider added a possibility for unloading a dll again

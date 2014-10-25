@@ -20,6 +20,7 @@ namespace Adaos.Shell.Executer.Environments
         public ArgumentEnvironment()
         {
             Bind(Return, "return", "ret");
+            Bind(Then, "then");
             Bind(Compress, "compress", "comp");
             Bind(Decompress, "decompress", "dec");
             Bind(Head, "head");
@@ -36,6 +37,14 @@ namespace Adaos.Shell.Executer.Environments
         private IEnumerable<IArgument> Return(IEnumerable<IArgument> args)
         {
             foreach (var arg in args)
+            {
+                yield return arg;
+            }
+        }
+
+        private IEnumerable<IArgument> Then(IEnumerable<IArgument>[] args)
+        {
+            foreach (var arg in args.Skip(1).Flatten().Then(args.First()))
             {
                 yield return arg;
             }

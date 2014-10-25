@@ -1,0 +1,19 @@
+================
+Multi out-stream
+================
+ - A command can output to any number of streams
+ - Since the command is lazy loaded, care needs to be taken to only run through the input stream(s) once, otherwise we may run into some complexity problems
+ 
+E.g.
+testdata.txt contains:
+1,2,3
+4,5,6
+7,8,9
+EOF
+io.readfile testdata.txt | splitby ',' | sum, sum, avg | echo
+The file is read line by line into splitby - i.e. splitby will receive 3 aguments from its first piped stream and one from cla stream.
+splitby will aplit each argument by the noted delimiter and a each value is given to its respected command on the left of the pipe
+
+Consider making anonymous sub-commands to make more advanced stuff.
+E.g.
+io.readfile testdata.txt | splitby ',' | (greaterthan 3 | sum), sum, avg | echo

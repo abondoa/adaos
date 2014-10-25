@@ -1,0 +1,15 @@
+============
+Placeholders
+============
+Placeholders are sort-of-like lazy loaded variables, where output from one command can be stored and read into another.
+
+E.g.
+io.readfile testdata.txt | splitby ',' | into a;
+a | stream 1 | sum | into b;
+a | stream 2 | sum | into b;
+a | stream 3 | avg | into b;
+b | echo
+Would be the same as:
+io.readfile testdata.txt | splitby ',' | sum, sum, avg | echo
+
+Consider how these placeholders should be cleared. Will they die after end of execution of one command-sequence or will they live until 'clear x' is called?
