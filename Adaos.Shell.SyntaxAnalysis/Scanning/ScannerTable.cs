@@ -44,14 +44,21 @@ namespace Adaos.Shell.SyntaxAnalysis.Scanning
             set; 
         }
 
+        public string ArgumentSeparator 
+        { 
+            get;
+            set;
+        }
+
         public ScannerTable()
         {
             Pipe = "|";
-            Execute = "@";
+            Execute = "$";
             CommandSeparator = ";";
             EnvironmentSeparator = ".";
             CommandConcatenator = ",";
             Escaper = "\\";
+            ArgumentSeparator = ":";
         }
 
         public ScannerTable(ScannerTable original)
@@ -62,6 +69,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Scanning
             EnvironmentSeparator = original.EnvironmentSeparator;
             CommandConcatenator = original.CommandConcatenator;
             Escaper = original.Escaper;
+            ArgumentSeparator = original.ArgumentSeparator;
         }
 
 

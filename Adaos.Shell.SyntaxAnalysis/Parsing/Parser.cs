@@ -203,6 +203,67 @@ namespace Adaos.Shell.SyntaxAnalysis.Parsing
         private Argument ParseArgument()
         {
             Argument result = null;
+            Word w = null;
+            NestedWords nest = null;
+            bool exec = _currentToken.Kind == TokenKind.EXECUTE;
+            if (exec)
+            {
+                AcceptIt();
+            }
+
+            switch (_currentToken.Kind)
+            { 
+                case TokenKind.WORD:
+                    w = ParseWord();
+                    if (exec)
+                    {
+                        result = new ArgumentWord(exec, w);
+                        break;
+                    }
+                    if (_currentToken.Kind == TokenKind.ARGUMENT_SEPARATOR)
+                    {
+                        AcceptIt();
+                        Argument temp = ParseValue();
+                        if (temp is ArgumentNested)
+                        {
+                            result = new ArgumentNested(temp.ToExecute, (temp as ArgumentNested).Nested, w);
+                        }
+                        else if (temp is ArgumentWord)
+                        {
+                            result = new ArgumentWord(temp.ToExecute, (temp as ArgumentWord).Word, w);
+                        }
+                        else
+                        {
+                            throw new NotImplementedException("New argument type?");
+                        }
+                    }
+                    else
+                    {
+                        result = new ArgumentWord(exec, w);
+                        break;
+                    }
+                    break;
+                case TokenKind.NESTEDWORDS:
+                    nest = ParseNestedWord();
+                    result = new ArgumentNested(exec, nest);
+                    break;
+                default:
+                    Errors.Add(new IllegalTokenException(_currentToken, TokenKind.WORD, TokenKind.NESTEDWORDS));
+                    while(
+                        _currentToken.Kind != TokenKind.WORD &&
+                        _currentToken.Kind != TokenKind.NESTEDWORDS)
+                    {
+                        AcceptIt();
+                    }
+                    result = ParseArgument();
+                    break;
+            }
+            return result;
+        }
+
+        private Argument ParseValue()
+        {
+            Argument result = null;
             NestedWords nest = null;
             Word w = null;
             bool exec = _currentToken.Kind == TokenKind.EXECUTE;
@@ -212,7 +273,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Parsing
             }
 
             switch (_currentToken.Kind)
-            { 
+            {
                 case TokenKind.NESTEDWORDS:
                     nest = ParseNestedWord();
                     result = new ArgumentNested(exec, nest);
@@ -221,16 +282,11 @@ namespace Adaos.Shell.SyntaxAnalysis.Parsing
                     w = ParseWord();
                     result = new ArgumentWord(exec, w);
                     break;
-                case TokenKind.MATH_SYMBOL:
-                    w = ParseSymbol();
-                    result = new ArgumentWord(exec,w);
-                    break;
                 default:
-                    Errors.Add(new IllegalTokenException(_currentToken, TokenKind.WORD, TokenKind.NESTEDWORDS, TokenKind.MATH_SYMBOL));
-                    while(
+                    Errors.Add(new IllegalTokenException(_currentToken, TokenKind.WORD, TokenKind.NESTEDWORDS));
+                    while (
                         _currentToken.Kind != TokenKind.WORD &&
-                        _currentToken.Kind != TokenKind.NESTEDWORDS &&
-                        _currentToken.Kind != TokenKind.MATH_SYMBOL)
+                        _currentToken.Kind != TokenKind.NESTEDWORDS)
                     {
                         AcceptIt();
                     }

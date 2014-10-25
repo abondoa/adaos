@@ -31,8 +31,8 @@ namespace Adaos.Shell.Executer.Environments
             _output = output;
             _unloadedEnvironments = new List<IEnvironment>();
             _vm = vm;
-            Bind(AddEnvironment, "loadenvironment","loadenv", "lenv","load");
-            Bind(RemoveEnvironment, "unloadenvironment", "unloadenv", "uenv","unload");
+            Bind(AddEnvironment, "loadenvironment", "lenv");
+            Bind(RemoveEnvironment, "unloadenvironment", "uenv");
             Bind(Environments, "environments", "envs");
             Bind(PromoteEnvironments, "promoteenvironments", "penv");
             Bind(DependenciesCommand, "dependencies", "deps");

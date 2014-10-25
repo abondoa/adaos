@@ -16,6 +16,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Scanning
         private string CommandConcatenator { get { return _scannerTable.CommandConcatenator; } }
         private string EnvironmentSeparator { get { return _scannerTable.EnvironmentSeparator; } }
         private string Escaper { get { return _scannerTable.Escaper; } }
+        private string ArgumentSeparator { get { return _scannerTable.ArgumentSeparator; } }
 
         private string _workingString;
         private int _position;
@@ -159,6 +160,11 @@ namespace Adaos.Shell.SyntaxAnalysis.Scanning
                 _currentKind = TokenKind.COMMAND_PIPE;
                 TakeIt(Pipe.Length);
             }
+            else if (CurrentString(ArgumentSeparator.Length).Equals(ArgumentSeparator))
+            {
+                _currentKind = TokenKind.ARGUMENT_SEPARATOR;
+                TakeIt(Pipe.Length);
+            }
             else
             {
                 return false;
@@ -222,11 +228,6 @@ namespace Adaos.Shell.SyntaxAnalysis.Scanning
 
                     TakeIt();
                 }
-            }
-            else if (CurrentChar == '+')
-            {
-                _currentKind = TokenKind.MATH_SYMBOL;
-                TakeIt();
             }
             else if (CurrentChar == (char)0)
             {

@@ -15,6 +15,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Tokens
         EXECUTE,
         COMMAND_PIPE,
         MATH_SYMBOL,
+        ARGUMENT_SEPARATOR,
         EOF
     }
 }

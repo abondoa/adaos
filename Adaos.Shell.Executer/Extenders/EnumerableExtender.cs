@@ -33,6 +33,23 @@ namespace Adaos.Shell.Executer.Extenders
             }
         }
 
+        public static bool ContainsDuplicates<T>(this IEnumerable<T> self,Func<T,object> pred = null)
+        {
+            if (pred == null)
+                pred = x => x.ToString();
+            var sorted = self.OrderBy(pred);
+            T last = sorted.FirstOrDefault();
+            foreach (var item in sorted.Skip(1))
+            {
+                if (item.Equals(last))
+                {
+                    return true;
+                }
+                last = item;
+            }
+            return false;
+        }
+
         public static IEnumerable<T> Tail<T>(this IEnumerable<T> self, int number) 
         {
             int toSkip = Math.Max(0,self.Count() - number);

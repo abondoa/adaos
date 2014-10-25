@@ -8,7 +8,6 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
     public class ArgumentWord : Argument
     {
         public Word Word { get; private set; }
-        public bool Execute { get; private set; }
         public override int Position
         {
             get
@@ -17,22 +16,16 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
             }
         }
 
-        public ArgumentWord(int position, bool execute, Word word)
-            : base(position)
+        public ArgumentWord(int position, bool execute, Word word, Word wordName = null)
+            : base(position,execute,wordName)
         {
             Word = word;
-            Execute = execute;
         }
 
-        public ArgumentWord(bool execute, Word word)
+        public ArgumentWord(bool execute, Word word, Word wordName = null)
+            : base(execute, wordName)
         {
             Word = word;
-            Execute = execute;
-        }
-
-        public override string ToString()
-        {
-            return Word.Spelling;
         }
 
         public override object Visit(IVisitor visitor, object obj)
@@ -40,9 +33,9 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
             return visitor.Visit(this, obj);
         }
 
-        public override bool ToExecute
+        public override string Value
         {
-            get { return Execute; }
+            get { return Word.Spelling; }
         }
     }
 }

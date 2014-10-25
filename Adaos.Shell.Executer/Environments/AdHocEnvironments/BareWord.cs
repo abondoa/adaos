@@ -84,12 +84,12 @@ namespace Adaos.Shell.Executer.Environments.AdHocEnvironments
             throw new NotImplementedException();
         }
 
-        internal IEnumerable<IArgument> SelfCommand(IEnumerable<IArgument> args)
+        internal IEnumerable<IArgument> SelfCommand(params IEnumerable<IArgument>[] args)
         {
             yield return new DummyArgument(Name);
-            if (args.FirstOrDefault() != null)
+            if (args[0].FirstOrDefault() != null)
             {
-                foreach (var res in Retrieve(args.First().Value)(args.Skip(1)))
+                foreach (var res in Retrieve(args[0].First().Value)(args[0].Skip(1)))
                 {
                     yield return res;
                 }

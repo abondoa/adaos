@@ -13,6 +13,7 @@ namespace Adaos.Shell.Interface
         string EnvironmentSeparator { get; set; }
         string CommandConcatenator { get; set; }
         string Escaper { get; set; }
+        string ArgumentSeparator { get; set; }
         IScannerTable Copy();
     }
 }

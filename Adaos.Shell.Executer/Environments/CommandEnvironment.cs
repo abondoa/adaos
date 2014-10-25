@@ -122,7 +122,7 @@ namespace Adaos.Shell.Executer.Environments
             ICommand last = commandSeq.Commands.Last();
             Command execCommand = (x) =>
                 {
-                    DummyCommand command = new DummyCommand(last.CommandName, last.EnvironmentNames, last.Arguments.Then(x), last.Position, last.RelationToPrevious);
+                    DummyCommand command = new DummyCommand(last.CommandName, last.EnvironmentNames, last.Arguments.Then(x.Aggregate((y,z) => y.Then(z))), last.Position, last.RelationToPrevious);
                     DummyProgramSequence progSec = new DummyProgramSequence(commandSeq.Commands.Where(y => y != last).Then(new List<ICommand> { command }).ToArray());
                     return (_vm as VirtualMachine).InternExecute(progSec);
                 };

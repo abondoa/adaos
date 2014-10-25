@@ -23,11 +23,11 @@ namespace Adaos.Shell.Executer.Environments
         {
             _output = output;
             _rand = new Random();
-            Bind("sum",       Sum);
-            Bind("multi",     Multiplication);
-            Bind("random",    Random);
-            Bind("sqrt",      Sqrt);
-            Bind("pow",       Pow);
+            Bind(Sum,"sum");
+            Bind(Multiplication,"multi");
+            Bind(Random,"random");
+            Bind(Sqrt,"sqrt");
+            Bind(Pow,"power/pow base/b exponent/e=2");
         }
 
         private IEnumerable<IArgument> Sum(IEnumerable<IArgument> args)
@@ -323,20 +323,11 @@ namespace Adaos.Shell.Executer.Environments
             }
         }
 
-        private IEnumerable<IArgument> Pow(IEnumerable<IArgument> args)
-        {
-            if (CheckShowHelp(args, "MathPow"))
-            {
-                yield break;
-            }
-            List<IArgument> list = args.ToList();
-            if(list.Count != 2)
-            {
-                ReportError("Supposed to receive 2 arguments, received: " + list.Count + ". Try 'help' for more information");
-            }
+        private IEnumerable<IArgument> Pow(IArgumentValueLookup lookup, params IEnumerable<IArgument>[] args)
+        {            
             double b;
             double e;
-            if(list[0].TryParseTo(out b, ReportError) && list[1].TryParseTo(out e,ReportError))
+            if (lookup["base"].TryParseTo(out b, ReportError) && lookup["exponent"].TryParseTo(out e, ReportError))
             {
                 double powered = 0;
                 try

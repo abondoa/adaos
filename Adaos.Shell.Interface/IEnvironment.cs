@@ -26,8 +26,7 @@ namespace Adaos.Shell.Interface
         {
             foreach (var child in self.ChildEnvironments)
             {
-                yield return child;
-                foreach (var subEnv in child.DecendentEnvironments())
+                foreach (var subEnv in child.FamilyEnvironments())
                 {
                     yield return subEnv;
                 }

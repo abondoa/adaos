@@ -35,5 +35,17 @@ namespace Adaos.Shell.Core
             ToExecute = toExecute;
             Position = position;
         }
+
+        public string Name
+        {
+            get;
+            private set;
+        }
+
+        public bool HasName
+        {
+            get;
+            private set;
+        }
     }
 }

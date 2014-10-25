@@ -8,7 +8,6 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
     public class ArgumentNested : Argument
     {
         public NestedWords Nested { get; private set; }
-        public bool Execute { get; private set; }
         public override int Position
         {
             get
@@ -17,22 +16,16 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
             }
         }
 
-        public ArgumentNested(int position, bool execute, NestedWords nested)
-            : base(position)
+        public ArgumentNested(int position, bool execute, NestedWords nested, Word wordName = null)
+            : base(position,execute,wordName)
         {
             Nested = nested;
-            Execute = execute;
         }
 
-        public ArgumentNested(bool execute, NestedWords nested)
+        public ArgumentNested(bool execute, NestedWords nested, Word wordName = null)
+            : base(execute, wordName)
         {
             Nested = nested;
-            Execute = execute;
-        }
-
-        public override string ToString()
-        {
-            return Nested.ToString();
         }
 
         public override object Visit(IVisitor visitor, object obj)
@@ -40,9 +33,9 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
             return visitor.Visit(this,obj);
         }
 
-        public override bool ToExecute
+        public override string Value
         {
-            get { return Execute; }
+            get { return Nested.ToString(); }
         }
     }
 }

@@ -47,9 +47,11 @@
     <Compile Include="Command.cs" />
     <Compile Include="ExitShellException.cs" />
     <Compile Include="IArgument.cs" />
+    <Compile Include="IArgumentValueLookup.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="IEnvironment.cs" />
     <Compile Include="ErrorHandler.cs" />
+    <Compile Include="IEnvironmentContext.cs" />
     <Compile Include="IEnvironmentUniqueIdentifier.cs" />
     <Compile Include="IModuleInstantiater.cs" />
     <Compile Include="IProgramSequence.cs" />

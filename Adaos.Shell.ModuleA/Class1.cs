@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Adaos.Shell.Interface;
 using System.Collections.Generic;
 
@@ -63,7 +64,7 @@ namespace ModuleA
         {
             if (commandName == "test")
             {
-                return x => x;
+                return x => x.Aggregate((y,z)=> y.Union(z));
             }
             if (commandName == "counter")
             {
@@ -73,7 +74,7 @@ namespace ModuleA
             return null;
         }
 
-        private IEnumerable<IArgument> Counter(IEnumerable<IArgument> args)
+        private IEnumerable<IArgument> Counter(params IEnumerable<IArgument>[] args)
         {
             for (int i = 0; i <= Math.Pow(2,20) ; i++)
             {
@@ -126,6 +127,16 @@ namespace ModuleA
         public Argument(string val)
         {
             Value = val;
+        }
+
+        public string Name
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public bool HasName
+        {
+            get { return false; }
         }
     }
 

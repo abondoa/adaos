@@ -1,0 +1,51 @@
+##############################################
+##########          ADAOS       ##############
+##############################################
+EBNF:
+program-seq	::= command (; command)*
+command		::= command-name argument*
+argument	::= word | "inner-double" | 'inner-single'
+inner-double	::= ('inner-single' | word)*
+inner-single	::= ("inner-double" | word)*
+command-name	::= word
+word		::= (letter | digigt | _)(letter | digigt | _ | -)*
+letter		::= [a-z] | [A-Z]
+digit		::= [0-9]
+
+
+
+
+
+
+
+Adaos - Adaos Debugging And Operation Shell
+
+
+BNF:
+program-seq		::= command program-seq-f
+program-seq-f	::= ; command program-seq-f | '|' command program-seq-f | epsilon	
+environment		::= word
+environment-seq ::= environment . environment-seq | epsilon
+command			::= environment-seq command-name argument-seq
+argument-seq	::= argument argument-seq | epsilon
+argument		::= value | word:value
+value           ::= word | nested-words | $word | $nested-words
+nested-words	::= "inner-double" | 'inner-single'
+inner-double	::= 'inner-single' inner-double | word inner-double | epsilon
+inner-single	::= "inner-double" inner-single | word inner-single | epsilon
+command-name	::= word
+word			::= (letter | digigt | _ | -)word-follow
+word-follow		::= (letter | digigt | _ | -)word-follow | epsilon
+letter			::= [a-z] | [A-Z]
+digit			::= [0-9]
+
+user.create aba @'math.random mode char 10 12' abondoa@gmail.com
+
+
+
+
+TODO:
+Make core envs:
+ - io/console: read?
+ - math
+ - parallel: perfom loopish stuff in parallel

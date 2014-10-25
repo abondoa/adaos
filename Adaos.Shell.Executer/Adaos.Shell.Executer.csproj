@@ -51,6 +51,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArgumentLookup\ArgumentTemplateSegment.cs" />
+    <Compile Include="ArgumentLookup\ArgumentValueDictionary.cs" />
+    <Compile Include="ArgumentLookup\ArgumentValueLookup.cs" />
     <Compile Include="CachedEnumerable\CachedEnumerable.cs" />
     <Compile Include="CachedEnumerable\CachedEnumerator.cs" />
     <Compile Include="Environments\AdHocEnvironments\BareWord.cs" />
@@ -114,6 +117,7 @@
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if $(ConfigurationName) == Release xcopy /y "$(ProjectDir)$(OutDir)$(TargetFileName)" "..\..\..\..\Libs\"</PostBuildEvent>

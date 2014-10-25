@@ -40,6 +40,30 @@ namespace Adaos.Shell
                 catch (ArgumentOutOfRangeException) { }
                 return null;
             };
+            _specialKeyMapper[ConsoleKey.Home] = x =>
+            {
+                try
+                {
+                    for (int i = 0; i < 1000; i++)
+                    {
+                        CursorPosition--;
+                    }
+                }
+                catch (ArgumentOutOfRangeException) { }
+                return null;
+            };
+            _specialKeyMapper[ConsoleKey.End] = x =>
+            {
+                try
+                {
+                    for (int i = 0; i < 1000; i++)
+                    {
+                        CursorPosition++;
+                    }
+                }
+                catch (ArgumentOutOfRangeException) { }
+                return null;
+            };
             _specialKeyMapper[ConsoleKey.Delete] = x =>
             {
                 if (CursorPosition < x.Length)

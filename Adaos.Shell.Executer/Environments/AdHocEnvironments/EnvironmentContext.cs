@@ -6,7 +6,7 @@ using Adaos.Shell.Interface;
 
 namespace Adaos.Shell.Executer.Environments.AdHocEnvironments
 {
-    internal class EnvironmentContext : IEnvironment
+    internal class EnvironmentContext : IEnvironmentContext
     {
         /// <summary>
         /// 
@@ -14,7 +14,7 @@ namespace Adaos.Shell.Executer.Environments.AdHocEnvironments
         /// <param name="inner"></param>
         /// <param name="parent"></param>
         /// <param name="separator"></param>
-        public EnvironmentContext(IEnvironment inner, IEnvironment parent, string separator = null)
+        public EnvironmentContext(IEnvironment inner, IEnvironmentContext parent, string separator = ".")
         {
             Inner = inner;
             Parent = parent;
@@ -25,10 +25,6 @@ namespace Adaos.Shell.Executer.Environments.AdHocEnvironments
         {
             get 
             {
-                if(Parent != null)
-                {
-                    return Parent.Name + '.' + Inner.Name;
-                }
                 return Inner.Name;
             }
         }
@@ -95,7 +91,7 @@ namespace Adaos.Shell.Executer.Environments.AdHocEnvironments
             private set; 
         }
 
-        public IEnvironment Parent 
+        public IEnvironmentContext Parent 
         {
             get; 
             private set; 
@@ -105,6 +101,18 @@ namespace Adaos.Shell.Executer.Environments.AdHocEnvironments
         {
             get; 
             private set; 
+        }
+
+        public string QualifiedName
+        {
+            get
+            {
+                if (Parent != null)
+                {
+                    return Parent.QualifiedName + Separator + Inner.Name;
+                }
+                return Inner.Name;
+            }
         }
     }
 }
