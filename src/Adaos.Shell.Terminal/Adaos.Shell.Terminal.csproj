@@ -62,7 +62,7 @@
   </Target>
   -->
   <ItemGroup>
-    <ProjectReference Include="..\Adaos.Shell.Executer\Adaos.Shell.Execution.csproj">
+    <ProjectReference Include="..\Adaos.Shell.Execution\Adaos.Shell.Execution.csproj">
       <Project>{9C0DD7D3-1766-4F63-9849-98CEFCDF5DF6}</Project>
       <Name>Adaos.Shell.Execution</Name>
     </ProjectReference>

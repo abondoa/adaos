@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Adaos.Shell.Interface;
-using Adaos.Shell.SyntaxAnalysis.Exceptions;
+using Adaos.Shell.Core.Extenders;
+using Adaos.Common.Extenders;
+using Adaos.Shell.Execution.Exceptions;
 
 namespace Adaos.Shell.Execution
 {
@@ -54,7 +56,7 @@ namespace Adaos.Shell.Execution
             }
             else
             {
-                foreach (var env in environments.Select(x => x.FamilyEnvironments()).Aggregate((x,y) => x.Union(y)))
+                foreach (var env in environments.Select(x => x.FamilyEnvironments()).Flatten())
                 {
                     result = env.Retrieve(command.CommandName);
                     if (result != null)

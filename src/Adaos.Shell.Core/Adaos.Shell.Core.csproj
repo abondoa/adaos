@@ -54,8 +54,10 @@
     <Compile Include="DummyCommand.cs" />
     <Compile Include="DummyProgramSequence.cs" />
     <Compile Include="BaseEnvironment.cs" />
+    <Compile Include="Environments\EnvironmentContext.cs" />
     <Compile Include="EnvironmentUniqueIdentifier.cs" />
     <Compile Include="Extenders\ArgumentExtender.cs" />
+    <Compile Include="Extenders\EnvironmentExtender.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

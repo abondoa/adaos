@@ -107,7 +107,7 @@ namespace Adaos.Shell.Core
 
         public virtual void Bind(ArgumentLookupCommand command,string commandTemplate)
         {
-            var segments = Parse(commandTemplate);
+            var segments = ParseCommandTemplate(commandTemplate);
             if (segments.Count() < 1)
             {
                 throw new Exception("There must be at least a name for the function to be bound to");
@@ -163,7 +163,7 @@ namespace Adaos.Shell.Core
             return new ArgumentValueLookup(list);
         }
 
-        private ArgumentTemplateSegment[] Parse(string commandTemplate)
+        private ArgumentTemplateSegment[] ParseCommandTemplate(string commandTemplate)
         {
             // Split the template string - it's whitespace separated. 
             var args = commandTemplate.Split(' ').Select(x => new ArgumentTemplateSegment(x.Trim())).ToList();
@@ -254,7 +254,7 @@ namespace Adaos.Shell.Core
             {
                 if (_childEnvs.Keys.Contains(environment.Name))
                 {
-                    throw new ArgumentException("Unably to add environment: '" + environment + "', it is already a child of " + Name);
+                    throw new ArgumentException("Unably to add environment: '" + environment + "', it is already a child of '" + this + "'");
                 }
                 _childEnvs.Add(environment.Name,environment);
             }
@@ -266,7 +266,7 @@ namespace Adaos.Shell.Core
             {
                 if (!_childEnvs.Keys.Contains(environment.Name))
                 {
-                    throw new ArgumentException("Unably to remove environment: '" + environment + "', it is not a child of " + Name);
+                    throw new ArgumentException("Unably to remove environment: '" + environment + "', it is not a child of '" + this + "'");
                 }
                 _childEnvs.Remove(environment.Name);
             }
@@ -278,10 +278,29 @@ namespace Adaos.Shell.Core
             {
                 throw new SemanticException(-1,"Environment-command '" + this.Name + "' received no command name as first argument");
             }
-            foreach(var res in Retrieve(args[0].First().Value)(args[0].Skip(1)))
+            foreach(var res in Retrieve(args[0].First().Value)(args[0].Skip(1).Then(args.Skip(1).Flatten())))
             {
                 yield return res;
             }
+        }
+
+
+        public IEnvironment ChildEnvironment(string childEnvironmentName)
+        {
+            lock (_childEnvs)
+            {
+                if (!_childEnvs.Keys.Contains(childEnvironmentName))
+                {
+                    throw new ArgumentException("Unably to find environment: '" + childEnvironmentName + "', it is not a child of '" + this + "'");
+                }
+                return _childEnvs[childEnvironmentName];
+            }
+        }
+
+
+        public IEnvironmentContext ToContext()
+        {
+            return new Environments.EnvironmentContext(this, null);
         }
     }
 }

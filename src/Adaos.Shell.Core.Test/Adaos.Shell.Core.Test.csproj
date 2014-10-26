@@ -3,11 +3,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{357B16CB-B5C2-4BAE-A96A-02A8CD68C70A}</ProjectGuid>
+    <ProjectGuid>{ED6CC96A-CEAB-49CB-856C-901236F4A0BA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Adaos.Common.Test</RootNamespace>
-    <AssemblyName>Adaos.Common.Test</AssemblyName>
+    <RootNamespace>Adaos.Shell.Core.Test</RootNamespace>
+    <AssemblyName>Adaos.Shell.Core.Test</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -35,9 +35,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Rhino.Mocks">
-      <HintPath>..\packages\RhinoMocks.3.6.1\lib\net\Rhino.Mocks.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <Choose>
@@ -53,22 +50,22 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="CachedEnumerableTest.cs" />
+    <Compile Include="Extenders\EnvironmentExtenderTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Adaos.Common\Adaos.Common.csproj">
       <Project>{594a1907-226d-4205-bd55-cd56ede35414}</Project>
       <Name>Adaos.Common</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
+    <ProjectReference Include="..\Adaos.Shell.Core\Adaos.Shell.Core.csproj">
+      <Project>{ef0146e7-8ec0-4b44-8b83-87ceeaa5a2fb}</Project>
+      <Name>Adaos.Shell.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Adaos.Shell.Interface\Adaos.Shell.Interface.csproj">
+      <Project>{36761409-f8bb-4e79-8f7b-19ae64da255a}</Project>
+      <Name>Adaos.Shell.Interface</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

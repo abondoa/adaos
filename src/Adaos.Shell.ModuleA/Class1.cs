@@ -99,6 +99,17 @@ namespace ModuleA
         {
             return;
         }
+
+
+        public IEnvironment ChildEnvironment(string childEnvironmentName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnvironmentContext ToContext()
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class Argument : IArgument

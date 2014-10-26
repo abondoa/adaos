@@ -66,14 +66,13 @@
       <Project>{36761409-F8BB-4E79-8F7B-19AE64DA255A}</Project>
       <Name>Adaos.Shell.Interface</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Adaos.Shell\Adaos.Shell.Terminal.csproj">
+    <ProjectReference Include="..\Adaos.Shell.Terminal\Adaos.Shell.Terminal.csproj">
       <Project>{4EEFA2B4-D336-4FC0-B63A-52DE7D67CF9A}</Project>
       <Name>Adaos.Shell.Terminal</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

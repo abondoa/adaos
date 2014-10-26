@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using Adaos.Shell.Interface;
 
-namespace Adaos.Shell.Library.AdHoc
+namespace Adaos.Shell.Core.Environments
 {
     internal class EnvironmentContext : IEnvironmentContext
     {
@@ -14,11 +11,10 @@ namespace Adaos.Shell.Library.AdHoc
         /// <param name="inner"></param>
         /// <param name="parent"></param>
         /// <param name="separator"></param>
-        public EnvironmentContext(IEnvironment inner, IEnvironmentContext parent, string separator = ".")
+        public EnvironmentContext(IEnvironment inner, IEnvironmentContext parent = null)
         {
             Inner = inner;
             Parent = parent;
-            Separator = separator;
         }
 
         public string Name
@@ -97,21 +93,38 @@ namespace Adaos.Shell.Library.AdHoc
             private set; 
         }
 
-        public string Separator 
+        public IEnvironment ChildEnvironment(string childEnvironmentName)
         {
-            get; 
-            private set; 
+            return Inner.ChildEnvironment(childEnvironmentName);
         }
 
-        public string QualifiedName
+
+        public IEnvironmentContext ToContext()
         {
-            get
+            return this;
+        }
+
+        string IEnvironmentContext.QualifiedName(string separator)
+        {
+            if (Parent != null)
+            {
+                return Parent.QualifiedName(separator) + separator + Inner.Name;
+            }
+            return Inner.Name;
+        }
+
+        public IEnumerable<string> EnvironmentNames
+        {
+            get 
             {
                 if (Parent != null)
                 {
-                    return Parent.QualifiedName + Separator + Inner.Name;
+                    foreach (var name in Parent.EnvironmentNames)
+                    {
+                        yield return name;
+                    }
                 }
-                return Inner.Name;
+                yield return Name;
             }
         }
     }

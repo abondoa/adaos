@@ -42,6 +42,7 @@
     <Compile Include="Enumerable\CachedEnumerable.cs" />
     <Compile Include="Enumerable\CachedEnumerator.cs" />
     <Compile Include="Extenders\EnumerableExtender.cs" />
+    <Compile Include="Extenders\ObjectExtender.cs" />
     <Compile Include="Factory.cs" />
     <Compile Include="Interface\ICachedEnumerable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

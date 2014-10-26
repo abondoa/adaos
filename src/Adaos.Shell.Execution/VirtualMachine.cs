@@ -11,6 +11,7 @@ using Adaos.Shell.SyntaxAnalysis.Exceptions;
 using System.IO;
 using Adaos.Shell.Execution.Exceptions;
 using Adaos.Shell.Core;
+using Adaos.Shell.Core.Extenders;
 using Adaos.Common.Extenders;
 using Adaos.Shell.Library.Standard;
 
@@ -18,12 +19,15 @@ namespace Adaos.Shell.Execution
 {
     public class VirtualMachine : IVirtualMachine
     {
-        private List<IEnvironment> _environments;
         private IShellParser _parser;
         private StreamWriter _output;
         private StreamWriter _log;
         private IResolver _resolver;
         private IModuleManager _moduleManager;
+        private Adaos.Shell.Interface.ErrorHandler _handleError;
+        private IEnvironment _rootEnvironment;
+        private EnvironmentContainer _loadedEnvironments;
+        private EnvironmentContainer _unloadedEnvironments;
 
         public VirtualMachine(StreamWriter output, StreamWriter log, params IEnvironment[] environments)
         {
@@ -41,10 +45,17 @@ namespace Adaos.Shell.Execution
             }
             _output = output;
             _log = log;
-            _environments = new List<IEnvironment>();
-            Environments = environments;
-            _environments.Add(new Environments.SystemEnvironment());
-            _environments.Add(new StandardEnvironment(this));
+            _loadedEnvironments = new EnvironmentContainer();
+            _unloadedEnvironments = new EnvironmentContainer();
+            _rootEnvironment = new Environments.RootEnvironment();
+            _rootEnvironment.AddEnvironments(environments);
+            _rootEnvironment.AddEnvironments(
+                new Environments.SystemEnvironment(),
+                new StandardEnvironment(this));
+            foreach(var env in _rootEnvironment.ChildEnvironments.Select(x => x.FamilyEnvironments()).Flatten())
+            {
+                _loadedEnvironments.Add(env.EnvironmentNames.ToArray(), env);
+            }
             _parser = new Parser();
             _resolver = new Resolver();
         }
@@ -154,31 +165,30 @@ namespace Adaos.Shell.Execution
         {
             get
             {
-                foreach (var env in _environments)
+                foreach (var env in LoadedEnvironments)
                 {
                     yield return env;
                 }
             }
-            private set
-            {
-                if (value != null)
-                {
-                    value.OrderBy((x) => x.Name);
-                    IEnvironment last = null;
-                    foreach (var item in value)
-                    {
-                        if (last != null && item.Name.ToLower().Equals(last.Name.ToLower()))
-                        {
-                            throw new VMException(-1,"Name conflict between environments on the name: " + item.Name);
-                        }
-                        last = item;
-                    }
-                    _environments = value.Union(_environments.Where(x => x.Name.Equals("system") || x.Name.Equals("redo"))).ToList();
-                }
-            }
+            //private set
+            //{
+            //    if (value != null)
+            //    {
+            //        IEnvironment last = null;
+            //        EnvironmentContainer tempContainer = new EnvironmentContainer();
+            //        foreach (var item in value.Then(LoadedEnvironments.Where(x => x.Name.Equals("system"))).OrderBy((x) => x.Name))
+            //        {
+            //            if (last != null && item.Name.ToLower().Equals(last.Name.ToLower()))
+            //            {
+            //                throw new VMException(-1,"Name conflict between environments on the name: " + item.Name);
+            //            }
+            //            last = item;
+            //            tempContainer.Add(item.)
+            //        }
+            //        LoadedEnvironments = value.Union(LoadedEnvironments.Where(x => x.Name.Equals("system"))).ToList();
+            //    }
+            //}
         }
-
-        private Adaos.Shell.Interface.ErrorHandler _handleError;
 
         public Adaos.Shell.Interface.ErrorHandler HandleError
         {
@@ -235,43 +245,67 @@ namespace Adaos.Shell.Execution
 
         public void LoadEnvironment(IEnvironment environment)
         {
-            if (_environments.Contains(environment))
+            if (LoadedEnvironments.Contains(environment))
             {
                 throw new ArgumentException("This environment is already loaded (" + environment.Name + ")");
             }
-            if (_environments.FirstOrDefault(x => x.Name.ToLower().Equals(environment.Name.ToLower())) != null)
+            if (LoadedEnvironments.FirstOrDefault(x => x.Name.ToLower().Equals(environment.Name.ToLower())) != null)
             {
                 throw new ArgumentException("Environment name conflict on name: " + environment.Name);
             }
-            _environments.Add(environment);
+            IEnvironmentContext toLoad;
+            if ((toLoad = _unloadedEnvironments.FirstOrDefault(x => x.Value == environment).Value) != null)
+            {
+                _unloadedEnvironments.Remove(toLoad.EnvironmentNames.ToArray());
+                _loadedEnvironments.Add(toLoad.EnvironmentNames.ToArray(), toLoad);
+            }
+            else
+            {
+                _rootEnvironment.AddEnvironment(environment);
+                foreach (var env in environment.FamilyEnvironments())
+                {
+                    _loadedEnvironments.Add(env.EnvironmentNames.ToArray(), env);
+                }
+            }
         }
 
         public void UnloadEnvironment(IEnvironment environment)
         {
-            if (!_environments.Contains(environment))
+            if (!LoadedEnvironments.Contains(environment))
             {
                 throw new ArgumentException("This environment is not loaded (" + environment.Name + ")");
             }
-            if (environment == _environments.FirstOrDefault(x => x.Name == "system"))
+            if (environment == LoadedEnvironments.FirstOrDefault(x => x.Name == "system"))
             {
                 throw new ArgumentException("Trying to remove system environment, this is not legal!");
             }
-            _environments.Remove(environment);
+            var context = _rootEnvironment.DecendentEnvironments().FirstOrDefault(x => x == environment);
+            _loadedEnvironments.Remove(context.EnvironmentNames.ToArray());
+            _unloadedEnvironments.Add(context.EnvironmentNames.ToArray(), context);
         }
 
         #region Properties
+
+        private IEnumerable<IEnvironment> LoadedEnvironments 
+        {
+            get 
+            {
+                return _loadedEnvironments.Select(x => x.Value);
+            }
+        }
 
         public IEnvironment PrimaryEnvironment
         {
             get
             {
-                return _environments.FirstOrDefault();
+                return LoadedEnvironments.FirstOrDefault();
             }
             set
             {
+                throw new NotImplementedException("PrimaryEnvironment");
                 if (Environments.Contains(value))
                 {
-                    _environments = new List<IEnvironment>() { value }.Then(_environments).Distinct().ToList();
+                    //LoadedEnvironments = new List<IEnvironment>() { value }.Then(LoadedEnvironments).Distinct().ToList();
                 }
                 else
                 {

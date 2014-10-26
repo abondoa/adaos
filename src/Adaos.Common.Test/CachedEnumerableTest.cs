@@ -20,12 +20,12 @@ namespace Adaos.Shell.Execution.Test
             {
                 temp.ToString();
             }
-            Assert.AreEqual(_cachedEnumerablCounter, (1));
+            Assert.AreEqual(_cachedEnumerablCounter, 1);
             foreach (var temp in res)
             {
                 temp.ToString();
             }
-            Assert.AreEqual(_cachedEnumerablCounter, (1));
+            Assert.AreEqual(_cachedEnumerablCounter, 1);
         }
 
         int _cachedEnumerablCounter = 0;

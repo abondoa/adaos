@@ -16,30 +16,9 @@ namespace Adaos.Shell.Interface
         bool AllowUnbinding { get; }
         IEnumerable<IEnvironmentUniqueIdentifier> Dependencies { get; }
         IEnumerable<IEnvironment> ChildEnvironments { get; }
+        IEnvironment ChildEnvironment(string childEnvironmentName);
         void AddEnvironment(IEnvironment environment);
         void RemoveEnvironment(IEnvironment environment);
-    }
-
-    public static class EnvironmentExtender
-    { 
-        public static IEnumerable<IEnvironment> DecendentEnvironments(this IEnvironment self)
-        {
-            foreach (var child in self.ChildEnvironments)
-            {
-                foreach (var subEnv in child.FamilyEnvironments())
-                {
-                    yield return subEnv;
-                }
-            }
-        }
-
-        public static IEnumerable<IEnvironment> FamilyEnvironments(this IEnvironment self)
-        {
-            yield return self;
-            foreach (var subEnv in self.DecendentEnvironments())
-            {
-                yield return subEnv;
-            }
-        }
+        IEnvironmentContext ToContext();
     }
 }

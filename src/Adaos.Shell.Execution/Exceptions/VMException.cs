@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Adaos.Shell.Interface.Exceptions;
 
-namespace Adaos.Shell.SyntaxAnalysis.Exceptions
+namespace Adaos.Shell.Execution.Exceptions
 {
     public class VMException : AdaosException
     {

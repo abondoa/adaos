@@ -97,15 +97,12 @@ namespace Adaos.Shell.Library.Standard
             Action<IEnvironment> envWriter = null;
             envWriter = (env) =>
             {
-                result.Add(new DummyArgument(env.Name));
+                string name = env.ToContext().QualifiedName(_vm.Parser.ScannerTable.EnvironmentSeparator);
+                result.Add(new DummyArgument(name));
 
                 if (verbose)
                 {
-                    _output.WriteLine(env.Name);
-                }
-                foreach (var sub in env.ChildEnvironments)
-                {
-                    envWriter(sub);
+                    _output.WriteLine(name);
                 }
             };
             foreach (var env in _vm.Environments)

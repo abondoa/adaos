@@ -54,6 +54,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EnvironmentContainer.cs" />
+    <Compile Include="Environments\RootEnvironment.cs" />
     <Compile Include="Exceptions\UndefinedException.cs" />
     <Compile Include="Exceptions\VMException.cs" />
     <Compile Include="help.Designer.cs">

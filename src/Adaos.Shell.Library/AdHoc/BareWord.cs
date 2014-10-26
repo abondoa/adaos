@@ -102,5 +102,16 @@ namespace Adaos.Shell.Library.AdHoc
         {
             get { throw new NotImplementedException(); }
         }
+
+
+        public IEnvironment ChildEnvironment(string childEnvironmentName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnvironmentContext ToContext()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

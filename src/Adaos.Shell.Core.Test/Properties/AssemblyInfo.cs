@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Adaos.Shell.Core")]
+[assembly: AssemblyTitle("Adaos.Shell.Core.Test")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Adaos")]
-[assembly: AssemblyProduct("Adaos.Shell.Core")]
-[assembly: AssemblyCopyright("Copyright ©  2012")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("Adaos.Shell.Core.Test")]
+[assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -19,10 +19,8 @@ using System.Runtime.InteropServices;
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
 
-[assembly: InternalsVisibleTo("Adaos.Shell.Core.Test")]
-
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("47ce755a-0a6d-43d1-be47-4981df6f8fb1")]
+[assembly: Guid("8b2c1cc4-42f6-4474-b6ad-3cbaf7355154")]
 
 // Version information for an assembly consists of the following four values:
 //
