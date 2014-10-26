@@ -2,26 +2,23 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{09C9F123-5A32-4B8D-A440-CF73CF5D0BB7}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{4EEFA2B4-D336-4FC0-B63A-52DE7D67CF9A}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Adaos.Shell.Example</RootNamespace>
-    <AssemblyName>Adaos.Shell.Example</AssemblyName>
+    <RootNamespace>Adaos.Shell.Terminal</RootNamespace>
+    <AssemblyName>Adaos.Shell.Terminal</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
-    <StartupObject>Adaos.Shell.Machine.Program</StartupObject>
+    <TargetFrameworkProfile />
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <PlatformTarget>x86</PlatformTarget>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -31,8 +28,7 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <PlatformTarget>x86</PlatformTarget>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -42,9 +38,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Rhino.Mocks">
-      <HintPath>..\packages\RhinoMocks.3.6.1\lib\net\Rhino.Mocks.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -54,34 +47,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="ConsoleTerminal.cs" />
+    <Compile Include="LoopBreakerException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Adaos.Common\Adaos.Common.csproj">
-      <Project>{594a1907-226d-4205-bd55-cd56ede35414}</Project>
-      <Name>Adaos.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Adaos.Shell.Core\Adaos.Shell.Core.csproj">
-      <Project>{EF0146E7-8EC0-4B44-8B83-87CEEAA5A2FB}</Project>
-      <Name>Adaos.Shell.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Adaos.Shell.Executer\Adaos.Shell.Execution.csproj">
-      <Project>{9C0DD7D3-1766-4F63-9849-98CEFCDF5DF6}</Project>
-      <Name>Adaos.Shell.Execution</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Adaos.Shell.Interface\Adaos.Shell.Interface.csproj">
-      <Project>{36761409-F8BB-4E79-8F7B-19AE64DA255A}</Project>
-      <Name>Adaos.Shell.Interface</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Adaos.Shell\Adaos.Shell.Terminal.csproj">
-      <Project>{4EEFA2B4-D336-4FC0-B63A-52DE7D67CF9A}</Project>
-      <Name>Adaos.Shell.Terminal</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="packages.config" />
+    <Compile Include="ConsoleReader.cs" />
+    <Compile Include="Terminal.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -91,4 +61,14 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <ProjectReference Include="..\Adaos.Shell.Executer\Adaos.Shell.Execution.csproj">
+      <Project>{9C0DD7D3-1766-4F63-9849-98CEFCDF5DF6}</Project>
+      <Name>Adaos.Shell.Execution</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Adaos.Shell.Interface\Adaos.Shell.Interface.csproj">
+      <Project>{36761409-F8BB-4E79-8F7B-19AE64DA255A}</Project>
+      <Name>Adaos.Shell.Interface</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

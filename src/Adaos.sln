@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adaos.Shell.Core", "Adaos.Shell.Core\Adaos.Shell.Core.csproj", "{EF0146E7-8EC0-4B44-8B83-87CEEAA5A2FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adaos.Shell.Executer", "Adaos.Shell.Executer\Adaos.Shell.Executer.csproj", "{9C0DD7D3-1766-4F63-9849-98CEFCDF5DF6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adaos.Shell.Execution", "Adaos.Shell.Execution\Adaos.Shell.Execution.csproj", "{9C0DD7D3-1766-4F63-9849-98CEFCDF5DF6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adaos.Shell.Interface", "Adaos.Shell.Interface\Adaos.Shell.Interface.csproj", "{36761409-F8BB-4E79-8F7B-19AE64DA255A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adaos.Shell.SyntaxAnalysis", "Adaos.Shell.SyntaxAnalysis\Adaos.Shell.SyntaxAnalysis.csproj", "{303E6284-A7DA-4E1C-8FF8-3E0B59DE6CFB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adaos.Shell.Machine", "Adaos.Shell.Machine\Adaos.Shell.Machine.csproj", "{09C9F123-5A32-4B8D-A440-CF73CF5D0BB7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adaos.Shell.Example", "Adaos.Shell.Example\Adaos.Shell.Example.csproj", "{09C9F123-5A32-4B8D-A440-CF73CF5D0BB7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adaos.Shell.ModuleA", "Adaos.Shell.ModuleA\Adaos.Shell.ModuleA.csproj", "{8C504FFA-FEC7-4403-B253-0773659744D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adaos.Shell", "Adaos.Shell\Adaos.Shell.csproj", "{4EEFA2B4-D336-4FC0-B63A-52DE7D67CF9A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adaos.Shell.Terminal", "Adaos.Shell.Terminal\Adaos.Shell.Terminal.csproj", "{4EEFA2B4-D336-4FC0-B63A-52DE7D67CF9A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adaos.Common", "Adaos.Common\Adaos.Common.csproj", "{594A1907-226D-4205-BD55-CD56EDE35414}"
 EndProject

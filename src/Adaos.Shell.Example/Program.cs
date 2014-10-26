@@ -57,12 +57,4 @@ namespace Adaos.Shell.Machine
             shell.Start();
         }
     }
-
-    class DummyTextWriter : TextWriter
-    {
-        public override Encoding Encoding
-        {
-            get { throw new NotImplementedException(); }
-        }
-    }
 }
