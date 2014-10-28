@@ -11,6 +11,8 @@
     <AssemblyName>Adaos.Shell.ModuleHandling</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <ProductVersion>12.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -44,7 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Adaos.Shell.Interface\Adaos.Shell.Interface.csproj">
-      <Project>{36761409-f8bb-4e79-8f7b-19ae64da255a}</Project>
+      <Project>{36761409-F8BB-4E79-8F7B-19AE64DA255A}</Project>
       <Name>Adaos.Shell.Interface</Name>
     </ProjectReference>
   </ItemGroup>

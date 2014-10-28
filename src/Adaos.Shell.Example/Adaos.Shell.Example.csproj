@@ -30,16 +30,17 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <Externalconsole>true</Externalconsole>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <Externalconsole>true</Externalconsole>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Rhino.Mocks">
@@ -59,14 +60,14 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Adaos.Common\Adaos.Common.csproj">
-      <Project>{594a1907-226d-4205-bd55-cd56ede35414}</Project>
+      <Project>{594A1907-226D-4205-BD55-CD56EDE35414}</Project>
       <Name>Adaos.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\Adaos.Shell.Interface\Adaos.Shell.Interface.csproj">
       <Project>{36761409-F8BB-4E79-8F7B-19AE64DA255A}</Project>
       <Name>Adaos.Shell.Interface</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Adaos.Shell\Adaos.Shell.Terminal.csproj">
+    <ProjectReference Include="..\Adaos.Shell.Terminal\Adaos.Shell.Terminal.csproj">
       <Project>{4EEFA2B4-D336-4FC0-B63A-52DE7D67CF9A}</Project>
       <Name>Adaos.Shell.Terminal</Name>
     </ProjectReference>

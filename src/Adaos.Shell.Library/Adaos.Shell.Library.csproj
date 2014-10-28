@@ -11,6 +11,8 @@
     <AssemblyName>Adaos.Shell.Library</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <ProductVersion>12.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -56,15 +58,15 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Adaos.Common\Adaos.Common.csproj">
-      <Project>{594a1907-226d-4205-bd55-cd56ede35414}</Project>
+      <Project>{594A1907-226D-4205-BD55-CD56EDE35414}</Project>
       <Name>Adaos.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\Adaos.Shell.Core\Adaos.Shell.Core.csproj">
-      <Project>{ef0146e7-8ec0-4b44-8b83-87ceeaa5a2fb}</Project>
+      <Project>{EF0146E7-8EC0-4B44-8B83-87CEEAA5A2FB}</Project>
       <Name>Adaos.Shell.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Adaos.Shell.Interface\Adaos.Shell.Interface.csproj">
-      <Project>{36761409-f8bb-4e79-8f7b-19ae64da255a}</Project>
+      <Project>{36761409-F8BB-4E79-8F7B-19AE64DA255A}</Project>
       <Name>Adaos.Shell.Interface</Name>
     </ProjectReference>
   </ItemGroup>
