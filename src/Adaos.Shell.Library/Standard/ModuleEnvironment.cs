@@ -22,13 +22,6 @@ namespace Adaos.Shell.Library.Standard
         private string _stdPath;
         private EnvironmentEnvironment _envEnv;
 
-        private readonly List<string[]> CommonFlagsWithAlias = new List<string[]>
-        { 
-            new string[]{"-silent","-si"},
-            new string[]{"-verbose","-v"},
-            new string[]{"-withpath","-p"}
-        };
-
         public override IEnumerable<IEnvironmentUniqueIdentifier> Dependencies { get { yield return _envEnv.Identifier; } }
 
         public ModuleEnvironment(StreamWriter output, EnvironmentEnvironment envEnv, IVirtualMachine vm)

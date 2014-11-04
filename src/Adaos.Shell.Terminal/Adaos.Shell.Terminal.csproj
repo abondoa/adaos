@@ -62,13 +62,13 @@
   </Target>
   -->
   <ItemGroup>
-    <ProjectReference Include="..\Adaos.Shell.Execution\Adaos.Shell.Execution.csproj">
-      <Project>{9C0DD7D3-1766-4F63-9849-98CEFCDF5DF6}</Project>
-      <Name>Adaos.Shell.Execution</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Adaos.Shell.Interface\Adaos.Shell.Interface.csproj">
       <Project>{36761409-F8BB-4E79-8F7B-19AE64DA255A}</Project>
       <Name>Adaos.Shell.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Adaos.Shell.Execution\Adaos.Shell.Execution.csproj">
+      <Project>{9C0DD7D3-1766-4F63-9849-98CEFCDF5DF6}</Project>
+      <Name>Adaos.Shell.Execution</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>
