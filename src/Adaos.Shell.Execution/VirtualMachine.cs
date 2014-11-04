@@ -48,10 +48,11 @@ namespace Adaos.Shell.Execution
             _loadedEnvironments = new EnvironmentContainer();
             _unloadedEnvironments = new EnvironmentContainer();
             _rootEnvironment = new Environments.RootEnvironment();
-            _rootEnvironment.AddEnvironments(environments);
             _rootEnvironment.AddEnvironments(
-                new Environments.SystemEnvironment(),
-                new StandardEnvironment(this));
+                (new Environments.SystemEnvironment()).ToEnum<IEnvironment>().
+                Then(new StandardEnvironment(this)).
+                Then(environments).ToArray());
+
             foreach(var env in _rootEnvironment.ChildEnvironments.Select(x => x.FamilyEnvironments()).Flatten())
             {
                 _loadedEnvironments.Add(env.EnvironmentNames.ToArray(), env);

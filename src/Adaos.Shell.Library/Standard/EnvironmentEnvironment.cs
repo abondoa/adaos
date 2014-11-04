@@ -32,15 +32,15 @@ namespace Adaos.Shell.Library.Standard
             _output = output;
             _unloadedEnvironments = new List<IEnvironment>();
             _vm = vm;
-            Bind(AddEnvironment, "loadenvironment", "lenv");
-            Bind(RemoveEnvironment, "unloadenvironment", "uenv");
+            Bind(LoadEnvironment, "loadenvironment", "lenv");
+            Bind(UnloadEnvironment, "unloadenvironment", "uenv");
             Bind(Environments, "environments", "envs");
             Bind(PromoteEnvironments, "promoteenvironments", "penv");
             Bind(DependenciesCommand, "dependencies", "deps");
-            Bind(args => RemoveEnvironment(args).Then(AddEnvironment(args)), "demoteenvironments", "denv");
+            Bind(args => UnloadEnvironment(args).Then(LoadEnvironment(args)), "demoteenvironments", "denv");
         }
 
-        private IEnumerable<IArgument> AddEnvironment(IEnumerable<IArgument> args)
+        private IEnumerable<IArgument> LoadEnvironment(IEnumerable<IArgument> args)
         {
             if (_vm == null)
             {
@@ -59,7 +59,7 @@ namespace Adaos.Shell.Library.Standard
             yield break;
         }
 
-        private IEnumerable<IArgument> RemoveEnvironment(IEnumerable<IArgument> args)
+        private IEnumerable<IArgument> UnloadEnvironment(IEnumerable<IArgument> args)
         {
             if (_vm == null)
             {

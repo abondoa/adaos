@@ -9,7 +9,7 @@ namespace Adaos.Shell.Execution.Environments
 {
     class RootEnvironment : IEnvironmentContext
     {
-        private IList<IEnvironment> _childEnvs;
+        private IList< IEnvironment> _childEnvs;
 
         public RootEnvironment()
         {

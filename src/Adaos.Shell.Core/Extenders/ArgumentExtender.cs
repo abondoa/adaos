@@ -21,12 +21,11 @@ namespace Adaos.Shell.Core.Extenders
 
         public static bool VerifyArgumentMaxCount(this IEnumerable<IArgument> args, int max, Action<string> errorHandler = null)
         {
-            var count = args.Count();
-            if (count > max)
+            if (args.Skip(max).FirstOrDefault() != null)
             {
                 if (errorHandler != null)
                 {
-                    errorHandler("Too many arguments. " + count + " received, at most" + max + " is allowed.");
+                    errorHandler("Too many arguments. " + args.Count() + " received, at most" + max + " is allowed.");
                 }
                 return false;
             }
@@ -35,13 +34,12 @@ namespace Adaos.Shell.Core.Extenders
 
         public static bool VerifyArgumentMinCount(this IEnumerable<IArgument> args, int min, Action<string> errorHandler = null)
         {
-            var count = min-1;// args.Count();
             if (min == 0) return true;
             if (args.Skip(min-1).FirstOrDefault() == null /*count < min*/)
             {
                 if (errorHandler != null)
                 {
-                    errorHandler("Too few arguments. " + count + " received, at least " + min + " is required.");
+                    errorHandler("Too few arguments. " + args.Count() + " received, at least " + min + " is required.");
                 }
                 return false;
             }
