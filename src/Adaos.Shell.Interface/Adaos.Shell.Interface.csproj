@@ -56,7 +56,6 @@
     <Compile Include="IEnvironment.cs" />
     <Compile Include="ErrorHandler.cs" />
     <Compile Include="IEnvironmentContext.cs" />
-    <Compile Include="IEnvironmentUniqueIdentifier.cs" />
     <Compile Include="IModuleManager.cs" />
     <Compile Include="IProgramSequence.cs" />
     <Compile Include="IModule.cs" />

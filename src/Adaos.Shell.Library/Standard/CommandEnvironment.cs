@@ -103,7 +103,7 @@ namespace Adaos.Shell.Library.Standard
                 throw new SemanticException(-1, str.ToString());
             }
             var res = _vm.Resolver;
-            var listOfDeps = new List<IEnvironmentUniqueIdentifier>();
+            var listOfDeps = new List<Type>();
             foreach (var cmd in commandSeq.Commands)
             {
                 try
@@ -111,7 +111,7 @@ namespace Adaos.Shell.Library.Standard
                     var env = res.GetEnvironmentOf(cmd, _vm.Environments);
                     if (env != null)
                     {
-                        addDependency(env.Identifier,listOfDeps);
+                        addDependency(env.GetType(),listOfDeps);
                     }
                 }
                 catch (SemanticException e)
@@ -152,7 +152,7 @@ namespace Adaos.Shell.Library.Standard
             {
                 foreach (var arg in args)
                 {
-                    custom.UnBind(arg.Value);
+                    custom.Unbind(arg.Value);
                 }
             }
             else
@@ -195,7 +195,7 @@ namespace Adaos.Shell.Library.Standard
             }
         }
 
-        private void addDependency(IEnvironmentUniqueIdentifier ident, IList<IEnvironmentUniqueIdentifier> dependencies)
+        private void addDependency(Type ident, IList<Type> dependencies)
         {
             if (!dependencies.Contains(ident))
             {

@@ -23,7 +23,6 @@ namespace Adaos.Shell.Core
             _nameToCommandDictionary = new Dictionary<string, Command>();
             _allowUnbinding = allowUnbinding;
             _childEnvs = new Dictionary<string,IEnvironment>();
-            Identifier = new EnvironmentUniqueIdentifier(Name);
         }
 
         abstract public string Name
@@ -204,7 +203,7 @@ namespace Adaos.Shell.Core
             get { return _nameToCommandDictionary.Select(x => x.Key).OrderBy(x => x); }
         }
 
-        public virtual void UnBind(string commandName)
+        public virtual void Unbind(string commandName)
         {
             if (AllowUnbinding)
             {
@@ -220,18 +219,6 @@ namespace Adaos.Shell.Core
         {
             get { return _allowUnbinding; }
         }
-
-        public IEnvironmentUniqueIdentifier Identifier
-        {
-            get;
-            private set;
-        }
-
-        public virtual IEnumerable<IEnvironmentUniqueIdentifier> Dependencies
-        {
-            get { yield break; }
-        }
-
 
         public IEnumerable<IEnvironment> ChildEnvironments
         {
@@ -301,6 +288,17 @@ namespace Adaos.Shell.Core
         public IEnvironmentContext ToContext()
         {
             return new Environments.EnvironmentContext(this, null);
+        }
+
+
+        public string QualifiedName(string separator)
+        {
+            return Name;
+        }
+
+        public virtual IEnumerable<Type> Dependencies
+        {
+            get { yield break; }
         }
     }
 }

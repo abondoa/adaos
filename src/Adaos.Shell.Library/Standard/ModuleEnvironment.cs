@@ -22,7 +22,7 @@ namespace Adaos.Shell.Library.Standard
         private string _stdPath;
         private EnvironmentEnvironment _envEnv;
 
-        public override IEnumerable<IEnvironmentUniqueIdentifier> Dependencies { get { yield return _envEnv.Identifier; } }
+        public override IEnumerable<Type> Dependencies { get { yield return _envEnv.GetType(); } }
 
         public ModuleEnvironment(StreamWriter output, EnvironmentEnvironment envEnv, IVirtualMachine vm)
         {

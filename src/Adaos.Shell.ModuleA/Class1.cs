@@ -35,14 +35,9 @@ namespace ModuleA
             get { yield return "test"; yield return "counter"; }
         }
 
-        public System.Collections.Generic.IEnumerable<IEnvironmentUniqueIdentifier> Dependencies
+        public System.Collections.Generic.IEnumerable<Type> Dependencies
         {
             get { yield break; }
-        }
-
-        public IEnvironmentUniqueIdentifier Identifier
-        {
-            get { return new EnvironmentUniqueIdentifier(Name); }
         }
 
         public bool IsRedoable(Command command)
@@ -80,7 +75,7 @@ namespace ModuleA
             }
         }
 
-        public void UnBind(string commandName)
+        public void Unbind(string commandName)
         {
             return;
         }
@@ -100,7 +95,6 @@ namespace ModuleA
             return;
         }
 
-
         public IEnvironment ChildEnvironment(string childEnvironmentName)
         {
             throw new NotImplementedException();
@@ -109,6 +103,11 @@ namespace ModuleA
         public IEnvironmentContext ToContext()
         {
             throw new NotImplementedException();
+        }
+
+        public string QualifiedName(string separator)
+        {
+            return Name;
         }
     }
 
@@ -143,20 +142,6 @@ namespace ModuleA
         public bool HasName
         {
             get { return false; }
-        }
-    }
-
-    public class EnvironmentUniqueIdentifier : IEnvironmentUniqueIdentifier
-    {
-        public EnvironmentUniqueIdentifier(string ident) 
-        {
-            Identifier = ident;
-        }
-
-        public string Identifier
-        {
-            get;
-            private set;
         }
     }
 }

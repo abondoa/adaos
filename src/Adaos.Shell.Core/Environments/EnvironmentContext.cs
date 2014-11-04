@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Adaos.Shell.Interface;
 
 namespace Adaos.Shell.Core.Environments
@@ -19,15 +20,10 @@ namespace Adaos.Shell.Core.Environments
 
         public string Name
         {
-            get 
+            get
             {
                 return Inner.Name;
             }
-        }
-
-        public IEnvironmentUniqueIdentifier Identifier
-        {
-            get { return Inner.Identifier; }
         }
 
         public void Bind(Command command, params string[] commandNames)
@@ -45,9 +41,9 @@ namespace Adaos.Shell.Core.Environments
             get { return Inner.Commands; }
         }
 
-        public void UnBind(string commandName)
+        public void Unbind(string commandName)
         {
-            Inner.UnBind(commandName);
+            Inner.Unbind(commandName);
         }
 
         public bool AllowUnbinding
@@ -55,7 +51,7 @@ namespace Adaos.Shell.Core.Environments
             get { return Inner.AllowUnbinding; }
         }
 
-        public IEnumerable<IEnvironmentUniqueIdentifier> Dependencies
+        public IEnumerable<Type> Dependencies
         {
             get { return Inner.Dependencies; }
         }
@@ -81,16 +77,16 @@ namespace Adaos.Shell.Core.Environments
             Inner.RemoveEnvironment(environment);
         }
 
-        public IEnvironment Inner 
-        { 
-            get; 
-            private set; 
+        public IEnvironment Inner
+        {
+            get;
+            private set;
         }
 
-        public IEnvironmentContext Parent 
+        public IEnvironmentContext Parent
         {
-            get; 
-            private set; 
+            get;
+            private set;
         }
 
         public IEnvironment ChildEnvironment(string childEnvironmentName)
@@ -104,7 +100,7 @@ namespace Adaos.Shell.Core.Environments
             return this;
         }
 
-        string IEnvironmentContext.QualifiedName(string separator)
+        public string QualifiedName(string separator)
         {
             if (Parent != null)
             {
@@ -115,7 +111,7 @@ namespace Adaos.Shell.Core.Environments
 
         public IEnumerable<string> EnvironmentNames
         {
-            get 
+            get
             {
                 if (Parent != null)
                 {

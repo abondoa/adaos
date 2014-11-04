@@ -21,11 +21,6 @@ namespace Adaos.Shell.Execution.Environments
             get { throw new InvalidOperationException("Never read the Name of the root environment"); }
         }
 
-        public IEnvironmentUniqueIdentifier Identifier
-        {
-            get { throw new InvalidOperationException("Never read the Identifier of the root environment"); }
-        }
-
         public void Bind(Command command, params string[] commandNames)
         {
             throw new InvalidOperationException("Unable to bind commands to the root environment");
@@ -41,7 +36,7 @@ namespace Adaos.Shell.Execution.Environments
             get { throw new InvalidOperationException("Unable to get commands from the root environment"); }
         }
 
-        public void UnBind(string commandName)
+        public void Unbind(string commandName)
         {
             throw new InvalidOperationException("Unable to unbind commands to the root environment");
         }
@@ -51,9 +46,9 @@ namespace Adaos.Shell.Execution.Environments
             get { return false; }
         }
 
-        public IEnumerable<IEnvironmentUniqueIdentifier> Dependencies
+        public IEnumerable<Type> Dependencies
         {
-            get { throw new InvalidOperationException("Never read the Dependencies of the root environment"); }
+            get { yield return this.GetType(); }
         }
 
         public IEnumerable<IEnvironment> ChildEnvironments
@@ -93,7 +88,6 @@ namespace Adaos.Shell.Execution.Environments
         {
             throw new InvalidOperationException("Never get the QualifiedName of the root environment");
         }
-
 
         public IEnumerable<string> EnvironmentNames
         {
