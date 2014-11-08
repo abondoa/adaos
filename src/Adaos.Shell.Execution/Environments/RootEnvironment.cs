@@ -93,5 +93,16 @@ namespace Adaos.Shell.Execution.Environments
         {
             get { throw new InvalidOperationException("Never read the EnvironmentNames of the root environment"); }
         }
+
+		public bool IsEnabled { 
+			get 
+			{ 
+				throw new InvalidOperationException("Never read the IsEnabled of the root environment"); 
+			}
+			set
+			{
+				throw new InvalidOperationException("Never set the IsEnabled of the root environment"); 
+			}
+		}
     }
 }

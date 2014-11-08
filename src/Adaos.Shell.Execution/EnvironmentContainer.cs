@@ -7,99 +7,80 @@ using Adaos.Shell.Interface;
 
 namespace Adaos.Shell.Execution
 {
-    class EnvironmentContainer : IDictionary<string[],IEnvironmentContext>
+    class EnvironmentContainer : IList<IEnvironmentContext>
     {
-        IDictionary<string[], IEnvironmentContext> _innerDictionary;
+        IList< IEnvironmentContext> _innerList;
         public EnvironmentContainer()
         {
-            _innerDictionary = new Dictionary<string[], IEnvironmentContext>();
+			_innerList = new List<IEnvironmentContext>();
+        }
+		
+		public EnvironmentContainer(IEnumerable<IEnvironmentContext> envContexts)
+		{
+			_innerList = new List<IEnvironmentContext>(envContexts);
+		}
+
+        public void Add(IEnvironmentContext value)
+        {
+            _innerList.Add(value);
         }
 
-        public void Add(string[] key, IEnvironmentContext value)
+        public bool Remove(IEnvironmentContext key)
         {
-            _innerDictionary.Add(key, value);
-        }
-
-        public bool ContainsKey(string[] key)
-        {
-            return _innerDictionary.ContainsKey(key);
-        }
-
-        public ICollection<string[]> Keys
-        {
-            get { return _innerDictionary.Keys; }
-        }
-
-        public bool Remove(string[] key)
-        {
-            return _innerDictionary.Remove(key);
-        }
-
-        public bool TryGetValue(string[] key, out IEnvironmentContext value)
-        {
-            return _innerDictionary.TryGetValue(key, out value);
-        }
-
-        public ICollection<IEnvironmentContext> Values
-        {
-            get { return _innerDictionary.Values; }
-        }
-
-        public IEnvironmentContext this[params string[] key]
-        {
-            get
-            {
-                return _innerDictionary[key];
-            }
-            set
-            {
-                _innerDictionary[key] = value;
-            }
-        }
-
-        public void Add(KeyValuePair<string[], IEnvironmentContext> item)
-        {
-            _innerDictionary.Add(item);
+            return _innerList.Remove(key);
         }
 
         public void Clear()
         {
-            _innerDictionary.Clear();
+            _innerList.Clear();
         }
 
-        public bool Contains(KeyValuePair<string[], IEnvironmentContext> item)
+        public bool Contains(IEnvironmentContext item)
         {
-            return _innerDictionary.Contains(item);
+            return _innerList.Contains(item);
         }
 
-        public void CopyTo(KeyValuePair<string[], IEnvironmentContext>[] array, int arrayIndex)
+        public void CopyTo(IEnvironmentContext[] array, int arrayIndex)
         {
-            _innerDictionary.CopyTo(array, arrayIndex);
+            _innerList.CopyTo(array, arrayIndex);
         }
 
         public int Count
         {
-            get { return _innerDictionary.Count; }
+            get { return _innerList.Count; }
         }
 
-        public bool IsReadOnly
-        {
-            get { return _innerDictionary.IsReadOnly; }
-        }
+		public IEnvironmentContext this[int index]
+		{
+			get {return _innerList [index];}
+			set {_innerList [index] = value;}
+		}
 
-        public bool Remove(KeyValuePair<string[], IEnvironmentContext> item)
-        {
-            return _innerDictionary.Remove(item);
-        }
+		public bool IsReadOnly {get {return _innerList.IsReadOnly;}}
 
-        public IEnumerator<KeyValuePair<string[], IEnvironmentContext>> GetEnumerator()
+		public void RemoveAt(int index)
+		{
+			_innerList.RemoveAt (index);
+		}
+
+		public int IndexOf(IEnvironmentContext item)
+		{
+			return _innerList.IndexOf (item);
+		}
+
+		public void Insert(int index, IEnvironmentContext item)
+		{
+			_innerList.Insert (index, item);
+		}
+
+        public IEnumerator<IEnvironmentContext> GetEnumerator()
         {
-            return _innerDictionary.GetEnumerator();
+            return _innerList.GetEnumerator();
         }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            return (_innerDictionary as System.Collections.IEnumerable).GetEnumerator();
+            return (_innerList as System.Collections.IEnumerable).GetEnumerator();
         }
     }
 }

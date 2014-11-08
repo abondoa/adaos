@@ -6,6 +6,8 @@ namespace Adaos.Shell.Core.Environments
 {
     internal class EnvironmentContext : IEnvironmentContext
     {
+		bool _enabled = true;
+
         /// <summary>
         /// 
         /// </summary>
@@ -56,7 +58,7 @@ namespace Adaos.Shell.Core.Environments
             get { return Inner.Dependencies; }
         }
 
-        public IEnumerable<IEnvironment> ChildEnvironments
+		public IEnumerable<IEnvironment> ChildEnvironments
         {
             get
             {
@@ -123,5 +125,22 @@ namespace Adaos.Shell.Core.Environments
                 yield return Name;
             }
         }
+
+
+		public bool IsEnabled
+		{ 
+			get
+			{
+				return _enabled;
+			}
+			set
+			{
+				_enabled = value;
+				foreach(var child in ChildEnvironments)
+				{
+					child.ToContext ().IsEnabled = value;
+				}
+			} 
+		}
     }
 }

@@ -48,7 +48,8 @@ namespace Adaos.Shell.Library.Standard
                 _loadedModules.Add(new List<string> { fileName, module.Name }, module);
             }
 
-            _envEnv.AddAdditionalEnvironments(envs);
+			foreach(var env in envs)
+            	_vm.LoadEnvironment(env);
 
             return envs.Select(x => new DummyArgument(x.Name));
         }

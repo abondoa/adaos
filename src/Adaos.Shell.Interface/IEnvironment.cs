@@ -55,22 +55,6 @@ namespace Adaos.Shell.Interface
         IEnumerable<Type> Dependencies { get; }
 
         /// <summary>
-        /// Enumerates the shild environments of this environment
-        /// </summary>
-        IEnumerable<IEnvironment> ChildEnvironments { get; }
-
-        /// <summary>
-        /// Finds a single child envionment based on its short-name
-        /// </summary>
-        /// <param name="childEnvironmentName"></param>
-        /// <returns></returns>
-        IEnvironment ChildEnvironment(string childEnvironmentName);
-
-
-        void AddEnvironment(IEnvironment environment);
-        void RemoveEnvironment(IEnvironment environment);
-
-        /// <summary>
         /// Converts the environment into an IEnvironmentContext or returns self if it is a an IEnvironmentContext
         /// </summary>
         /// <returns></returns>

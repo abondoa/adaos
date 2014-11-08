@@ -17,6 +17,7 @@ namespace Adaos.Shell.Core
         private bool _allowUnbinding;
         private IDictionary<string,IEnvironment> _childEnvs;
 
+		bool _enabled;
 
         public BaseEnvironment(bool allowUnbinding = false)
         {

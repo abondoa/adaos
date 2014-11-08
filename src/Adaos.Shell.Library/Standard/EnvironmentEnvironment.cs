@@ -14,7 +14,6 @@ namespace Adaos.Shell.Library.Standard
     class EnvironmentEnvironment : BaseEnvironment
     {
         virtual protected StreamWriter _output {get; private set;}
-        virtual protected List<IEnvironment> _unloadedEnvironments { get; private set; }
         virtual protected IVirtualMachine _vm { get; private set; }
         private readonly List<string[]> CommonFlagsWithAlias = new List<string[]>
         { 
@@ -30,17 +29,16 @@ namespace Adaos.Shell.Library.Standard
         public EnvironmentEnvironment(StreamWriter output, IVirtualMachine vm = null)
         {
             _output = output;
-            _unloadedEnvironments = new List<IEnvironment>();
             _vm = vm;
-            Bind(LoadEnvironment, "loadenvironment", "lenv");
-            Bind(UnloadEnvironment, "unloadenvironment", "uenv");
+            Bind(EnableEnvironment, "enableenvironment", "eenv");
+            Bind(UnloadEnvironment, "disableenvironment", "denv");
             Bind(Environments, "environments", "envs");
-            Bind(PromoteEnvironments, "promoteenvironments", "penv");
+            Bind(PromoteEnvironments, "promoteenvironments", "proenv");
             Bind(DependenciesCommand, "dependencies", "deps");
-            Bind(args => UnloadEnvironment(args).Then(LoadEnvironment(args)), "demoteenvironments", "denv");
+            Bind(args => UnloadEnvironment(args).Then(EnableEnvironment(args)), "demoteenvironments", "demenv");
         }
 
-        private IEnumerable<IArgument> LoadEnvironment(IEnumerable<IArgument> args)
+        private IEnumerable<IArgument> EnableEnvironment(IEnumerable<IArgument> args)
         {
             if (_vm == null)
             {
@@ -48,13 +46,13 @@ namespace Adaos.Shell.Library.Standard
             }
             foreach (var arg in args)
             {
-                var toAdd = _unloadedEnvironments.FirstOrDefault(x => x.Name.ToLower().Equals(arg.Value.ToLower()));
+				var toAdd = _vm.UnloadedEnvironments.FirstOrDefault (
+					x => x.QualifiedName (_vm.Parser.ScannerTable.EnvironmentSeparator) == arg.Value);
                 if (toAdd == null)
                 {
-                    throw new SemanticException(arg.Position, "No unloaded environment found called: " + arg.Value);
+                    throw new SemanticException(arg.Position, "No disabled environment found called: " + arg.Value);
                 }
-                _vm.LoadEnvironment(toAdd);
-                _unloadedEnvironments.Remove(toAdd);
+                _vm.EnableEnvironment(toAdd);
             }
             yield break;
         }
@@ -67,20 +65,13 @@ namespace Adaos.Shell.Library.Standard
             }
             foreach (var arg in args)
             {
-                var toRemove = _vm.Environments.Select(x => x.FamilyEnvironments()).Aggregate((x,y) => x.Union(y)).FirstOrDefault(x => x.Name.ToLower().Equals(arg.Value.ToLower()));
-                if (toRemove == null)
-                {
-                    throw new SemanticException(arg.Position, "No loaded environment found called: " + arg.Value);
-                }
-                try
-                {
-                    _vm.UnloadEnvironment(toRemove);
-                    _unloadedEnvironments.Add(toRemove);
-                }
-                catch (ArgumentException e)
-                {
-                    throw new SemanticException(arg.Position, e.Message);
-                }
+				var toDisable = _vm.LoadedEnvironments.FirstOrDefault (
+					x => x.QualifiedName (_vm.Parser.ScannerTable.EnvironmentSeparator) == arg.Value);
+				if (toDisable == null)
+				{
+					throw new SemanticException(arg.Position, "No enabled environment found called: " + arg.Value);
+				}
+				_vm.DisableEnvironment(toDisable);
             }
             yield break;
         } 
@@ -105,14 +96,14 @@ namespace Adaos.Shell.Library.Standard
                     _output.WriteLine(name);
                 }
             };
-            foreach (var env in _vm.Environments)
+            foreach (var env in _vm.LoadedEnvironments)
             {
                 envWriter(env);
             }
-            if (verbose && _unloadedEnvironments.Count > 0)
+            if (verbose && _vm.UnloadedEnvironments.Any ())
             {
                 _output.WriteLine("Additional environments:");
-                foreach (var item in _unloadedEnvironments)
+				foreach (var item in _vm.UnloadedEnvironments)
                 {
                     if (verbose)
                     {
@@ -130,7 +121,7 @@ namespace Adaos.Shell.Library.Standard
             bool verbose = !flags.FirstOrDefault(x => x.Key.Equals("-silent")).Value;
             foreach (var arg in args.Where(x => CommonFlagsWithAlias.FirstOrDefault(y => y.Contains(x.Value)) == null))
             {
-                IEnvironment env = _vm.Environments.FirstOrDefault(x => x.Name.ToLower().Equals(arg.Value.ToLower()));
+                IEnvironment env = _vm.LoadedEnvironments.FirstOrDefault(x => x.Name.ToLower().Equals(arg.Value.ToLower()));
                 if (env == null)
                 {
                     throw new SemanticException(arg.Position, arg.Value + " is not a loaded environment");
@@ -188,10 +179,10 @@ namespace Adaos.Shell.Library.Standard
                 foreach (var arg in args.Reverse())
                 {
                     IArgument result = null;
-                    var toSet = _vm.Environments.FirstOrDefault(x => x.Name.ToLower().Equals(arg.Value.ToLower()));
+                    var toSet = _vm.LoadedEnvironments.FirstOrDefault(x => x.Name.ToLower().Equals(arg.Value.ToLower()));
                     if (toSet == null)
                     {
-                        if (_unloadedEnvironments.FirstOrDefault(x => x.Name.ToLower().Equals(arg.Value.ToLower())) != null)
+                        if (_vm.UnloadedEnvironments.FirstOrDefault(x => x.Name.ToLower().Equals(arg.Value.ToLower())) != null)
                         {
                             throw new SemanticException(arg.Position, "Environment '" + arg.Value + "' is not loaded. Use 'loadenvironment' to load it");
                         }
@@ -221,39 +212,6 @@ namespace Adaos.Shell.Library.Standard
                 }
             }
             yield break;
-        }
-
-        internal void AddAdditionalEnvironments(IEnumerable<IEnvironment> envs)
-        {
-            foreach (var env in envs)
-            {
-                if (_unloadedEnvironments.Exists(x => x.Name == env.Name))
-                {
-                    throw new ArgumentException("Environment with name: '" + env.Name + "' already available.");
-                }
-            }
-
-            _unloadedEnvironments.AddRange(envs);
-        }
-
-        internal void RemoveAdditionalEnvironments(IEnumerable<IEnvironment> envs)
-        {
-            foreach (var env in envs)
-            {
-                if (!_unloadedEnvironments.Exists(x => x.Name == env.Name))
-                {
-                    if (_vm.Environments.Select(x => x.Name).Contains(env.Name))
-                    {
-                        throw new ArgumentException("Environment with name: '" + env.Name + "' loaded in virtual machine. Unload with command: '" + Name + ".unloadenvironment " + env.Name + "'");
-                    }
-                    throw new ArgumentException("Environment with name: '" + env.Name + "' not available.");
-                }
-            }
-
-            foreach (var env in envs)
-            {
-                _unloadedEnvironments.Remove(env);
-            }
         }
     }
 }

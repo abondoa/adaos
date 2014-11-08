@@ -54,6 +54,7 @@
     <Compile Include="Standard\ModuleEnvironment.cs" />
     <Compile Include="Standard\StandardEnvironment.cs" />
     <Compile Include="Standard\SyntaxEnvironment.cs" />
+    <Compile Include="ContextBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Adaos.Common\Adaos.Common.csproj">
