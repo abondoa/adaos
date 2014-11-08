@@ -4,83 +4,70 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Adaos.Shell.Interface;
+using Adaos.Shell.Core.Extenders;
+using Adaos.Common.Extenders;
+using Adaos.Shell.Library.Standard;
+using Adaos.Shell.Execution.Environments;
 
 namespace Adaos.Shell.Execution
 {
-    class EnvironmentContainer : IList<IEnvironmentContext>
+    class EnvironmentContainer : IEnvironmentContainer
     {
         IList< IEnvironmentContext> _innerList;
-        public EnvironmentContainer()
-        {
-			_innerList = new List<IEnvironmentContext>();
-        }
-		
-		public EnvironmentContainer(IEnumerable<IEnvironmentContext> envContexts)
-		{
-			_innerList = new List<IEnvironmentContext>(envContexts);
-		}
+        private IEnvironmentContext _rootEnvironment;
 
-        public void Add(IEnvironmentContext value)
+        public EnvironmentContainer(IEnumerable<IEnvironment> environments)
         {
-            _innerList.Add(value);
+            _rootEnvironment = new Environments.RootEnvironment();
+            _rootEnvironment.AddChildren(
+                (new SystemEnvironment()).ToEnum<IEnvironment>().
+                Then(environments));
+
+            _innerList = new List<IEnvironmentContext>(_rootEnvironment.ChildEnvironments.Select(x => x.FamilyEnvironments()).Flatten());
         }
 
-        public bool Remove(IEnvironmentContext key)
+        public IEnumerable<IEnvironmentContext> LoadedEnvironments
         {
-            return _innerList.Remove(key);
+            get { return _innerList.Where(x => x.IsEnabled); }
         }
 
-        public void Clear()
+        public IEnumerable<IEnvironmentContext> UnloadedEnvironments
         {
-            _innerList.Clear();
+            get { return _innerList.Where(x => !x.IsEnabled); }
         }
 
-        public bool Contains(IEnvironmentContext item)
+        public void LoadEnvironment(IEnvironment environment)
         {
-            return _innerList.Contains(item);
+            _rootEnvironment.AddChild(environment);
+            var contextAdded = _rootEnvironment.ChildEnvironments.FirstOrDefault(x => x.Inner == environment);
+            if (contextAdded == null)
+            {
+                throw new ArgumentException("Trying to remove unknown environment '" + environment + "'");
+            }
+            _innerList.Add(contextAdded);
         }
 
-        public void CopyTo(IEnvironmentContext[] array, int arrayIndex)
+        public void UnloadEnvironment(IEnvironment environment)
         {
-            _innerList.CopyTo(array, arrayIndex);
+            var contextToRemove = _rootEnvironment.ChildEnvironments.FirstOrDefault(x => x.Inner == environment);
+            if(contextToRemove == null)
+            {
+                throw new ArgumentException("Trying to remove unknown environment '"+environment+"'");
+            }
+            _rootEnvironment.RemoveChild(contextToRemove);
+            _innerList.Remove(contextToRemove);
         }
 
-        public int Count
+        public void PromoteEnvironment(IEnvironmentContext context)
         {
-            get { return _innerList.Count; }
+            _innerList.Remove(context);
+            _innerList.Insert(0, context);
         }
 
-		public IEnvironmentContext this[int index]
-		{
-			get {return _innerList [index];}
-			set {_innerList [index] = value;}
-		}
-
-		public bool IsReadOnly {get {return _innerList.IsReadOnly;}}
-
-		public void RemoveAt(int index)
-		{
-			_innerList.RemoveAt (index);
-		}
-
-		public int IndexOf(IEnvironmentContext item)
-		{
-			return _innerList.IndexOf (item);
-		}
-
-		public void Insert(int index, IEnvironmentContext item)
-		{
-			_innerList.Insert (index, item);
-		}
-
-        public IEnumerator<IEnvironmentContext> GetEnumerator()
+        public void DemoteEnvironment(IEnvironmentContext context)
         {
-            return _innerList.GetEnumerator();
-        }
-
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return (_innerList as System.Collections.IEnumerable).GetEnumerator();
+            _innerList.Remove(context);
+            _innerList.Add(context);
         }
     }
 }

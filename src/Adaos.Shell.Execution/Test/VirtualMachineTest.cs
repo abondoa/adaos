@@ -50,7 +50,7 @@ namespace Adaos.Shell.Execution.Test
         {
             vm = new VirtualMachine(systemOut, systemLog);
             Assert.IsNotNull(vm);
-            Assert.AreEqual(10,vm.LoadedEnvironments.Count());
+            Assert.AreEqual(10, vm.EnvironmentContainer.LoadedEnvironments.Count());
         }
 
         [Test]
@@ -58,8 +58,8 @@ namespace Adaos.Shell.Execution.Test
         {
             vm = new VirtualMachine(systemOut, systemLog, math);
             Assert.IsNotNull(vm);
-            Assert.IsNotEmpty(vm.LoadedEnvironments.ToArray());
-            Assert.AreSame(math, vm.LoadedEnvironments.ToArray()[0]);
+            Assert.IsNotEmpty(vm.EnvironmentContainer.LoadedEnvironments.ToArray());
+            Assert.AreSame(math, vm.EnvironmentContainer.LoadedEnvironments.ToArray()[0]);
         }
 
         [Test]
@@ -398,16 +398,16 @@ namespace Adaos.Shell.Execution.Test
         [Test]
         public void TryToAddANewEnvironmentWithTheSameNameAsAnExistingOne()
         {
-            int number = systemMachine.LoadedEnvironments.Count();
+            int number = systemMachine.EnvironmentContainer.LoadedEnvironments.Count();
             var temp = new CustomEnvironment();
             try
             {
-                systemMachine.LoadEnvironment( temp);
+                systemMachine.EnvironmentContainer.LoadEnvironment( temp);
                 Assert.Fail();
             }
             catch (Exception)
             {
-                Assert.AreEqual(number, systemMachine.LoadedEnvironments.Count());
+                Assert.AreEqual(number, systemMachine.EnvironmentContainer.LoadedEnvironments.Count());
             }
         }
 
@@ -416,8 +416,7 @@ namespace Adaos.Shell.Execution.Test
         {
             vm = (systemMachine as VirtualMachine);
             var res = vm.InternExecute("primaryenvironment").ToArray();
-            Assert.AreEqual(vm.LoadedEnvironments.First().Name, res.First().Value);
-            Assert.AreEqual(vm.PrimaryEnvironment.Name, res.First().Value);
+            Assert.AreEqual(vm.EnvironmentContainer.LoadedEnvironments.First().Name, res.First().Value);
         }
 
         [Test]
@@ -426,8 +425,7 @@ namespace Adaos.Shell.Execution.Test
             vm = (systemMachine as VirtualMachine);
             vm.InternExecute("primaryenvironment custom").ToArray();
             var res = vm.InternExecute("primaryenvironment").ToArray();
-            Assert.AreEqual(vm.LoadedEnvironments.First().Name, res.First().Value);
-            Assert.AreEqual(vm.PrimaryEnvironment.Name, res.First().Value);
+            Assert.AreEqual(vm.EnvironmentContainer.LoadedEnvironments.First().Name, res.First().Value);
             Assert.AreEqual("custom", res.First().Value);
         }
 
@@ -436,8 +434,7 @@ namespace Adaos.Shell.Execution.Test
         {
             vm = (systemMachine as VirtualMachine);
             var res = vm.InternExecute("primaryenvironment -verbose").ToArray();
-            Assert.AreEqual(vm.LoadedEnvironments.First().Name, res.First().Value);
-            Assert.AreEqual(vm.PrimaryEnvironment.Name, res.First().Value);
+            Assert.AreEqual(vm.EnvironmentContainer.LoadedEnvironments.First().Name, res.First().Value);
         }
 
         [Test]
@@ -446,8 +443,7 @@ namespace Adaos.Shell.Execution.Test
             vm = (systemMachine as VirtualMachine);
             vm.InternExecute("primaryenvironment custom").ToArray();
             var res = vm.InternExecute("primaryenvironment -v").ToArray();
-            Assert.AreEqual(vm.LoadedEnvironments.First().Name, res.First().Value);
-            Assert.AreEqual(vm.PrimaryEnvironment.Name, res.First().Value);
+            Assert.AreEqual(vm.EnvironmentContainer.LoadedEnvironments.First().Name, res.First().Value);
             Assert.AreEqual("custom", res.First().Value);
         }
 
@@ -457,10 +453,9 @@ namespace Adaos.Shell.Execution.Test
             vm = (systemMachine as VirtualMachine);
             vm.InternExecute("primaryenvironment custom system").ToArray();
             var res = vm.InternExecute("primaryenvironment").ToArray();
-            Assert.AreEqual(vm.LoadedEnvironments.First().Name, res.First().Value);
-            Assert.AreEqual(vm.PrimaryEnvironment.Name, res.First().Value);
+            Assert.AreEqual(vm.EnvironmentContainer.LoadedEnvironments.First().Name, res.First().Value);
             Assert.AreEqual("custom", res.First().Value);
-            Assert.AreEqual("system",vm.LoadedEnvironments.Second().Name);
+            Assert.AreEqual("system", vm.EnvironmentContainer.LoadedEnvironments.Second().Name);
         }
 
         [Test]

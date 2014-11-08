@@ -49,7 +49,7 @@ namespace Adaos.Shell.Library.Standard
             }
 
 			foreach(var env in envs)
-            	_vm.LoadEnvironment(env);
+            	_vm.EnvironmentContainer.LoadEnvironment(env);
 
             return envs.Select(x => new DummyArgument(x.Name));
         }

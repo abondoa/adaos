@@ -10,5 +10,14 @@ namespace Adaos.Common.Extenders
         {
             yield return self;
         }
+
+        public static T Do<T>(this T self, params Action<T>[] actions)
+        {
+            foreach (var action in actions)
+            {
+                action(self);
+            }
+            return self;
+        }
     }
 }

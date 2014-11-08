@@ -103,7 +103,7 @@ namespace Adaos.Shell.Library.AdHoc
             throw new NotImplementedException();
         }
 
-        public IEnvironmentContext ToContext()
+        public IEnvironmentContext AsContext()
         {
             throw new NotImplementedException();
         }

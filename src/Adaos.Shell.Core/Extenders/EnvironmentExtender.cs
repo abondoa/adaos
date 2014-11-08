@@ -8,7 +8,7 @@ namespace Adaos.Shell.Core.Extenders
     {
         public static IEnumerable<IEnvironmentContext> DecendentEnvironments(this IEnvironmentContext self)
         {
-            foreach (var child in self.ChildEnvironments.Select(x => new Environments.EnvironmentContext(x, self)))
+            foreach (var child in self.ChildEnvironments)
             {
                 foreach (var subEnv in child.FamilyEnvironments())
                 {
@@ -26,29 +26,19 @@ namespace Adaos.Shell.Core.Extenders
             }
         }
 
-        public static IEnumerable<IEnvironmentContext> DecendentEnvironments(this IEnvironment self)
-        {
-            return self.ToContext().DecendentEnvironments();
-        }
-
-        public static IEnumerable<IEnvironmentContext> FamilyEnvironments(this IEnvironment self)
-        {
-            return self.ToContext().FamilyEnvironments();
-        }
-
-        public static void AddEnvironments(this IEnvironment self, params IEnvironment[] innerEnvironments)
+        public static void AddChildren(this IEnvironmentContext self, IEnumerable<IEnvironment> innerEnvironments)
         {
             foreach (var env in innerEnvironments)
             {
-                self.AddEnvironment(env);
+                self.AddChild(env);
             }
         }
 
-        public static void RemoveEnvironments(this IEnvironment self, params IEnvironment[] innerEnvironments)
+        public static void RemoveChildren(this IEnvironmentContext self, IEnumerable<IEnvironmentContext> innerEnvironments)
         {
             foreach (var env in innerEnvironments)
             {
-                self.RemoveEnvironment(env);
+                self.RemoveChild(env);
             }
         }
     }

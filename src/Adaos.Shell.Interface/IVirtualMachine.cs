@@ -28,20 +28,13 @@ namespace Adaos.Shell.Interface
         /// <returns></returns>
         string SuggestCommand(string partialCommand);
 
-        IEnumerable<IEnvironment> LoadedEnvironments { get; }
-		IEnumerable<IEnvironment> UnloadedEnvironments { get; }
-        IEnvironment PrimaryEnvironment { get; set; }
-		void EnableEnvironment(IEnvironment environment);
-		void DisableEnvironment(IEnvironment environment);
-        void LoadEnvironment(IEnvironment environment);
-        void UnloadEnvironment(IEnvironment environment);
-
         ErrorHandler HandleError { get; set; }
         IShellParser Parser { get; set; }
         StreamWriter Output { get; set; }
         StreamWriter Log { get; set; }
         IModuleManager ModuleManager { get; set; }
         IResolver Resolver { get; set; }
+        IEnvironmentContainer EnvironmentContainer { get; set; }
     }
 }
 

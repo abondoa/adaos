@@ -9,11 +9,11 @@ namespace Adaos.Shell.Execution.Environments
 {
     class RootEnvironment : IEnvironmentContext
     {
-        private IList< IEnvironment> _childEnvs;
+        private IList<IEnvironmentContext> _childEnvs;
 
         public RootEnvironment()
         {
-            _childEnvs = new List<IEnvironment>();
+            _childEnvs = new List<IEnvironmentContext>();
         }
 
         public string Name
@@ -51,7 +51,7 @@ namespace Adaos.Shell.Execution.Environments
             get { yield return this.GetType(); }
         }
 
-        public IEnumerable<IEnvironment> ChildEnvironments
+        public IEnumerable<IEnvironmentContext> ChildEnvironments
         {
             get 
             {
@@ -62,24 +62,25 @@ namespace Adaos.Shell.Execution.Environments
             }
         }
 
-        public void AddEnvironment(IEnvironment environment)
+        public IEnvironmentContext AddChild(IEnvironment environment)
         {
-            _childEnvs.Add(environment);
+            var result = environment.AsContext();
+            _childEnvs.Add(result);
+            return result;
         }
 
-        public void RemoveEnvironment(IEnvironment environment)
+        public void RemoveChild(IEnvironmentContext environment)
         {
             _childEnvs.Remove(environment);
         }
 
-
-        public IEnvironment ChildEnvironment(string childEnvironmentName)
+        public IEnvironmentContext ChildEnvironment(string childEnvironmentName)
         {
             return _childEnvs.Single(x => x.Name == childEnvironmentName);
         }
 
 
-        public IEnvironmentContext ToContext()
+        public IEnvironmentContext AsContext()
         {
             return this;
         }
@@ -104,5 +105,15 @@ namespace Adaos.Shell.Execution.Environments
 				throw new InvalidOperationException("Never set the IsEnabled of the root environment"); 
 			}
 		}
+
+        public IEnvironmentContext Parent
+        {
+            get { return this; }
+        }
+
+        public IEnvironment Inner
+        {
+            get { return this; }
+        }
     }
 }

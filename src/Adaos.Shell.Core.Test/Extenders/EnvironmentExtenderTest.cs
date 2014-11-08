@@ -18,11 +18,12 @@ namespace Adaos.Shell.Core.Extenders.Test
             IEnvironment env3 = new TestEnvironment("3");
             IEnvironment env4 = new TestEnvironment("4");
             IEnvironment env5 = new TestEnvironment("5");
-            env1.AddEnvironment(env2);
-            env2.AddEnvironment(env3);
-            env3.AddEnvironment(env4);
-            env4.AddEnvironment(env5);
-            string result = env1.FamilyEnvironments().Last().QualifiedName(".");
+            var context1 = env1.AsContext();
+            context1.AddChild(env2);
+            context1.ChildEnvironments.First().AddChild(env3);
+            context1.ChildEnvironments.First().ChildEnvironments.First().AddChild(env4);
+            context1.ChildEnvironments.First().ChildEnvironments.First().ChildEnvironments.First().AddChild(env5);
+            string result = context1.FamilyEnvironments().Last().QualifiedName(".");
             Assert.AreEqual("1.2.3.4.5", result);
         }
 

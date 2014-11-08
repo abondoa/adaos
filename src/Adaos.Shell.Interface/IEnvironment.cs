@@ -58,6 +58,6 @@ namespace Adaos.Shell.Interface
         /// Converts the environment into an IEnvironmentContext or returns self if it is a an IEnvironmentContext
         /// </summary>
         /// <returns></returns>
-        IEnvironmentContext ToContext();
+        IEnvironmentContext AsContext();
     }
 }

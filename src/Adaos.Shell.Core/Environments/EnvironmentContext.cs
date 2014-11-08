@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Adaos.Shell.Interface;
 
 namespace Adaos.Shell.Core.Environments
 {
     internal class EnvironmentContext : IEnvironmentContext
     {
-		bool _enabled = true;
+        bool _enabled = true;
+        private IDictionary<string, IEnvironmentContext> _childEnvs;
 
         /// <summary>
         /// 
@@ -18,6 +20,7 @@ namespace Adaos.Shell.Core.Environments
         {
             Inner = inner;
             Parent = parent;
+            _childEnvs = new Dictionary<string, IEnvironmentContext>();
         }
 
         public string Name
@@ -58,25 +61,40 @@ namespace Adaos.Shell.Core.Environments
             get { return Inner.Dependencies; }
         }
 
-		public IEnumerable<IEnvironment> ChildEnvironments
+        public IEnumerable<IEnvironmentContext> ChildEnvironments
         {
             get
             {
-                foreach (var child in Inner.ChildEnvironments)
+                lock (_childEnvs)
                 {
-                    yield return new EnvironmentContext(child, this);
+                    return _childEnvs.Select(x => x.Value);
                 }
             }
         }
-
-        public void AddEnvironment(IEnvironment environment)
+        public IEnvironmentContext AddChild(IEnvironment environment)
         {
-            Inner.AddEnvironment(environment);
+            lock (_childEnvs)
+            {
+                if (_childEnvs.Keys.Contains(environment.Name))
+                {
+                    throw new ArgumentException("Unably to add environment: '" + environment + "', it is already a child of '" + this + "'");
+                }
+                var result = new EnvironmentContext(environment,this);
+                _childEnvs.Add(environment.Name, result);
+                return result;
+            }
         }
 
-        public void RemoveEnvironment(IEnvironment environment)
+        public void RemoveChild(IEnvironmentContext environment)
         {
-            Inner.RemoveEnvironment(environment);
+            lock (_childEnvs)
+            {
+                if (!_childEnvs.Keys.Contains(environment.Name))
+                {
+                    throw new ArgumentException("Unably to remove environment: '" + environment + "', it is not a child of '" + this + "'");
+                }
+                _childEnvs.Remove(environment.Name);
+            }
         }
 
         public IEnvironment Inner
@@ -91,13 +109,7 @@ namespace Adaos.Shell.Core.Environments
             private set;
         }
 
-        public IEnvironment ChildEnvironment(string childEnvironmentName)
-        {
-            return Inner.ChildEnvironment(childEnvironmentName);
-        }
-
-
-        public IEnvironmentContext ToContext()
+        public IEnvironmentContext AsContext()
         {
             return this;
         }
@@ -127,20 +139,32 @@ namespace Adaos.Shell.Core.Environments
         }
 
 
-		public bool IsEnabled
-		{ 
-			get
-			{
-				return _enabled;
-			}
-			set
-			{
-				_enabled = value;
-				foreach(var child in ChildEnvironments)
-				{
-					child.ToContext ().IsEnabled = value;
-				}
-			} 
-		}
+        public bool IsEnabled
+        {
+            get
+            {
+                return _enabled;
+            }
+            set
+            {
+                _enabled = value;
+                foreach (var child in ChildEnvironments)
+                {
+                    child.AsContext().IsEnabled = value;
+                }
+            }
+        }
+
+        public IEnvironmentContext ChildEnvironment(string childEnvironmentName)
+        {
+            lock (_childEnvs)
+            {
+                if (!_childEnvs.Keys.Contains(childEnvironmentName))
+                {
+                    throw new ArgumentException("Unably to find environment: '" + childEnvironmentName + "', it is not a child of '" + this + "'");
+                }
+                return _childEnvs[childEnvironmentName];
+            }
+        }
     }
 }

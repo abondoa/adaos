@@ -15,15 +15,11 @@ namespace Adaos.Shell.Core
     {
         private Dictionary<string, Command> _nameToCommandDictionary;
         private bool _allowUnbinding;
-        private IDictionary<string,IEnvironment> _childEnvs;
-
-		bool _enabled;
 
         public BaseEnvironment(bool allowUnbinding = false)
         {
             _nameToCommandDictionary = new Dictionary<string, Command>();
             _allowUnbinding = allowUnbinding;
-            _childEnvs = new Dictionary<string,IEnvironment>();
         }
 
         abstract public string Name
@@ -53,23 +49,11 @@ namespace Adaos.Shell.Core
             {
                 return _nameToCommandDictionary[commandName.ToLower()];
             }
-            Command result = null;
-            foreach (var env in ChildEnvironments)
+            if(commandName == Name)
             {
-                result = env.Retrieve(commandName);
-                if (result != null)
-                {
-                    break;
-                }
+                return _environmentCommand;
             }
-            if (result == null)
-            { 
-                if(commandName == Name)
-                {
-                    result = _environmentCommand;
-                }
-            }
-            return result;
+            return null;
         }
 
         public static IEnumerable<IEnvironment> operator +(IEnumerable<IEnvironment> container, BaseEnvironment addition)
@@ -221,45 +205,6 @@ namespace Adaos.Shell.Core
             get { return _allowUnbinding; }
         }
 
-        public IEnumerable<IEnvironment> ChildEnvironments
-        {
-            get
-            {
-                lock (_childEnvs)
-                {
-                    foreach (var env in _childEnvs)
-                    {
-                        yield return env.Value;
-                    }
-                }
-            }
-        }
-
-
-        public void AddEnvironment(IEnvironment environment)
-        {
-            lock (_childEnvs)
-            {
-                if (_childEnvs.Keys.Contains(environment.Name))
-                {
-                    throw new ArgumentException("Unably to add environment: '" + environment + "', it is already a child of '" + this + "'");
-                }
-                _childEnvs.Add(environment.Name,environment);
-            }
-        }
-
-        public void RemoveEnvironment(IEnvironment environment)
-        {
-            lock (_childEnvs)
-            {
-                if (!_childEnvs.Keys.Contains(environment.Name))
-                {
-                    throw new ArgumentException("Unably to remove environment: '" + environment + "', it is not a child of '" + this + "'");
-                }
-                _childEnvs.Remove(environment.Name);
-            }
-        }
-
         private IEnumerable<IArgument> _environmentCommand(params IEnumerable<IArgument>[] args)
         {
             if (args[0].FirstOrDefault() == null)
@@ -272,21 +217,7 @@ namespace Adaos.Shell.Core
             }
         }
 
-
-        public IEnvironment ChildEnvironment(string childEnvironmentName)
-        {
-            lock (_childEnvs)
-            {
-                if (!_childEnvs.Keys.Contains(childEnvironmentName))
-                {
-                    throw new ArgumentException("Unably to find environment: '" + childEnvironmentName + "', it is not a child of '" + this + "'");
-                }
-                return _childEnvs[childEnvironmentName];
-            }
-        }
-
-
-        public IEnvironmentContext ToContext()
+        public IEnvironmentContext AsContext()
         {
             return new Environments.EnvironmentContext(this, null);
         }

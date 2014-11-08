@@ -46,13 +46,13 @@ namespace Adaos.Shell.Library.Standard
             }
             foreach (var arg in args)
             {
-				var toAdd = _vm.UnloadedEnvironments.FirstOrDefault (
+				var toEnable = _vm.EnvironmentContainer.UnloadedEnvironments.FirstOrDefault (
 					x => x.QualifiedName (_vm.Parser.ScannerTable.EnvironmentSeparator) == arg.Value);
-                if (toAdd == null)
+                if (toEnable == null)
                 {
                     throw new SemanticException(arg.Position, "No disabled environment found called: " + arg.Value);
                 }
-                _vm.EnableEnvironment(toAdd);
+                toEnable.IsEnabled = true;
             }
             yield break;
         }
@@ -65,13 +65,13 @@ namespace Adaos.Shell.Library.Standard
             }
             foreach (var arg in args)
             {
-				var toDisable = _vm.LoadedEnvironments.FirstOrDefault (
+				var toDisable = _vm.EnvironmentContainer.LoadedEnvironments.FirstOrDefault (
 					x => x.QualifiedName (_vm.Parser.ScannerTable.EnvironmentSeparator) == arg.Value);
 				if (toDisable == null)
 				{
 					throw new SemanticException(arg.Position, "No enabled environment found called: " + arg.Value);
 				}
-				_vm.DisableEnvironment(toDisable);
+                toDisable.IsEnabled = false;
             }
             yield break;
         } 
@@ -88,7 +88,7 @@ namespace Adaos.Shell.Library.Standard
             Action<IEnvironment> envWriter = null;
             envWriter = (env) =>
             {
-                string name = env.ToContext().QualifiedName(_vm.Parser.ScannerTable.EnvironmentSeparator);
+                string name = env.AsContext().QualifiedName(_vm.Parser.ScannerTable.EnvironmentSeparator);
                 result.Add(new DummyArgument(name));
 
                 if (verbose)
@@ -96,18 +96,18 @@ namespace Adaos.Shell.Library.Standard
                     _output.WriteLine(name);
                 }
             };
-            foreach (var env in _vm.LoadedEnvironments)
+            foreach (var env in _vm.EnvironmentContainer.LoadedEnvironments)
             {
                 envWriter(env);
             }
-            if (verbose && _vm.UnloadedEnvironments.Any ())
+            if (verbose && _vm.EnvironmentContainer.UnloadedEnvironments.Any())
             {
                 _output.WriteLine("Additional environments:");
-				foreach (var item in _vm.UnloadedEnvironments)
+                foreach (var item in _vm.EnvironmentContainer.UnloadedEnvironments)
                 {
                     if (verbose)
                     {
-                        _output.WriteLine(item.Name);
+                        _output.WriteLine(item.QualifiedName(_vm.Parser.ScannerTable.EnvironmentSeparator));
                     }
                 }
             }
@@ -121,7 +121,7 @@ namespace Adaos.Shell.Library.Standard
             bool verbose = !flags.FirstOrDefault(x => x.Key.Equals("-silent")).Value;
             foreach (var arg in args.Where(x => CommonFlagsWithAlias.FirstOrDefault(y => y.Contains(x.Value)) == null))
             {
-                IEnvironment env = _vm.LoadedEnvironments.FirstOrDefault(x => x.Name.ToLower().Equals(arg.Value.ToLower()));
+                IEnvironment env = _vm.EnvironmentContainer.LoadedEnvironments.FirstOrDefault(x => x.Name.ToLower().Equals(arg.Value.ToLower()));
                 if (env == null)
                 {
                     throw new SemanticException(arg.Position, arg.Value + " is not a loaded environment");
@@ -140,12 +140,12 @@ namespace Adaos.Shell.Library.Standard
                 {
                     if (toWrite.Length > 0)
                     {
-                        _output.WriteLine("Dependencies for " + env.Name + " environment:");
+                        _output.WriteLine("Dependencies for " + env.QualifiedName(_vm.Parser.ScannerTable.EnvironmentSeparator) + " environment:");
                         _output.WriteLine(toWrite.Substring(0, toWrite.Length - 1));
                     }
                     else
                     {
-                        _output.WriteLine("No Dependencies for environment: " + env.Name + "");
+                        _output.WriteLine("No Dependencies for environment: " + env.QualifiedName(_vm.Parser.ScannerTable.EnvironmentSeparator) + "");
                     }
                 }
             }
@@ -157,7 +157,7 @@ namespace Adaos.Shell.Library.Standard
         {
             if (_vm == null)
             {
-                throw new SemanticException(-1, "Virtual machine not set - Cannot get/set primary environment");
+                throw new SemanticException(-1, "Virtual machine not set - Cannot get/set primary environment.");
             }
             var flags = args.ParseFlagsWithAlias(CommonFlagsWithAlias.ToList(), false).ToDictionary(x => x.Key, x => x.Value);
             bool verbose = flags["-verbose"];
@@ -165,13 +165,17 @@ namespace Adaos.Shell.Library.Standard
             args = args.Where(x => CommonFlagsWithAlias.FirstOrDefault(y => y.Contains(x.Value)) == null);
             if (args.Count() == 0)
             {
-                IEnvironment env = _vm.PrimaryEnvironment;
+                IEnvironmentContext env = _vm.EnvironmentContainer.LoadedEnvironments.FirstOrDefault();
+                if (env == null)
+                {
+                    throw new SemanticException(-1, "No environments loaded - Cannot get primary environment.");
+                }
                 if (verbose)
                 {
                     _output.Write("Current primary environment is: ");
                 }
-                _output.WriteLine(env.Name);
-                yield return new DummyArgument(env.Name);
+                _output.WriteLine(env.QualifiedName(_vm.Parser.ScannerTable.EnvironmentSeparator));
+                yield return new DummyArgument(env.QualifiedName(_vm.Parser.ScannerTable.EnvironmentSeparator));
                 yield break;
             }
             else
@@ -179,10 +183,10 @@ namespace Adaos.Shell.Library.Standard
                 foreach (var arg in args.Reverse())
                 {
                     IArgument result = null;
-                    var toSet = _vm.LoadedEnvironments.FirstOrDefault(x => x.Name.ToLower().Equals(arg.Value.ToLower()));
+                    var toSet = _vm.EnvironmentContainer.LoadedEnvironments.FirstOrDefault(x => x.Name.ToLower().Equals(arg.Value.ToLower()));
                     if (toSet == null)
                     {
-                        if (_vm.UnloadedEnvironments.FirstOrDefault(x => x.Name.ToLower().Equals(arg.Value.ToLower())) != null)
+                        if (_vm.EnvironmentContainer.UnloadedEnvironments.FirstOrDefault(x => x.Name.ToLower().Equals(arg.Value.ToLower())) != null)
                         {
                             throw new SemanticException(arg.Position, "Environment '" + arg.Value + "' is not loaded. Use 'loadenvironment' to load it");
                         }
@@ -192,17 +196,17 @@ namespace Adaos.Shell.Library.Standard
                     {
                         if (verbose)
                         {
-                            IEnvironment env = _vm.PrimaryEnvironment;
+                            IEnvironmentContext env = _vm.EnvironmentContainer.LoadedEnvironments.FirstOrDefault();
                             _output.Write("Former primary environment was: ");
-                            _output.WriteLine(env.Name);
+                            _output.WriteLine(env.QualifiedName(_vm.Parser.ScannerTable.EnvironmentSeparator));
                         }
-                        _vm.PrimaryEnvironment = toSet;
+                        _vm.EnvironmentContainer.PromoteEnvironment(toSet);
                         if (verbose)
                         {
                             _output.Write("New primary environment is: ");
-                            _output.WriteLine(toSet.Name);
+                            _output.WriteLine(toSet.QualifiedName(_vm.Parser.ScannerTable.EnvironmentSeparator));
                         }
-                        result = new DummyArgument(toSet.Name);
+                        result = new DummyArgument(toSet.QualifiedName(_vm.Parser.ScannerTable.EnvironmentSeparator));
                     }
                     catch (ArgumentException e)
                     {
