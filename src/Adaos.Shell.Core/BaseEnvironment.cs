@@ -204,7 +204,7 @@ namespace Adaos.Shell.Core
             get { return _nameToCommandDictionary.Select(x => x.Key).OrderBy(x => x); }
         }
 
-        public virtual void UnBind(string commandName)
+        public virtual void Unbind(string commandName)
         {
             if (AllowUnbinding)
             {

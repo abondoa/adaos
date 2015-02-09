@@ -80,7 +80,7 @@ namespace ModuleA
             }
         }
 
-        public void UnBind(string commandName)
+        public void Unbind(string commandName)
         {
             return;
         }

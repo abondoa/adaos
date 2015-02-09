@@ -12,7 +12,7 @@ namespace Adaos.Shell.Core
             IEnumerable<string> environmentNames = null, 
             IEnumerable<IArgument> arguments = null,
             int position = -1,
-            CommandRelation relationToPrevious = CommandRelation.SEPARATED,
+            CommandRelation relationToPrevious = CommandRelation.Separated,
             bool isPiped = false)
         {
             if (environmentNames == null)

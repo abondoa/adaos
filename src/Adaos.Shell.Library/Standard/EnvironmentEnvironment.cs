@@ -38,6 +38,7 @@ namespace Adaos.Shell.Library.Standard
             Bind(PromoteEnvironments, "promoteenvironments", "penv");
             Bind(DependenciesCommand, "dependencies", "deps");
             Bind(args => RemoveEnvironment(args).Then(AddEnvironment(args)), "demoteenvironments", "denv");
+            Bind(DrawEnvironmentTree, "drawenviroments/denvs/printenvs");
         }
 
         private IEnumerable<IArgument> AddEnvironment(IEnumerable<IArgument> args)
@@ -225,6 +226,12 @@ namespace Adaos.Shell.Library.Standard
             }
             yield break;
         }
+
+        private IEnumerable<IArgument> DrawEnvironmentTree(IArgumentValueLookup args, params IEnumerable<IArgument>[] arguments)
+        {
+
+            yield break;
+        } 
 
         internal void AddAdditionalEnvironments(IEnumerable<IEnvironment> envs)
         {

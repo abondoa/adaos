@@ -26,9 +26,9 @@ namespace Adaos.Shell.Library.Standard
             _dependencies.Add(commandName, dependencies.ToList());
         }
 
-        public override void UnBind(string commandName)
+        public override void Unbind(string commandName)
         {
-            base.UnBind(commandName);
+            base.Unbind(commandName);
             _dependencies.Remove(commandName);
         }
 

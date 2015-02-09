@@ -152,7 +152,7 @@ namespace Adaos.Shell.Library.Standard
             {
                 foreach (var arg in args)
                 {
-                    custom.UnBind(arg.Value);
+                    custom.Unbind(arg.Value);
                 }
             }
             else

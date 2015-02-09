@@ -49,9 +49,9 @@ namespace Adaos.Shell.Library.AdHoc
             get { return Inner.Commands; }
         }
 
-        public void UnBind(string commandName)
+        public void Unbind(string commandName)
         {
-            Inner.UnBind(commandName);
+            Inner.Unbind(commandName);
         }
 
         public bool AllowUnbinding

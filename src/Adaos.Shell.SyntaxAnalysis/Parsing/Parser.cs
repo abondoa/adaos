@@ -131,7 +131,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Parsing
             {
                 Accept(TokenKind.COMMAND_PIPE);
                 ASTs.Command comm = ParseCommand();
-                comm.RelationToPrevious = CommandRelation.PIPED;
+                comm.RelationToPrevious = CommandRelation.Piped;
                 ProgramSequenceFollow fol = ParseProgramSequenceFollow();
                 result = new ProgramSequenceFollowActual(comm, fol);
             }
@@ -139,7 +139,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Parsing
             {
                 Accept(TokenKind.COMMAND_CONCATENATOR);
                 ASTs.Command comm = ParseCommand();
-                comm.RelationToPrevious = CommandRelation.CONCATENATED;
+                comm.RelationToPrevious = CommandRelation.Concatenated;
                 ProgramSequenceFollow fol = ParseProgramSequenceFollow();
                 result = new ProgramSequenceFollowActual(comm, fol);
             }

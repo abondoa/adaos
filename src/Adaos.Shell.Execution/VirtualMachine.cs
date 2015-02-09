@@ -123,7 +123,7 @@ namespace Adaos.Shell.Execution
             foreach (ICommand comm in prog.Commands)
             {
                 Adaos.Shell.Interface.Command toExec = null;
-                if (!comm.IsPiped())
+                if (!comm.IsPipeRecipient())
                 {
                     result.ToArray(); //Execute previous before trying to resolve (maybe a new environment has been loaded just before)
                 }
@@ -132,13 +132,13 @@ namespace Adaos.Shell.Execution
 
                 switch (comm.RelationToPrevious)
                 {
-                    case CommandRelation.CONCATENATED:
+                    case CommandRelation.Concatenated:
                         result = result.Then(toExec(HandleArguments(comm.Arguments)));
                         break;
-                    case CommandRelation.PIPED:
+                    case CommandRelation.Piped:
                         result = toExec(HandleArguments(comm.Arguments).Then(result));
                         break;
-                    case CommandRelation.SEPARATED:
+                    case CommandRelation.Separated:
                         result = toExec(HandleArguments(comm.Arguments));
                         break;
                 }

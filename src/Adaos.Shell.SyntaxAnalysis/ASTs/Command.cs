@@ -10,7 +10,7 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
     {
         public Command(int position) : base(position) 
         {
-            RelationToPrevious = CommandRelation.SEPARATED;
+            RelationToPrevious = CommandRelation.Separated;
         }
         public Command() { }
 
@@ -39,7 +39,7 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
 
         public bool IsPiped
         {
-            get { return this.IsPiped(); }
+            get { return this.IsPipeRecipient(); }
         }
 
         public bool IsConcatenated

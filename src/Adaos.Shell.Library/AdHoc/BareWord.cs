@@ -45,7 +45,7 @@ namespace Adaos.Shell.Library.AdHoc
             }
         }
 
-        public void UnBind(string commandName)
+        public void Unbind(string commandName)
         {
             throw new NotImplementedException();
         }

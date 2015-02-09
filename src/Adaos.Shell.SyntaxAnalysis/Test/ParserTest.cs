@@ -179,10 +179,10 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
             IProgramSequence result = _parser.Parse("sum 1 2 , sum 3 4 | echo");
             Assert.AreEqual(0, result.Errors.Count());
 
-            Assert.AreEqual((result as ProgramSequenceActual).Commands.First(),CommandRelation.CONCATENATED);
-            Assert.AreEqual((result as ProgramSequenceActual).Commands.First(), CommandRelation.PIPED);
-            Assert.AreEqual((result as ProgramSequenceActual).Commands.Skip(1).First(), CommandRelation.CONCATENATED);
-            Assert.AreEqual((result as ProgramSequenceActual).Commands.Skip(2).First(), CommandRelation.PIPED);
+            Assert.AreEqual((result as ProgramSequenceActual).Commands.First(),CommandRelation.Concatenated);
+            Assert.AreEqual((result as ProgramSequenceActual).Commands.First(), CommandRelation.Piped);
+            Assert.AreEqual((result as ProgramSequenceActual).Commands.Skip(1).First(), CommandRelation.Concatenated);
+            Assert.AreEqual((result as ProgramSequenceActual).Commands.Skip(2).First(), CommandRelation.Piped);
 
             result = _parser.Parse("echo test");
             Assert.AreEqual(0, result.Errors.Count());
