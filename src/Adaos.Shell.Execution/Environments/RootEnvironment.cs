@@ -115,5 +115,8 @@ namespace Adaos.Shell.Execution.Environments
         {
             get { return this; }
         }
+		public Command EnvironmentCommand {get {
+				throw new InvalidOperationException("Never get the EnvironmentCommand of the root environment"); }}
+
     }
 }

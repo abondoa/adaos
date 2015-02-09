@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Adaos.Shell.Interface;
+using Adaos.Shell.Interface.Exceptions;
+using Adaos.Common.Extenders;
+using Adaos.Shell.Core.Extenders;
 
 namespace Adaos.Shell.Core.Environments
 {
@@ -36,8 +39,40 @@ namespace Adaos.Shell.Core.Environments
             Inner.Bind(command, commandNames);
         }
 
+		private IEnumerable<IArgument> _environmentCommand(params IEnumerable<IArgument>[] args)
+		{
+			if (args[0].FirstOrDefault() == null)
+			{
+				throw new SemanticException(-1,"Environment-command '" + this.Name + "' received no command name as first argument");
+			}
+			IArgument firstArg = args.First ().First ();
+			var command = Retrieve (firstArg.Value);
+			if(command == null)
+			{
+				var childEnv = this.ChildEnvironments.FirstOrDefault (x => x.Inner.Name == firstArg.Value);
+				if (childEnv == null) 
+				{
+					throw new SemanticException (-1, "Environment-command '" + this.Name + "' unable to find command '" + args [0].First ().Value + "'");
+				} 
+				command = childEnv.EnvironmentCommand;
+			}
+			foreach(var res in command(args[0].Skip(1).Then(args.Skip(1).Flatten())))
+			{
+				yield return res;
+			}
+		}
+
         public Command Retrieve(string commandName)
         {
+			if(commandName == Inner.Name)
+			{
+				return _environmentCommand;
+			}
+			var childEnv = ChildEnvironments.FirstOrDefault (x => x.Inner.Name == commandName);
+			if (childEnv != null) 
+			{
+				return childEnv.EnvironmentCommand;
+			}
             return Inner.Retrieve(commandName);
         }
 
@@ -166,5 +201,7 @@ namespace Adaos.Shell.Core.Environments
                 return _childEnvs[childEnvironmentName];
             }
         }
+
+		public Command EnvironmentCommand {get {return _environmentCommand;}}
     }
 }

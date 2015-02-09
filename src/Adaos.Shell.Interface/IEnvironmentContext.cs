@@ -46,5 +46,11 @@ namespace Adaos.Shell.Interface
         /// The inner IEnvironment being encapsulated
         /// </summary>
         IEnvironment Inner { get; }
+		
+		/// <summary>
+		/// Gets the environment-command.
+		/// </summary>
+		/// <value>The environment-command.</value>
+		Command EnvironmentCommand { get;}
     }
 }

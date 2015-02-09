@@ -49,10 +49,6 @@ namespace Adaos.Shell.Core
             {
                 return _nameToCommandDictionary[commandName.ToLower()];
             }
-            if(commandName == Name)
-            {
-                return _environmentCommand;
-            }
             return null;
         }
 
@@ -203,18 +199,6 @@ namespace Adaos.Shell.Core
         public bool AllowUnbinding
         {
             get { return _allowUnbinding; }
-        }
-
-        private IEnumerable<IArgument> _environmentCommand(params IEnumerable<IArgument>[] args)
-        {
-            if (args[0].FirstOrDefault() == null)
-            {
-                throw new SemanticException(-1,"Environment-command '" + this.Name + "' received no command name as first argument");
-            }
-            foreach(var res in Retrieve(args[0].First().Value)(args[0].Skip(1).Then(args.Skip(1).Flatten())))
-            {
-                yield return res;
-            }
         }
 
         public IEnvironmentContext AsContext()
