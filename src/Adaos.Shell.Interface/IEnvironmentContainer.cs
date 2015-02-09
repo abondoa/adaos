@@ -6,40 +6,43 @@ using System.Threading.Tasks;
 
 namespace Adaos.Shell.Interface
 {
+    /// <summary>
+    /// An interface describing a container used to hold environments. 
+    /// </summary>
     public interface IEnvironmentContainer
     {
         /// <summary>
-        /// The loaded environments ordered by promotions. Promoted environments first.
+        /// Get the loaded environments ordered by promotions. Promoted environments first.
         /// </summary>
         IEnumerable<IEnvironmentContext> LoadedEnvironments { get; }
 
         /// <summary>
-        /// The unloaded environments ordered by promotions. Promoted environments first.
+        /// Get the unloaded environments ordered by promotions. Promoted environments first.
         /// </summary>
         IEnumerable<IEnvironmentContext> UnloadedEnvironments { get; }
 
         /// <summary>
-        /// Load environment at root.
+        /// Load the given environment into the container at the root.
         /// </summary>
-        /// <param name="environment"></param>
+        /// <param name="environment">The environment to load.</param>
         void LoadEnvironment(IEnvironment environment);
 
         /// <summary>
-        /// Unload environment at root.
+        /// Unload the given environment from the container at the root.
         /// </summary>
-        /// <param name="environment"></param>
+        /// <param name="environment">The environment to unload.</param>
         void UnloadEnvironment(IEnvironment environment);
 
         /// <summary>
-        /// Move context to the front of contexts when getting loaded/unloaded environments
+        /// Move context to the front of contexts when getting loaded/unloaded environments.
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">The context to move to the front.</param>
         void PromoteEnvironment(IEnvironmentContext context);
 
         /// <summary>
         /// Move context to the back of contexts when getting loaded/unloaded environments
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">The context to to the back.</param>
         void DemoteEnvironment(IEnvironmentContext context);
     }
 }
