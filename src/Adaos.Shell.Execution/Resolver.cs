@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Adaos.Shell.Interface;
-using Adaos.Shell.SyntaxAnalysis.Exceptions;
+using Adaos.Shell.Core.Extenders;
+using Adaos.Common.Extenders;
+using Adaos.Shell.Execution.Exceptions;
 
 namespace Adaos.Shell.Execution
 {
@@ -19,14 +21,14 @@ namespace Adaos.Shell.Execution
         /// <param name="environments"></param>
         /// <returns></returns>
         public Command Resolve(
-            ICommand command, 
-            IEnumerable<IEnvironment> environments)
+            ICommand command,
+            IEnumerable<IEnvironmentContext> environments)
         {
             Command result = null;
             if (command.EnvironmentNames.Count() > 0)
             {
-                IEnvironment env = null;
-                IList<IEnvironment> visitedEnvs = new List<IEnvironment>();
+                IEnvironmentContext env = null;
+                IList<IEnvironmentContext> visitedEnvs = new List<IEnvironmentContext>();
                 foreach (var envName in command.EnvironmentNames)
                 {
                     env = environments.FirstOrDefault(x => x.Name.ToLower().Equals(envName.ToLower()));
@@ -54,7 +56,7 @@ namespace Adaos.Shell.Execution
             }
             else
             {
-                foreach (var env in environments.Select(x => x.FamilyEnvironments()).Aggregate((x,y) => x.Union(y)))
+                foreach (var env in environments)
                 {
                     result = env.Retrieve(command.CommandName);
                     if (result != null)
@@ -73,13 +75,13 @@ namespace Adaos.Shell.Execution
 
         public IEnvironment GetEnvironmentOf (
             ICommand command,
-            IEnumerable<IEnvironment> environments)
+            IEnumerable<IEnvironmentContext> environments)
         {
             Command result = null;
             if (command.EnvironmentNames.Count() > 0)
             {
-                IEnvironment env = null;
-                IList<IEnvironment> visitedEnvs = new List<IEnvironment>();
+                IEnvironmentContext env = null;
+                IList<IEnvironmentContext> visitedEnvs = new List<IEnvironmentContext>();
                 foreach (var envName in command.EnvironmentNames)
                 {
                     env = environments.FirstOrDefault(x => x.Name.ToLower().Equals(envName.ToLower()));
@@ -108,7 +110,7 @@ namespace Adaos.Shell.Execution
             }
             else
             {
-                foreach (var env in environments.Select(x => x.FamilyEnvironments()).Aggregate((x, y) => x.Union(y)))
+                foreach (var env in environments)
                 {
                     result = env.Retrieve(command.CommandName);
                     if (result != null)

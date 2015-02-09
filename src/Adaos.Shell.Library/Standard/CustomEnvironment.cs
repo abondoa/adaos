@@ -9,10 +9,10 @@ namespace Adaos.Shell.Library.Standard
 {
     public class CustomEnvironment : BaseEnvironment
     {
-        private IDictionary<string, IList<IEnvironmentUniqueIdentifier>> _dependencies;
+        private IDictionary<string, IList<Type>> _dependencies;
         public CustomEnvironment() : base(true)
         {
-            _dependencies = new Dictionary<string, IList<IEnvironmentUniqueIdentifier>>();
+            _dependencies = new Dictionary<string, IList<Type>>();
         }
 
         public override string Name
@@ -20,7 +20,7 @@ namespace Adaos.Shell.Library.Standard
             get { return "custom"; }
         }
 
-        public void Bind(string commandName, Command command, IEnumerable<IEnvironmentUniqueIdentifier> dependencies)
+        public void Bind(string commandName, Command command, IEnumerable<Type> dependencies)
         {
             base.Bind(commandName, command);
             _dependencies.Add(commandName, dependencies.ToList());
@@ -32,7 +32,7 @@ namespace Adaos.Shell.Library.Standard
             _dependencies.Remove(commandName);
         }
 
-        public override IEnumerable<IEnvironmentUniqueIdentifier> Dependencies
+        public override IEnumerable<Type> Dependencies
         {
             get
             {

@@ -11,6 +11,8 @@
     <AssemblyName>Adaos.Common</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <ProductVersion>12.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -42,6 +44,7 @@
     <Compile Include="Enumerable\CachedEnumerable.cs" />
     <Compile Include="Enumerable\CachedEnumerator.cs" />
     <Compile Include="Extenders\EnumerableExtender.cs" />
+    <Compile Include="Extenders\ObjectExtender.cs" />
     <Compile Include="Factory.cs" />
     <Compile Include="Interface\ICachedEnumerable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -31,10 +31,9 @@ namespace Adaos.Shell.Library.Standard
 
         private IEnumerable<IArgument> Echo(IArgumentValueLookup lookup, params IEnumerable<IArgument>[] args)
         {
-            foreach (var arg in lookup.Lookup["output"].Then(args.Flatten()))
-            {
-                _output.Write(arg.Value + " ");
-            }
+			var argsToEcho = lookup.Lookup ["output"].Then (args.Flatten ());
+			if (argsToEcho.Any())
+				_output.Write(argsToEcho.Select (x => x.Value).Aggregate((x,y) => x + " " + y));
             int lineBreaks;
             if (lookup["line-breaks"].TryParseTo(out lineBreaks))
                 for (int i = 0; i < lineBreaks; i++ )

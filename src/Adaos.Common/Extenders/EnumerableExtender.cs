@@ -33,6 +33,15 @@ namespace Adaos.Common.Extenders
             }
         }
 
+        public static IEnumerable<T> Then<T>(this IEnumerable<T> self, T then)
+        {
+            foreach (T item in self)
+            {
+                yield return item;
+            }
+            yield return then;
+        }
+
         public static bool ContainsDuplicates<T>(this IEnumerable<T> self,Func<T,object> pred = null)
         {
             if (pred == null)

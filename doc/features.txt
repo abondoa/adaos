@@ -9,3 +9,4 @@
  - Recognize command-templates in ADAOS
  - Attributes for command-templates
  - Nesting of environments
+ - Draw tree of environment hierarchy

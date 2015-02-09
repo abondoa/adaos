@@ -22,14 +22,7 @@ namespace Adaos.Shell.Library.Standard
         private string _stdPath;
         private EnvironmentEnvironment _envEnv;
 
-        private readonly List<string[]> CommonFlagsWithAlias = new List<string[]>
-        { 
-            new string[]{"-silent","-si"},
-            new string[]{"-verbose","-v"},
-            new string[]{"-withpath","-p"}
-        };
-
-        public override IEnumerable<IEnvironmentUniqueIdentifier> Dependencies { get { yield return _envEnv.Identifier; } }
+        public override IEnumerable<Type> Dependencies { get { yield return _envEnv.GetType(); } }
 
         public ModuleEnvironment(StreamWriter output, EnvironmentEnvironment envEnv, IVirtualMachine vm)
         {
@@ -55,7 +48,8 @@ namespace Adaos.Shell.Library.Standard
                 _loadedModules.Add(new List<string> { fileName, module.Name }, module);
             }
 
-            _envEnv.AddAdditionalEnvironments(envs);
+			foreach(var env in envs)
+            	_vm.EnvironmentContainer.LoadEnvironment(env);
 
             return envs.Select(x => new DummyArgument(x.Name));
         }

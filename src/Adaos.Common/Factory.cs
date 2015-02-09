@@ -8,6 +8,9 @@ using Adaos.Common.Interface;
 
 namespace Adaos.Common
 {
+    /// <summary>
+    /// Handles all external construction requests of classes in Adaos.Common
+    /// </summary>
     public static class Factory
     {
         /// <summary>

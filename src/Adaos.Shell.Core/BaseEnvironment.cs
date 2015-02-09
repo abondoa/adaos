@@ -15,15 +15,11 @@ namespace Adaos.Shell.Core
     {
         private Dictionary<string, Command> _nameToCommandDictionary;
         private bool _allowUnbinding;
-        private IDictionary<string,IEnvironment> _childEnvs;
-
 
         public BaseEnvironment(bool allowUnbinding = false)
         {
             _nameToCommandDictionary = new Dictionary<string, Command>();
             _allowUnbinding = allowUnbinding;
-            _childEnvs = new Dictionary<string,IEnvironment>();
-            Identifier = new EnvironmentUniqueIdentifier(Name);
         }
 
         abstract public string Name
@@ -53,23 +49,7 @@ namespace Adaos.Shell.Core
             {
                 return _nameToCommandDictionary[commandName.ToLower()];
             }
-            Command result = null;
-            foreach (var env in ChildEnvironments)
-            {
-                result = env.Retrieve(commandName);
-                if (result != null)
-                {
-                    break;
-                }
-            }
-            if (result == null)
-            { 
-                if(commandName == Name)
-                {
-                    result = _environmentCommand;
-                }
-            }
-            return result;
+            return null;
         }
 
         public static IEnumerable<IEnvironment> operator +(IEnumerable<IEnvironment> container, BaseEnvironment addition)
@@ -107,7 +87,7 @@ namespace Adaos.Shell.Core
 
         public virtual void Bind(ArgumentLookupCommand command,string commandTemplate)
         {
-            var segments = Parse(commandTemplate);
+            var segments = ParseCommandTemplate(commandTemplate);
             if (segments.Count() < 1)
             {
                 throw new Exception("There must be at least a name for the function to be bound to");
@@ -163,7 +143,7 @@ namespace Adaos.Shell.Core
             return new ArgumentValueLookup(list);
         }
 
-        private ArgumentTemplateSegment[] Parse(string commandTemplate)
+        private ArgumentTemplateSegment[] ParseCommandTemplate(string commandTemplate)
         {
             // Split the template string - it's whitespace separated. 
             var args = commandTemplate.Split(' ').Select(x => new ArgumentTemplateSegment(x.Trim())).ToList();
@@ -221,67 +201,20 @@ namespace Adaos.Shell.Core
             get { return _allowUnbinding; }
         }
 
-        public IEnvironmentUniqueIdentifier Identifier
+        public IEnvironmentContext AsContext()
         {
-            get;
-            private set;
+            return new Environments.EnvironmentContext(this, null);
         }
 
-        public virtual IEnumerable<IEnvironmentUniqueIdentifier> Dependencies
+
+        public string QualifiedName(string separator)
+        {
+            return Name;
+        }
+
+        public virtual IEnumerable<Type> Dependencies
         {
             get { yield break; }
-        }
-
-
-        public IEnumerable<IEnvironment> ChildEnvironments
-        {
-            get
-            {
-                lock (_childEnvs)
-                {
-                    foreach (var env in _childEnvs)
-                    {
-                        yield return env.Value;
-                    }
-                }
-            }
-        }
-
-
-        public void AddEnvironment(IEnvironment environment)
-        {
-            lock (_childEnvs)
-            {
-                if (_childEnvs.Keys.Contains(environment.Name))
-                {
-                    throw new ArgumentException("Unably to add environment: '" + environment + "', it is already a child of " + Name);
-                }
-                _childEnvs.Add(environment.Name,environment);
-            }
-        }
-
-        public void RemoveEnvironment(IEnvironment environment)
-        {
-            lock (_childEnvs)
-            {
-                if (!_childEnvs.Keys.Contains(environment.Name))
-                {
-                    throw new ArgumentException("Unably to remove environment: '" + environment + "', it is not a child of " + Name);
-                }
-                _childEnvs.Remove(environment.Name);
-            }
-        }
-
-        private IEnumerable<IArgument> _environmentCommand(params IEnumerable<IArgument>[] args)
-        {
-            if (args[0].FirstOrDefault() == null)
-            {
-                throw new SemanticException(-1,"Environment-command '" + this.Name + "' received no command name as first argument");
-            }
-            foreach(var res in Retrieve(args[0].First().Value)(args[0].Skip(1)))
-            {
-                yield return res;
-            }
         }
     }
 }

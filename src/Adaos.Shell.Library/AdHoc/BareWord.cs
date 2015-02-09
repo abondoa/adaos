@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Adaos.Shell.Core;
 using Adaos.Shell.Interface;
+using Adaos.Shell.Library.Standard;
 
 namespace Adaos.Shell.Library.AdHoc
 {
@@ -58,11 +59,11 @@ namespace Adaos.Shell.Library.AdHoc
             }
         }
 
-        public IEnumerable<IEnvironmentUniqueIdentifier> Dependencies
+        public IEnumerable<Type> Dependencies
         {
             get
             {
-                yield return new EnvironmentUniqueIdentifier("barewords");
+                yield return typeof(BareWordsEnvironment);
             }
         }
 
@@ -97,10 +98,20 @@ namespace Adaos.Shell.Library.AdHoc
             yield break;
         }
 
-
-        public IEnvironmentUniqueIdentifier Identifier
+        public IEnvironment ChildEnvironment(string childEnvironmentName)
         {
-            get { throw new NotImplementedException(); }
+            throw new NotImplementedException();
+        }
+
+        public IEnvironmentContext AsContext()
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public string QualifiedName(string separator)
+        {
+            return Name;
         }
     }
 }

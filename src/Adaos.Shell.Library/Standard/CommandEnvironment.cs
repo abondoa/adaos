@@ -44,7 +44,7 @@ namespace Adaos.Shell.Library.Standard
             bool verbose = !flags.FirstOrDefault(x => x.Key.Equals("-silent")).Value;
             foreach (var arg in args.Where(x => CommonFlagsWithAlias.FirstOrDefault(y => y.Contains(x.Value)) == null))
             {
-                IEnvironment env = _vm.Environments.Select(x => x.FamilyEnvironments()).Aggregate((x,y) => x.Union(y)).FirstOrDefault(x => x.Name.ToLower().Equals(arg.Value.ToLower()));
+                IEnvironment env = _vm.EnvironmentContainer.LoadedEnvironments.FirstOrDefault(x => x.QualifiedName (_vm.Parser.ScannerTable.EnvironmentSeparator).ToLower().Equals(arg.Value.ToLower()));
                 if (env == null)
                 {
                     throw new SemanticException(arg.Position, arg.Value + " is not a loaded environment");
@@ -81,7 +81,7 @@ namespace Adaos.Shell.Library.Standard
             {
                 throw new SemanticException(-1,"MakeCommand must get exactly two arguments");
             }
-            IEnvironment custom = _vm.Environments.FirstOrDefault(x => x.Name.Equals("custom"));
+            IEnvironment custom = _vm.EnvironmentContainer.LoadedEnvironments.FirstOrDefault(x => x.Name.Equals("custom"));
             if (custom == null)
             {
                 throw new SemanticException(-1, "ADAOS VM does not have a custom environment loaded");
@@ -103,15 +103,15 @@ namespace Adaos.Shell.Library.Standard
                 throw new SemanticException(-1, str.ToString());
             }
             var res = _vm.Resolver;
-            var listOfDeps = new List<IEnvironmentUniqueIdentifier>();
+            var listOfDeps = new List<Type>();
             foreach (var cmd in commandSeq.Commands)
             {
                 try
                 {
-                    var env = res.GetEnvironmentOf(cmd, _vm.Environments);
+                    var env = res.GetEnvironmentOf(cmd, _vm.EnvironmentContainer.LoadedEnvironments);
                     if (env != null)
                     {
-                        addDependency(env.Identifier,listOfDeps);
+                        addDependency(env.GetType(),listOfDeps);
                     }
                 }
                 catch (SemanticException e)
@@ -143,7 +143,7 @@ namespace Adaos.Shell.Library.Standard
 
         private IEnumerable<IArgument> RemoveCommand(IEnumerable<IArgument> args)
         {
-            IEnvironment custom = _vm.Environments.FirstOrDefault(x => x.Name.Equals("custom"));
+            IEnvironment custom = _vm.EnvironmentContainer.LoadedEnvironments.FirstOrDefault(x => x.Name.Equals("custom"));
             if (custom == null)
             {
                 throw new SemanticException(-1, "ADAOS VM does not have a custom environment loaded");
@@ -185,7 +185,7 @@ namespace Adaos.Shell.Library.Standard
                 throw new SemanticException(-1, str.ToString());
             }
             ICommand command = commandSeq.Commands.First();
-            var executableCommand = res.Resolve(command,_vm.Environments);
+            var executableCommand = res.Resolve(command, _vm.EnvironmentContainer.LoadedEnvironments);
             foreach (var arg in args.Skip(1))
             {
                 foreach (var result in executableCommand(new List<IArgument>{arg}))
@@ -195,7 +195,7 @@ namespace Adaos.Shell.Library.Standard
             }
         }
 
-        private void addDependency(IEnvironmentUniqueIdentifier ident, IList<IEnvironmentUniqueIdentifier> dependencies)
+        private void addDependency(Type ident, IList<Type> dependencies)
         {
             if (!dependencies.Contains(ident))
             {

@@ -54,13 +54,14 @@
     <Compile Include="DummyCommand.cs" />
     <Compile Include="DummyProgramSequence.cs" />
     <Compile Include="BaseEnvironment.cs" />
-    <Compile Include="EnvironmentUniqueIdentifier.cs" />
+    <Compile Include="Environments\EnvironmentContext.cs" />
     <Compile Include="Extenders\ArgumentExtender.cs" />
+    <Compile Include="Extenders\EnvironmentExtender.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Adaos.Common\Adaos.Common.csproj">
-      <Project>{594a1907-226d-4205-bd55-cd56ede35414}</Project>
+      <Project>{594A1907-226D-4205-BD55-CD56EDE35414}</Project>
       <Name>Adaos.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\Adaos.Shell.Interface\Adaos.Shell.Interface.csproj">
