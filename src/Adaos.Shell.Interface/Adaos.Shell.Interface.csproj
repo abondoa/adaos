@@ -64,11 +64,11 @@
     <Compile Include="IScanner.cs" />
     <Compile Include="IScannerFactory.cs" />
     <Compile Include="IScannerTable.cs" />
-    <Compile Include="IShell.cs" />
     <Compile Include="Exceptions\ModuleMangingException.cs" />
     <Compile Include="Exceptions\SemanticException.cs" />
     <Compile Include="Exceptions\AdaosException.cs" />
     <Compile Include="IShellParser.cs" />
+    <Compile Include="ITerminal.cs" />
     <Compile Include="IVirtualMachine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

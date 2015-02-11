@@ -1,23 +1,39 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Runtime.Serialization;
 
 namespace Adaos.Shell.Interface.Exceptions
 {
+    /// <summary>
+    /// An exception thrown when an error occurs within the <see cref="IModuleManager"/>.
+    /// </summary>
     public class ModuleMangingException : Exception
     {
-        public ModuleMangingException() : base() { }
+        /// <summary>
+        /// A construcfor for the ModuleMangingException.
+        /// </summary>
+        public ModuleMangingException() { }
 
+        /// <summary>
+        /// A construcfor for the ModuleMangingException.
+        /// </summary>
+        /// <param name="message">The exception message.</param>
         public ModuleMangingException(string message) 
             : base(message) { }
 
+        /// <summary>
+        /// A construcfor for the ModuleMangingException.
+        /// </summary>
+        /// <param name="message">The exception message.</param>
+        /// <param name="innerException">The inner exception.</param>
         public ModuleMangingException(string message, Exception innerException) 
             : base(message, innerException) { }
 
-        public ModuleMangingException(
-            System.Runtime.Serialization.SerializationInfo info,
-            System.Runtime.Serialization.StreamingContext context) 
-            : base(info,context) { }
+        /// <summary>
+        /// A construcfor for deserializing an ModuleMangingException.
+        /// </summary>
+        /// <param name="info">The serialization info.</param>
+        /// <param name="context">The streaming context with the serialized exception data.</param>
+        public ModuleMangingException(SerializationInfo info, StreamingContext context) 
+            : base(info, context) { }
     }
 }

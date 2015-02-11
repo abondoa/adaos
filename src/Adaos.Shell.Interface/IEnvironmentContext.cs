@@ -1,8 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Adaos.Shell.Interface
 {
+    /// <summary>
+    /// An interface describing the environment context, used to put an Adaos environment into 
+    /// a specific context. 
+    /// </summary>
     public interface IEnvironmentContext : IEnvironment
     {
         /// <summary>

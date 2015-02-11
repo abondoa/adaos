@@ -1,21 +1,39 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Runtime.Serialization;
 
 namespace Adaos.Shell.Interface.Exceptions
 {
     /// <summary>
-    /// Thrown to indicate that the terminal should stop running.
+    /// An exception thrown to indicate that the terminal should stop running.
     /// </summary>
     public class ExitTerminalException : AdaosException
     {
-        public ExitTerminalException() : base() { }
+        /// <summary>
+        /// A construcfor for the ExitTerminalException.
+        /// </summary>
+        public ExitTerminalException() { }
 
-        public ExitTerminalException(string message) : base(message) { }
+        /// <summary>
+        /// A construcfor for the ExitTerminalException.
+        /// </summary>
+        /// <param name="message">The exception message.</param>
+        public ExitTerminalException(string message) 
+            : base(message) { }
 
-        public ExitTerminalException(string message, Exception innerException) : base(message, innerException) { }
+        /// <summary>
+        /// A construcfor for the ExitTerminalException.
+        /// </summary>
+        /// <param name="message">The exception message.</param>
+        /// <param name="innerException">The inner exception.</param>
+        public ExitTerminalException(string message, Exception innerException) 
+            : base(message, innerException) { }
 
-        public ExitTerminalException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+        /// <summary>
+        /// A construcfor for deserializing an ExitTerminalException.
+        /// </summary>
+        /// <param name="info">The serialization info.</param>
+        /// <param name="context">The streaming context with the serialized exception data.</param>
+        public ExitTerminalException(SerializationInfo info, StreamingContext context) 
+            : base(info, context) { }
     }
 }
