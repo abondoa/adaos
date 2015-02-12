@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Adaos.Shell.Interface;
+﻿using Adaos.Shell.Interface;
 
 namespace Adaos.Shell.SyntaxAnalysis.ASTs
 {
-    abstract public class Argument : AST, IArgument
+    /// <summary>
+    /// An abstract class defining an Argument node in the Adaos AST.
+    /// </summary>
+    public abstract class Argument : AST, IArgument
     {
         public Argument(int position, bool execute, Word wordName = null)
             : base(position)
