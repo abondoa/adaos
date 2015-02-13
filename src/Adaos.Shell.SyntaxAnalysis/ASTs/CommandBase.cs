@@ -6,7 +6,7 @@ using Adaos.Shell.Interface;
 
 namespace Adaos.Shell.SyntaxAnalysis.ASTs
 {
-    abstract public class CommandBase : Command
+    public abstract class CommandBase : Command
     {
         public CommandName CommName { get; private set; }
         public ArgumentSequence Args { get; private  set; }

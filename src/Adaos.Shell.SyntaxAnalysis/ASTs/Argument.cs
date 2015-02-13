@@ -3,7 +3,7 @@
 namespace Adaos.Shell.SyntaxAnalysis.ASTs
 {
     /// <summary>
-    /// An abstract class defining an Argument node in the Adaos AST.
+    /// An abstract class defining an <see cref="IArgument"/> node in the Adaos AST.
     /// </summary>
     public abstract class Argument : AST, IArgument
     {

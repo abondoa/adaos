@@ -162,7 +162,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
             IProgramSequence result = _parser.Parse("view 1 si | echo");
             Assert.AreEqual(0, result.Errors.Count());
 
-            Assert.IsTrue((result as ProgramSequenceActual).Commands.Skip(1).First().IsPiped);
+            Assert.IsTrue((result as ProgramSequenceActual).Commands.Skip(1).First().IsPipeRecipient());
 
             result = _parser.Parse("echo test");
             Assert.AreEqual(0, result.Errors.Count());

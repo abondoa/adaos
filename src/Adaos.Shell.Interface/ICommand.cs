@@ -8,7 +8,7 @@ namespace Adaos.Shell.Interface
     public interface ICommand
     {
         /// <summary>
-        /// Get the collection of environment names associated with this command node.
+        /// Enumerates the environment names associated with this command node.
         /// </summary>
         IEnumerable<string> EnvironmentNames { get; }
 
@@ -18,7 +18,7 @@ namespace Adaos.Shell.Interface
         string CommandName { get; }
 
         /// <summary>
-        /// Get the collection of arguments belonging to this command.
+        /// Enumerates the <see cref="IArgument"/> belonging to the Command node.
         /// </summary>
         IEnumerable<IArgument> Arguments { get; }
 
