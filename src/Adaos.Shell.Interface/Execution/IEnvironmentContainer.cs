@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Adaos.Shell.Interface
+namespace Adaos.Shell.Interface.Execution
 {
     /// <summary>
     /// An interface describing a container used to hold environments. 

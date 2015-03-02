@@ -1,4 +1,4 @@
-﻿namespace Adaos.Shell.Interface
+﻿namespace Adaos.Shell.Interface.SyntaxAnalysis
 {
     /// <summary>
     /// An interface describing a parser for the Adaos shell language.

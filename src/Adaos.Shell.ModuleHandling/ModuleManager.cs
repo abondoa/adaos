@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using Adaos.Shell.Interface.Exceptions;
+using Adaos.Shell.Interface.Execution;
 
 namespace Adaos.Shell.ModuleHandling
 {
@@ -24,7 +25,7 @@ namespace Adaos.Shell.ModuleHandling
             try
             {
                 var moduleType = Assembly.LoadFile(fileName).GetTypes().FirstOrDefault(
-                    x => x.GetInterfaces().Contains(typeof(Adaos.Shell.Interface.IModule))
+                    x => x.GetInterfaces().Contains(typeof(IModule))
                 );
                 if (moduleType == null)
                 {

@@ -6,6 +6,7 @@ using System.Text;
 using Adaos.Shell.Execution;
 using Adaos.Shell.Interface;
 using Adaos.Shell.Interface.Exceptions;
+using Adaos.Shell.Interface.Execution;
 
 namespace Adaos.Shell.Terminal
 {

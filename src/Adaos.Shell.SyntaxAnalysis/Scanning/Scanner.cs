@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Adaos.Shell.Interface.SyntaxAnalysis;
 using Adaos.Shell.SyntaxAnalysis.Exceptions;
 using Adaos.Shell.SyntaxAnalysis.Tokens;
 using Adaos.Shell.Interface;

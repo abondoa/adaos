@@ -1,4 +1,4 @@
-﻿namespace Adaos.Shell.Interface
+﻿namespace Adaos.Shell.Interface.SyntaxAnalysis
 {
     /// <summary>
     /// An interface that describes a factory for creating <see cref="IScanner"/> instances, 

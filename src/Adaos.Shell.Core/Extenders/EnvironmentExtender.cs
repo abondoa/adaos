@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Adaos.Shell.Interface;
+using Adaos.Shell.Interface.Execution;
 
 namespace Adaos.Shell.Core.Extenders
 {

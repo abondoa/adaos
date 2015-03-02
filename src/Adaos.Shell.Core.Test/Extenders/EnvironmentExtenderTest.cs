@@ -3,6 +3,7 @@ using System.Linq;
 using Adaos.Shell.Interface;
 using Adaos.Shell.Core;
 using Adaos.Shell.Core.Extenders;
+using Adaos.Shell.Interface.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Adaos.Shell.Core.Extenders.Test

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Adaos.Shell.Interface;
 using Adaos.Shell.Interface.Exceptions;
+using Adaos.Shell.Interface.SyntaxAnalysis;
 
 namespace Adaos.Shell.Core.Extenders
 {

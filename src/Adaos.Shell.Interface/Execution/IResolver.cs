@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using Adaos.Shell.Interface.SyntaxAnalysis;
 
-namespace Adaos.Shell.Interface
+namespace Adaos.Shell.Interface.Execution
 {
     /// <summary>
     /// An interface describing the command resolver, used to "translate" Adaos commands 

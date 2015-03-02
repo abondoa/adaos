@@ -1,4 +1,5 @@
 ﻿using Adaos.Shell.Interface;
+using Adaos.Shell.Interface.SyntaxAnalysis;
 
 namespace Adaos.Shell.SyntaxAnalysis.ASTs
 {

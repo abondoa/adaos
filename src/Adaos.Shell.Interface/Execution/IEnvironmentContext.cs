@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Adaos.Shell.Interface
+namespace Adaos.Shell.Interface.Execution
 {
     /// <summary>
     /// An interface describing the environment context, used to put an Adaos environment into 

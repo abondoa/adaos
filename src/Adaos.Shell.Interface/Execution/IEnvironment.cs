@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Adaos.Shell.Interface
+namespace Adaos.Shell.Interface.Execution
 {
     /// <summary>
     /// An interface describing the Adaos environment, used to encapsulate commands and behaviours.

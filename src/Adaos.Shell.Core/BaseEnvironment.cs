@@ -8,6 +8,8 @@ using Adaos.Common;
 using Adaos.Shell.Core;
 using Adaos.Common.Extenders;
 using Adaos.Shell.Core.ArgumentLookup;
+using Adaos.Shell.Interface.Execution;
+using Adaos.Shell.Interface.SyntaxAnalysis;
 
 namespace Adaos.Shell.Core
 {

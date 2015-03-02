@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Adaos.Shell.Interface;
+using Adaos.Shell.Interface.Execution;
 
 namespace Adaos.Shell.Execution.Environments
 {

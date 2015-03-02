@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using Adaos.Shell.Interface.SyntaxAnalysis;
 
-namespace Adaos.Shell.Interface
+namespace Adaos.Shell.Interface.Execution
 {
     /// <summary>
     /// A delegate for passing and storing executable commands in Adaos environments.

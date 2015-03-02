@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Adaos.Shell.Interface.SyntaxAnalysis;
 using NUnit.Framework;
 using Adaos.Shell.SyntaxAnalysis.Parsing;
 using Adaos.Shell.SyntaxAnalysis.ASTs;

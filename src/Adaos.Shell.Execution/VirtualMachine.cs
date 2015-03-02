@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using Adaos.Shell.Interface;
 using Adaos.Shell.Interface.Exceptions;
+using Adaos.Shell.Interface.Execution;
+using Adaos.Shell.Interface.SyntaxAnalysis;
 using Adaos.Shell.SyntaxAnalysis.Parsing;
 using Adaos.Shell.SyntaxAnalysis;
 using Adaos.Shell.SyntaxAnalysis.ASTs;
@@ -14,6 +16,7 @@ using Adaos.Shell.Core;
 using Adaos.Shell.Core.Extenders;
 using Adaos.Common.Extenders;
 using Adaos.Shell.Library.Standard;
+using Command = Adaos.Shell.Interface.Execution.Command;
 
 namespace Adaos.Shell.Execution
 {
@@ -123,7 +126,7 @@ namespace Adaos.Shell.Execution
 
             foreach (ICommand comm in prog.Commands)
             {
-                Adaos.Shell.Interface.Command toExec = null;
+                Command toExec = null;
                 if (!comm.IsPipeRecipient())
                 {
                     result.ToArray(); //Execute previous before trying to resolve (maybe a new environment has been loaded just before)
@@ -151,7 +154,7 @@ namespace Adaos.Shell.Execution
             }
         }
 
-        public Adaos.Shell.Interface.ErrorHandler HandleError
+        public ErrorHandler HandleError
         {
             get
             {

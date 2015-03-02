@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using Adaos.Shell.Interface.Execution;
 
 namespace Adaos.Shell.Interface.Exceptions
 {

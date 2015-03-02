@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Adaos.Shell.Interface.Execution;
 using Adaos.Shell.Library.AdHoc;
 using Adaos.Shell.Interface;
 using Adaos.Shell.Core;

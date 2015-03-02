@@ -6,6 +6,8 @@ using Adaos.Shell.Interface;
 using Adaos.Shell.Core.Extenders;
 using Adaos.Common.Extenders;
 using Adaos.Shell.Execution.Exceptions;
+using Adaos.Shell.Interface.Execution;
+using Adaos.Shell.Interface.SyntaxAnalysis;
 
 namespace Adaos.Shell.Execution
 {

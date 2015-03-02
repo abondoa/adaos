@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Adaos.Shell.Interface
+namespace Adaos.Shell.Interface.Execution
 {
     /// <summary>
     /// An interface describing a terminal used to execute source string in the Adaos language.

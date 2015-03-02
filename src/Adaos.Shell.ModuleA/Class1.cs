@@ -2,6 +2,8 @@
 using System.Linq;
 using Adaos.Shell.Interface;
 using System.Collections.Generic;
+using Adaos.Shell.Interface.Execution;
+using Adaos.Shell.Interface.SyntaxAnalysis;
 
 namespace ModuleA
 {

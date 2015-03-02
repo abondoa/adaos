@@ -5,6 +5,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Adaos.Shell.Interface.Execution;
+using Adaos.Shell.Interface.SyntaxAnalysis;
 
 namespace Adaos.Shell.Core.ArgumentLookup
 {

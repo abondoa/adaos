@@ -1,4 +1,4 @@
-﻿namespace Adaos.Shell.Interface
+﻿namespace Adaos.Shell.Interface.SyntaxAnalysis
 {
     /// <summary>
     /// An interface describing the scannertable used to define characters for certain
