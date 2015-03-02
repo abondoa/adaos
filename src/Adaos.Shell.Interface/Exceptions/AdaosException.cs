@@ -53,11 +53,21 @@ namespace Adaos.Shell.Interface.Exceptions
         /// </summary>
         /// <param name="info">The serialization info.</param>
         /// <param name="context">The streaming context with the serialized exception data.</param>
-        /// <param name="position">The position in which the error occured. Default is -1.</param>
-        protected AdaosException(SerializationInfo info, StreamingContext context, int position = -1)
+        protected AdaosException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            Position = position;
+            Position = info.GetInt32("Position");
+        }
+
+        /// <summary>
+        /// For serialization of AdaosExceptio.
+        /// </summary>
+        /// <param name="info">The serialization info.</param>
+        /// <param name="context">The streaming context with the serialized exception data.</param>
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("Position", Position);
+            base.GetObjectData(info, context);
         }
     }
 }

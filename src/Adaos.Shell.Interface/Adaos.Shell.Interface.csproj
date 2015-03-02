@@ -47,7 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Command.cs" />
+    <Compile Include="Execution\Command.cs" />
     <Compile Include="Exceptions\SyntacticException.cs" />
     <Compile Include="Exceptions\ExitTerminalException.cs" />
     <Compile Include="IArgument.cs" />
@@ -71,6 +71,9 @@
     <Compile Include="ITerminal.cs" />
     <Compile Include="IVirtualMachine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="SyntaxAnalysis\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
