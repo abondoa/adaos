@@ -26,7 +26,7 @@ namespace Adaos.Shell.Execution.Exceptions
         public VMException(int position,
             System.Runtime.Serialization.SerializationInfo info,
             System.Runtime.Serialization.StreamingContext context)
-            : base(info, context, position)
+            : base(info, context)
         {
         }
 

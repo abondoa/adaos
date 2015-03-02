@@ -40,8 +40,8 @@ namespace Adaos.Shell.Interface.Exceptions
         /// <param name="position">The position within the source string of the syntax error.</param>
         /// <param name="info">The serialization info.</param>
         /// <param name="context">The streaming context with the serialized exception data.</param>
-        public SyntacticException(int position, SerializationInfo info, StreamingContext context)
-            : base(info, context, position) { }
+        public SyntacticException(SerializationInfo info, StreamingContext context)
+            : base(info, context) { }
 
         /// <summary>
         /// Get the error message of the syntactic exception.

@@ -23,10 +23,9 @@ namespace Adaos.Shell.SyntaxAnalysis.Exceptions
         {
         }
 
-        public ScannerException(int position,
-            System.Runtime.Serialization.SerializationInfo info,
-            System.Runtime.Serialization.StreamingContext context)
-            : base(position,info, context)
+        public ScannerException(System.Runtime.Serialization.SerializationInfo info,
+                                System.Runtime.Serialization.StreamingContext context)
+            : base(info, context)
         {
         }
 
@@ -42,13 +41,6 @@ namespace Adaos.Shell.SyntaxAnalysis.Exceptions
 
         public ScannerException(string message, Exception innerException)
             : base(-1, message, innerException)
-        {
-        }
-
-        public ScannerException(
-            System.Runtime.Serialization.SerializationInfo info,
-            System.Runtime.Serialization.StreamingContext context)
-            : base(-1, info, context)
         {
         }
     }

@@ -22,7 +22,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Exceptions
         public ParserException(
             System.Runtime.Serialization.SerializationInfo info,
             System.Runtime.Serialization.StreamingContext context)
-            : base(-1,info,context)
+            : base(info,context)
         { }
 
         public ParserException(int position)
@@ -43,7 +43,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Exceptions
         public ParserException(int position,
             System.Runtime.Serialization.SerializationInfo info,
             System.Runtime.Serialization.StreamingContext context)
-            : base(position,info, context)
+            : base(info, context)
         {
         }
 

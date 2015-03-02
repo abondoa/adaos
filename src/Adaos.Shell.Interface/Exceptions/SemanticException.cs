@@ -39,7 +39,7 @@ namespace Adaos.Shell.Interface.Exceptions
         /// <param name="info">The serialization info.</param>
         /// <param name="context">The streaming context with the serialized exception data.</param>
         public SemanticException(int position, SerializationInfo info, StreamingContext context)
-            : base(info, context, position) { }
+            : base(info, context) { }
 
         /// <summary>
         /// Get the error message of the semantic exception.
