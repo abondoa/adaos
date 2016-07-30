@@ -38,15 +38,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.framework, Version=2.5.2.9222, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Libs\nunit.framework.dll</HintPath>
-      <Package>nunit</Package>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Web.Mvc, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -66,7 +60,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resolver.cs" />
     <Compile Include="Environments\SystemEnvironment.cs" />
-    <Compile Include="Test\VirtualMachineTest.cs" />
     <Compile Include="VirtualMachine.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -85,6 +78,10 @@
     <ProjectReference Include="..\Adaos.Shell.Library\Adaos.Shell.Library.csproj">
       <Project>{03374E9C-9B88-41A8-9B19-41CFCD9F7EFF}</Project>
       <Name>Adaos.Shell.Library</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Adaos.Shell.ModuleHandling\Adaos.Shell.ModuleHandling.csproj">
+      <Project>{592760C4-C18F-4EA8-80C8-118A61F19183}</Project>
+      <Name>Adaos.Shell.ModuleHandling</Name>
     </ProjectReference>
     <ProjectReference Include="..\Adaos.Shell.SyntaxAnalysis\Adaos.Shell.SyntaxAnalysis.csproj">
       <Project>{303E6284-A7DA-4E1C-8FF8-3E0B59DE6CFB}</Project>

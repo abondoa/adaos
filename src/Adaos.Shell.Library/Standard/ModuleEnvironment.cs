@@ -16,7 +16,7 @@ namespace Adaos.Shell.Library.Standard
         }
 
         private Dictionary<IEnumerable<string>, IModule> _loadedModules;
-        private IModuleManager _moduleManager;
+        private IModuleManager _moduleManager => _vm.ModuleManager;
         private IVirtualMachine _vm;
         virtual protected StreamWriter _output { get; private set; }
         private string _stdPath;
@@ -28,7 +28,6 @@ namespace Adaos.Shell.Library.Standard
         {
             _vm = vm;
             _loadedModules = new Dictionary<IEnumerable<string>, IModule>();
-            _moduleManager = _vm.ModuleManager;
             _envEnv = envEnv;
             _output = output;
             

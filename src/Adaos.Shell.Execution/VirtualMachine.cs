@@ -14,6 +14,7 @@ using Adaos.Shell.Core;
 using Adaos.Shell.Core.Extenders;
 using Adaos.Common.Extenders;
 using Adaos.Shell.Library.Standard;
+using Adaos.Shell.ModuleHandling;
 
 namespace Adaos.Shell.Execution
 {
@@ -48,6 +49,7 @@ namespace Adaos.Shell.Execution
 			_envContainer = new EnvironmentContainer (Library.ContextBuilder.Instance.BuildStandardEnvironment(this).ToEnum<IEnvironment>());
             _parser = new Parser();
             _resolver = new Resolver();
+            _moduleManager = new ModuleManager(this);
         }
 
         public virtual void Execute(string command)
@@ -100,7 +102,7 @@ namespace Adaos.Shell.Execution
         }
 
 
-        internal IEnumerable<IArgument> InternExecute(string command, int initialPosition = 0)
+        public IEnumerable<IArgument> InternExecute(string command, int initialPosition = 0)
         {
 
             IProgramSequence prog = _parser.Parse(command, initialPosition);

@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
 using Adaos.Shell.SyntaxAnalysis.Scanning;
 using Adaos.Shell.SyntaxAnalysis.Exceptions;
 using Adaos.Shell.Interface;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Adaos.Shell.SyntaxAnalysis.Test
 {
-    [TestFixture]
+    [TestClass]
     public class ScannerTest
     {
         private Scanner scanner;
@@ -22,7 +22,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
         private string complexNestedWord = "\"user create Ale @'random number \"0\" \"9999\" width 4'\"";
         private string semicolon = ";";
         private string environement = ".";
-        private string at = "@";
+        private string executeSymbol = "$";
         private string escaped = "\\'";
         private string escapeNothing = "\\";
         private string commandConcatenator = ",";
@@ -36,18 +36,18 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
         private string escapedInWord = "let\\'sEscape\\!\\@TheMoment";
         private string escapedInNestedWord = "\"user create AleTheMale\\!\\! @'random number \"0\" \"9999\" width 4'\"";
 
-        [SetUp]
+        [TestInitialize]
         public void SetUp()
         {
         }
 
-        [TearDown]
+        [TestCleanup]
         public void TearDown()
         {
             scanner = null;
         }
 
-        [Test]
+        [TestMethod]
         public void ConstructorNullInput()
         {
             try
@@ -61,7 +61,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
             }
         }
 
-        [Test]
+        [TestMethod]
         public void ConstructorEmptyInput()
         {
             try
@@ -75,7 +75,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
             }
         }
 
-        [Test]
+        [TestMethod]
         public void ConstructorWorkingInput()
         {
             try
@@ -89,61 +89,61 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
             }
         }
 
-        [Test]
+        [TestMethod]
         public void ScanWordSimple()
         {
             _test(simpleWord, Tokens.TokenKind.WORD);
         }
 
-        [Test]
+        [TestMethod]
         public void ScanWordComplex()
         {
             _test(complexWord, Tokens.TokenKind.WORD);
         }
 
-        [Test]
+        [TestMethod]
         public void ScanSemicolon()
         {
             _test(semicolon, Tokens.TokenKind.COMMAND_SEPARATOR);
         }
 
-        [Test]
-        public void ScanAt()
+        [TestMethod]
+        public void ScanExecutionSymbol()
         {
-            _test(at, Tokens.TokenKind.EXECUTE);
+            _test(executeSymbol, Tokens.TokenKind.EXECUTE);
         }
 
-        [Test]
+        [TestMethod]
         public void ScanConcatenator()
         {
             _test(commandConcatenator, Tokens.TokenKind.COMMAND_CONCATENATOR);
         }
 
-        [Test]
+        [TestMethod]
         public void ScanEnvironment()
         {
             _test(environement, Tokens.TokenKind.ENVIRONMENT_SEPARATOR);
         }
 
-        [Test]
+        [TestMethod]
         public void ScanNestedWordSimple()
         {
             _test(simpleNestedWord, Tokens.TokenKind.NESTEDWORDS);
         }
 
-        [Test]
+        [TestMethod]
         public void ScanNestedWordComplex()
         {
             _test(complexNestedWord, Tokens.TokenKind.NESTEDWORDS);
         }
 
-        [Test]
+        [TestMethod]
         public void ScanEOF()
         {
             _test(";",Tokens.TokenKind.EOF,"",2,new int[]{4,4});
         }
 
-        [Test]
+        [TestMethod]
         public void NeverEndingQuoteEmpty()
         {
             scanner = new Scanner(neverEndingQuoteEmpty, scannerTable);
@@ -162,7 +162,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
             }
         }
 
-        [Test]
+        [TestMethod]
         public void NeverEndingQuoteContent()
         {
             scanner = new Scanner(neverEndingQuoteContent, scannerTable);
@@ -181,7 +181,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
             }
         }
 
-        [Test]
+        [TestMethod]
         public void NeverEndingApostropheEmpty()
         {
             scanner = new Scanner(neverEndingApostropheEmpty, scannerTable);
@@ -200,7 +200,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
             }
         }
 
-        [Test]
+        [TestMethod]
         public void NeverEndingApostropheContent()
         {
             scanner = new Scanner(neverEndingApostropheContent, scannerTable);
@@ -219,7 +219,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
             }
         }
 
-        [Test]
+        [TestMethod]
         public void SlashTest()
         {
             scanner = new Scanner(echoSlash, scannerTable);
@@ -239,7 +239,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
             }
         }
 
-        [Test]
+        [TestMethod]
         public void EscapeNothing()
         {
             scanner = new Scanner(escapeNothing, scannerTable);
@@ -257,7 +257,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
             }
         }
 
-        [Test]
+        [TestMethod]
         public void NewScanTablePipe()
         {
             scannerTable.Pipe = "||";
@@ -267,7 +267,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
             scannerTable = stdScannerTable;
         }
 
-        [Test]
+        [TestMethod]
         public void NewScanTableLongWeirdExecute()
         {
             scannerTable.Execute = "!!EXECUTE??";
@@ -277,19 +277,19 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
             scannerTable = stdScannerTable;
         }
 
-        [Test]
+        [TestMethod]
         public void EscapedCharacter()
         {
             _test(escaped, Tokens.TokenKind.WORD, escaped.Replace("\\", ""));
         }
 
-        [Test]
+        [TestMethod]
         public void EscapedCharacterInTheMiddleOfWord()
         {
             _test(escapedInWord, Tokens.TokenKind.WORD, escapedInWord.Replace("\\",""));
         }
 
-        [Test]
+        [TestMethod]
         public void EscapedCharacterInTheMiddleOfNestedWord()
         {
             _test(escapedInNestedWord, Tokens.TokenKind.NESTEDWORDS, escapedInNestedWord.Replace("\\", ""));

@@ -85,7 +85,7 @@ namespace Adaos.Shell.Core
             }
         }
 
-        public virtual void Bind(ArgumentLookupCommand command,string commandTemplate)
+        public virtual void Bind(ArgumentLookupCommand command, string commandTemplate)
         {
             var segments = ParseCommandTemplate(commandTemplate);
             if (segments.Count() < 1)

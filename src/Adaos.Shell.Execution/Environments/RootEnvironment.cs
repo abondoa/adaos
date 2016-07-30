@@ -65,6 +65,8 @@ namespace Adaos.Shell.Execution.Environments
         public IEnvironmentContext AddChild(IEnvironment environment)
         {
             var result = environment.AsContext();
+            if (_childEnvs.Any(x => x.Name == environment.Name))
+                throw new Exception($"Environment {environment.Name} already part of {Name}"); //TODO: Make speific exception
             _childEnvs.Add(result);
             return result;
         }

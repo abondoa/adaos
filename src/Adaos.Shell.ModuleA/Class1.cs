@@ -102,12 +102,111 @@ namespace ModuleA
 
         public IEnvironmentContext AsContext()
         {
-            throw new NotImplementedException();
+            return new EnvironmentContext(this, null);
         }
 
         public string QualifiedName(string separator)
         {
             return Name;
+        }
+    }
+
+    internal class EnvironmentContext : IEnvironmentContext
+    {
+        private IEnvironmentContext parrent;
+        private IEnvironment env;
+
+        public EnvironmentContext(IEnvironment env, IEnvironmentContext parrent)
+        {
+            this.env = env;
+            this.parrent = parrent;
+        }
+
+        public bool AllowUnbinding => false;
+
+        public IEnumerable<IEnvironmentContext> ChildEnvironments { get { yield break; } }
+
+        public IEnumerable<string> Commands => env.Commands;
+
+        public IEnumerable<Type> Dependencies => env.Dependencies;
+
+        public Command EnvironmentCommand
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public IEnumerable<string> EnvironmentNames
+        {
+            get
+            {
+                if (parrent != null)
+                    foreach (var e in parrent.EnvironmentNames)
+                        yield return e;
+
+                yield return env.Name;
+            }
+        }
+
+        public IEnvironment Inner => env;
+
+        public bool IsEnabled
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public string Name => env.Name;
+
+        public IEnvironmentContext Parent => parrent;
+
+        public IEnvironmentContext AddChild(IEnvironment environment)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnvironmentContext AsContext()
+        {
+            return this;
+        }
+
+        public void Bind(Command command, params string[] commandNames)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnvironmentContext ChildEnvironment(string childEnvironmentName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string QualifiedName(string separator)
+        {
+            return string.Join(separator, EnvironmentNames);
+        }
+
+        public void RemoveChild(IEnvironmentContext environment)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Command Retrieve(string commandName)
+        {
+            return env.Retrieve(commandName);
+        }
+
+        public void Unbind(string commandName)
+        {
+            env.Unbind(commandName);
         }
     }
 

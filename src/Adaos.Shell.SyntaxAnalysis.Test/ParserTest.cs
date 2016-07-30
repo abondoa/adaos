@@ -2,65 +2,53 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
 using Adaos.Shell.SyntaxAnalysis.Parsing;
 using Adaos.Shell.SyntaxAnalysis.ASTs;
 using Adaos.Shell.Interface;
 using Adaos.Shell.SyntaxAnalysis.Exceptions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Adaos.Shell.SyntaxAnalysis;
 
 namespace Adaos.Shell.SyntaxAnalysis.Test
 {
-    [TestFixture]
+    [TestClass]
     public class ParserTest
     {
-        private Parsing.Parser _parser;
-        static internal string legalInput = "system.user create ale ' 1234 4321' @\"random number '0' '100'\"";
+        private Parser _parser;
+        static internal string legalInput = "system.user create ale ' 1234 4321' $\"random number '0' '100'\"";
 
-        [SetUp]
+        [TestInitialize]
         public void SetUp()
         { }
 
-        [TearDown]
+        [TestCleanup]
         public void TearDown()
         {
             _parser = null;
         }
 
-        [Test]
+        [TestMethod]
         public void ConstructLegalParserNoArgument()
         {
-            _parser = new Parsing.Parser();
+            _parser = new Parser();
         }
 
-        [Test]
+        [TestMethod]
         public void ConstructLegalParserArgument()
         {
-            _parser = new Parsing.Parser(false);
+            _parser = new Parser(false);
         }
 
-        [Test]
+        [TestMethod]
         public void ParseLegal()
         {
-            _parser = new Parsing.Parser();
+            _parser = new Parser();
             IProgramSequence result = _parser.Parse(legalInput);
             Assert.AreEqual(0, result.Errors.Count());
-            try
-            {
-                (result as ProgramSequence).Visit(new VisitUserCreateAle1234_4321ProgSeq(), null);
-            }
-            catch (NotImplementedException e)
-            {
-                Assert.Fail("NotImplementedException thrown: " + e.Message);
-                throw;
-            }
-            catch (Exception e)
-            {
-                Assert.Fail("Exception thrown: " + e.Message);
-                throw;
-            }
+            (result as ProgramSequence).Visit(new VisitUserCreateAle1234_4321ProgSeq(), null);
         }
 
-        [Test]
+        [TestMethod]
         public void ParseSlash()
         {
             _parser = new Parsing.Parser();
@@ -70,10 +58,10 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
 
         }
 
-        [Test]
+        [TestMethod]
         public void ParseSlashExtensive()
         {
-            _parser = new Parsing.Parser();
+            _parser = new Parser();
 
             IProgramSequence result = _parser.Parse("echo /n");
             Assert.AreEqual(1, result.Errors.Count());
@@ -86,31 +74,31 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
 
         }
 
-        [Test]
+        [TestMethod]
         public void ParseMultipleEnvironments()
         {
-            _parser = new Parsing.Parser();
+            _parser = new Parser();
 
             IProgramSequence result = _parser.Parse("env1.env2.command");
-            Assert.That(result.Errors, Has.Count.EqualTo(0));
-            Assert.That(result.Commands.First().EnvironmentNames.ToList(), Has.Count.EqualTo(2));
+            Assert.AreEqual(result.Errors.Count(), 0);
+            Assert.AreEqual(result.Commands.First().EnvironmentNames.ToList().Count, 2);
         }
 
-        [Test]
+        [TestMethod]
         public void ParseMultipleEnvironmentsNoCommand()
         {
-            _parser = new Parsing.Parser();
+            _parser = new Parser();
 
             IProgramSequence result = _parser.Parse("env1.env1.");
-            Assert.That(result.Errors, Has.Count.AtLeast(1));
+            Assert.AreEqual(result.Errors.Count(), 1);
         }
 
-        [Test]
+        [TestMethod]
         public void ParseExecutable()
         {
-            _parser = new Parsing.Parser();
+            _parser = new Parser();
 
-            IProgramSequence result = _parser.Parse("echo @'view 1 si'");
+            IProgramSequence result = _parser.Parse("echo $'view 1 si'");
             Assert.AreEqual(0, result.Errors.Count());
 
             Assert.IsTrue((result as ProgramSequenceActual).Command.Arguments.First().ToExecute);
@@ -122,39 +110,39 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
             Assert.AreEqual(0, result.Errors.Count());
         }
 
-        [Test]
-        public void ParseSingleAtAndGetErrors()
+        [TestMethod]
+        public void ParseSingleExecuteSymbolAndGetErrors()
         {
-            _parser = new Parsing.Parser();
+            _parser = new Parser();
 
-            IProgramSequence result = _parser.Parse("@");
+            IProgramSequence result = _parser.Parse("$");
             Assert.AreEqual(2, result.Errors.Count());
-            Assert.IsInstanceOf<ParserException>(result.Errors.First()); // Illegal token received (not word)
-            Assert.IsInstanceOf<ParserException>(result.Errors.Skip(1).First()); // Illegal EOF (due to panic mode)
+            Assert.IsInstanceOfType(result.Errors.First(),typeof(ParserException)); // Illegal token received (not word)
+            Assert.IsInstanceOfType(result.Errors.Skip(1).First(), typeof(ParserException)); // Illegal EOF (due to panic mode)
         }
 
-        [Test]
-        public void ParseSingleAtAndGetErrorWithoutPanic()
+        [TestMethod]
+        public void ParseSingleExecuteSymbolAndGetErrorWithoutPanic()
         {
-            _parser = new Parsing.Parser(false);
+            _parser = new Parser(false);
 
-            IProgramSequence result = _parser.Parse("@");
+            IProgramSequence result = _parser.Parse("$");
             Assert.AreEqual(1, result.Errors.Count());
-            Assert.IsInstanceOf<ParserException>(result.Errors.First()); // Illegal token received (not word)
+            Assert.IsInstanceOfType(result.Errors.First(),typeof(ParserException)); // Illegal token received (not word)
         }
 
-        [Test]
-        public void ParseMultipleAtAndGetErrors()
+        [TestMethod]
+        public void ParseMultipleExecuteSymbolAndGetErrors()
         {
-            _parser = new Parsing.Parser();
+            _parser = new Parser();
 
-            IProgramSequence result = _parser.Parse("echo @@@@");
+            IProgramSequence result = _parser.Parse("echo $$$$");
             Assert.AreEqual(2, result.Errors.Count());
-            Assert.IsInstanceOf<ParserException>(result.Errors.First()); // Illegal token received (not word)
-            Assert.IsInstanceOf<ParserException>(result.Errors.Skip(1).First()); // Illegal EOF (due to panic mode)
+            Assert.IsInstanceOfType(result.Errors.First(),typeof(ParserException)); // Illegal token received (not word)
+            Assert.IsInstanceOfType(result.Errors.Skip(1).First(), typeof(ParserException)); // Illegal EOF (due to panic mode)
         }
 
-        [Test]
+        [TestMethod]
         public void ParsePipedProgram()
         {
             _parser = new Parsing.Parser();
@@ -171,18 +159,17 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
             Assert.AreEqual(0, result.Errors.Count());
         }
 
-        [Test]
+        [TestMethod]
         public void ParseConcatenatedProgram()
         {
-            _parser = new Parsing.Parser();
+            _parser = new Parser();
 
             IProgramSequence result = _parser.Parse("sum 1 2 , sum 3 4 | echo");
             Assert.AreEqual(0, result.Errors.Count());
 
-            Assert.AreEqual((result as ProgramSequenceActual).Commands.First(),CommandRelation.Concatenated);
-            Assert.AreEqual((result as ProgramSequenceActual).Commands.First(), CommandRelation.Piped);
-            Assert.AreEqual((result as ProgramSequenceActual).Commands.Skip(1).First(), CommandRelation.Concatenated);
-            Assert.AreEqual((result as ProgramSequenceActual).Commands.Skip(2).First(), CommandRelation.Piped);
+            Assert.AreEqual(CommandRelation.Separated,(result as ProgramSequenceActual).Commands.First().RelationToPrevious);
+            Assert.AreEqual(CommandRelation.Concatenated,(result as ProgramSequenceActual).Commands.Skip(1).First().RelationToPrevious);
+            Assert.AreEqual(CommandRelation.Piped,(result as ProgramSequenceActual).Commands.Skip(2).First().RelationToPrevious);
 
             result = _parser.Parse("echo test");
             Assert.AreEqual(0, result.Errors.Count());
@@ -191,7 +178,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
             Assert.AreEqual(0, result.Errors.Count());
         }
 
-        [Test]
+        [TestMethod]
         public void ParseProgramSequence()
         {
             _parser = new Parsing.Parser();
@@ -299,16 +286,6 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
             }
 
             object IVisitor.Visit(CommandWithEnvironment comm, object obj)
-            {
-                throw new NotImplementedException();
-            }
-
-            object IVisitor.Visit(CommandNameActual commName, object obj)
-            {
-                throw new NotImplementedException();
-            }
-
-            object IVisitor.Visit(ProgramSequenceActual prog, object obj)
             {
                 throw new NotImplementedException();
             }

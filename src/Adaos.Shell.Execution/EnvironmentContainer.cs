@@ -18,7 +18,7 @@ namespace Adaos.Shell.Execution
 
         public EnvironmentContainer(IEnumerable<IEnvironment> environments)
         {
-            _rootEnvironment = new Environments.RootEnvironment();
+            _rootEnvironment = new RootEnvironment();
             _rootEnvironment.AddChildren(
                 (new SystemEnvironment()).ToEnum<IEnvironment>().
                 Then(environments));

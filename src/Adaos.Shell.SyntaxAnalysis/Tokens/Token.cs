@@ -6,7 +6,7 @@ using Adaos.Shell.Interface;
 
 namespace Adaos.Shell.SyntaxAnalysis.Tokens
 {
-    class Token
+    public class Token
     {
         public int Position { get; private set; }
         public string Spelling { get; private set; }

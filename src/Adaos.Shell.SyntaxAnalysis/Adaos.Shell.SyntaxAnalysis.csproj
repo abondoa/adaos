@@ -89,8 +89,6 @@
     <Compile Include="Scanning\Scanner.cs" />
     <Compile Include="Scanning\ScannerFactory.cs" />
     <Compile Include="Scanning\ScannerTable.cs" />
-    <Compile Include="Test\ParserTest.cs" />
-    <Compile Include="Test\ScannerTest.cs" />
     <Compile Include="Tokens\Token.cs" />
     <Compile Include="Tokens\TokenKind.cs" />
   </ItemGroup>

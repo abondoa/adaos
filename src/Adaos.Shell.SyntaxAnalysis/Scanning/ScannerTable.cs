@@ -6,7 +6,7 @@ using Adaos.Shell.Interface;
 
 namespace Adaos.Shell.SyntaxAnalysis.Scanning
 {
-    class ScannerTable : IScannerTable
+    public class ScannerTable : IScannerTable
     {
         public string Pipe
         {

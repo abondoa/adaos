@@ -41,7 +41,7 @@ namespace Adaos.Shell.Core.ArgumentLookup
             if (argumentTemplateSegment == null)
                 throw new ArgumentNullException(
                     "ArgumentTemplateSegment cannot be null string.");
-            if (String.IsNullOrWhiteSpace(argumentTemplateSegment))
+            if (string.IsNullOrWhiteSpace(argumentTemplateSegment))
                 throw new ArgumentNullException(
                     "ArgumentTemplateSegment cannot be empty or all whitespace.");
 
@@ -56,7 +56,7 @@ namespace Adaos.Shell.Core.ArgumentLookup
             else 
             {
                 IsRequired = true;
-                DefaultValue = String.Empty;
+                DefaultValue = string.Empty;
             }
             if (Names.Contains("*"))
             {

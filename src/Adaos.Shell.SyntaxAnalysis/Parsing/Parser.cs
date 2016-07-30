@@ -320,7 +320,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Parsing
             Word result = null;
             if(_currentToken.Kind != TokenKind.WORD)
             {
-                if (!Panic) throw new IllegalTokenException(_currentToken, TokenKind.WORD);
+                if (!Panic || _currentToken.Kind == TokenKind.EOF) throw new IllegalTokenException(_currentToken, TokenKind.WORD);
                 Errors.Add(new IllegalTokenException(_currentToken, TokenKind.WORD));
                 do
                 {

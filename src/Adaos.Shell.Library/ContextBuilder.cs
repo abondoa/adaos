@@ -28,7 +28,7 @@ namespace Adaos.Shell.Library
 
 		public IEnvironmentContext BuildStandardEnvironment(IVirtualMachine vm)
 		{
-			var std = new StandardEnvironment ();
+			var std = new StandardEnvironment();
             var stdContext = std.AsContext();
 			
 			var envEnv = new EnvironmentEnvironment(vm.Output, vm);

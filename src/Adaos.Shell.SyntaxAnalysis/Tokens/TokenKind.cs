@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Adaos.Shell.SyntaxAnalysis.Tokens
 {
-    enum TokenKind
+    public enum TokenKind
     {
         WORD,
         COMMAND_SEPARATOR,

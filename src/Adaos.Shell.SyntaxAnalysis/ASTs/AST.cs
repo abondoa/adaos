@@ -35,6 +35,6 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
         /// </summary>
         /// <param name="visitor">The <see cref="IVisitor"/> to "accept".</param>
         /// <param name="obj">An object passed to the visitor.</param>
-        public abstract Object Visit(IVisitor visitor, Object obj);
+        public abstract object Visit(IVisitor visitor, Object obj);
     }
 }

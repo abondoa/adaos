@@ -8,7 +8,7 @@ using Adaos.Shell.Interface;
 
 namespace Adaos.Shell.SyntaxAnalysis.Scanning
 {
-    class Scanner : IScanner<Token>
+    public class Scanner : IScanner<Token>
     {
         private string Pipe { get { return _scannerTable.Pipe; } }
         private string Execute { get { return _scannerTable.Execute; } }
