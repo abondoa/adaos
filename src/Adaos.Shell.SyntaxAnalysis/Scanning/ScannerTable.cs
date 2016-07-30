@@ -50,6 +50,18 @@ namespace Adaos.Shell.SyntaxAnalysis.Scanning
             set;
         }
 
+        public string ArgumentExecutableStarter
+        {
+            get;
+            set;
+        }
+
+        public string ArgumentExecutableStopper
+        {
+            get;
+            set;
+        }
+
         public ScannerTable()
         {
             Pipe = "|";
@@ -59,6 +71,8 @@ namespace Adaos.Shell.SyntaxAnalysis.Scanning
             CommandConcatenator = ",";
             Escaper = "\\";
             ArgumentSeparator = ":";
+            ArgumentExecutableStarter = "(";
+            ArgumentExecutableStopper = ")";
         }
 
         public ScannerTable(ScannerTable original)
@@ -70,6 +84,8 @@ namespace Adaos.Shell.SyntaxAnalysis.Scanning
             CommandConcatenator = original.CommandConcatenator;
             Escaper = original.Escaper;
             ArgumentSeparator = original.ArgumentSeparator;
+            ArgumentExecutableStarter = original.ArgumentExecutableStarter;
+            ArgumentExecutableStopper = original.ArgumentExecutableStopper;
         }
 
 

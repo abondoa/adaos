@@ -6,7 +6,7 @@ using Adaos.Shell.Interface;
 
 namespace Adaos.Shell.SyntaxAnalysis.ASTs
 {
-    public class CommandWithEnvironment : CommandBase
+    public class CommandWithEnvironment : ExecutionBase
     {
 		public override IEnumerable<string> EnvironmentNames
         {

@@ -15,15 +15,15 @@ namespace Adaos.Shell.Interface
         /// <param name="command">The command to find associated environment for.</param>
         /// <param name="environments">The collection of environments to search for the command in.</param>
         /// <returns>The environment containing the command.</returns>
-        IEnvironment GetEnvironmentOf(ICommand command, IEnumerable<IEnvironmentContext> environments);
+        IEnvironment GetEnvironmentOf(IExecution command, IEnumerable<IEnvironmentContext> environments);
 
         /// <summary>
-        /// Resolve a given <see cref="ICommand"/> in the Adaos parse tree/concrete syntax tree 
+        /// Resolve a given <see cref="IExecution"/> in the Adaos parse tree/concrete syntax tree 
         /// as a executable command within an Adaos environment. 
         /// </summary>
         /// <param name="command">The Adaos parse tree command to resolve.</param>
         /// <param name="environments">The collection of environments to search for the command in.</param>
         /// <returns>An executable adaos command.</returns>
-        Command Resolve(ICommand command, IEnumerable<IEnvironmentContext> environments);
+        Command Resolve(IExecution command, IEnumerable<IEnvironmentContext> environments);
     }
 }

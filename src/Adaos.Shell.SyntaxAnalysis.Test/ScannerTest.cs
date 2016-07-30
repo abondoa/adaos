@@ -35,6 +35,8 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
         private IScannerTable scannerTable = new ScannerTable();
         private string escapedInWord = "let\\'sEscape\\!\\@TheMoment";
         private string escapedInNestedWord = "\"user create AleTheMale\\!\\! @'random number \"0\" \"9999\" width 4'\"";
+        private string arguementExecutableStart = "(";
+        private string arguementExecutableStop = ")";
 
         [TestInitialize]
         public void SetUp()
@@ -104,7 +106,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
         [TestMethod]
         public void ScanSemicolon()
         {
-            _test(semicolon, Tokens.TokenKind.COMMAND_SEPARATOR);
+            _test(semicolon, Tokens.TokenKind.EXECUTION_SEPARATOR);
         }
 
         [TestMethod]
@@ -114,9 +116,21 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
         }
 
         [TestMethod]
+        public void ScanArgumentExecutableStart()
+        {
+            _test(arguementExecutableStart, Tokens.TokenKind.ARGUMENT_EXECUTABLE_START);
+        }
+
+        [TestMethod]
+        public void ScanArgumentExecutableStop()
+        {
+            _test(arguementExecutableStop, Tokens.TokenKind.ARGUMENT_EXECUTABLE_STOP);
+        }
+
+        [TestMethod]
         public void ScanConcatenator()
         {
-            _test(commandConcatenator, Tokens.TokenKind.COMMAND_CONCATENATOR);
+            _test(commandConcatenator, Tokens.TokenKind.EXECUTION_CONCATENATOR);
         }
 
         [TestMethod]
@@ -261,7 +275,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
         public void NewScanTablePipe()
         {
             scannerTable.Pipe = "||";
-            _test("||", Tokens.TokenKind.COMMAND_PIPE);
+            _test("||", Tokens.TokenKind.EXECUTION_PIPE);
 
             //Clean up
             scannerTable = stdScannerTable;

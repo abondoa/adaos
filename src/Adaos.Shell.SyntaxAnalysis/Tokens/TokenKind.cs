@@ -8,14 +8,16 @@ namespace Adaos.Shell.SyntaxAnalysis.Tokens
     public enum TokenKind
     {
         WORD,
-        COMMAND_SEPARATOR,
-        COMMAND_CONCATENATOR,
-        ENVIRONMENT_SEPARATOR,
         NESTEDWORDS,
+        EXECUTION_SEPARATOR,
+        EXECUTION_CONCATENATOR,
+        EXECUTION_PIPE,
+        ENVIRONMENT_SEPARATOR,
         EXECUTE,
-        COMMAND_PIPE,
         MATH_SYMBOL,
         ARGUMENT_SEPARATOR,
+        ARGUMENT_EXECUTABLE_START,
+        ARGUMENT_EXECUTABLE_STOP,
         EOF
     }
 }

@@ -10,13 +10,15 @@ namespace Adaos.Shell.SyntaxAnalysis.Scanning
 {
     public class Scanner : IScanner<Token>
     {
-        private string Pipe { get { return _scannerTable.Pipe; } }
-        private string Execute { get { return _scannerTable.Execute; } }
-        private string CommandSeparator { get { return _scannerTable.CommandSeparator; } }
-        private string CommandConcatenator { get { return _scannerTable.CommandConcatenator; } }
-        private string EnvironmentSeparator { get { return _scannerTable.EnvironmentSeparator; } }
-        private string Escaper { get { return _scannerTable.Escaper; } }
-        private string ArgumentSeparator { get { return _scannerTable.ArgumentSeparator; } }
+        private string Pipe => _scannerTable.Pipe;
+        private string Execute => _scannerTable.Execute;
+        private string CommandSeparator => _scannerTable.CommandSeparator;
+        private string CommandConcatenator => _scannerTable.CommandConcatenator;
+        private string EnvironmentSeparator => _scannerTable.EnvironmentSeparator;
+        private string Escaper => _scannerTable.Escaper;
+        private string ArgumentSeparator => _scannerTable.ArgumentSeparator;
+        private string ArgumentExecutableStarter => _scannerTable.ArgumentExecutableStarter;
+        private string ArgumentExecutableStopper => _scannerTable.ArgumentExecutableStopper; 
 
         private string _workingString;
         private int _position;
@@ -140,30 +142,40 @@ namespace Adaos.Shell.SyntaxAnalysis.Scanning
                 _currentKind = TokenKind.ENVIRONMENT_SEPARATOR;
                 TakeIt(EnvironmentSeparator.Length);
             }
-            else if (CurrentString(CommandSeparator.Length).Equals( CommandSeparator))
+            else if (CurrentString(CommandSeparator.Length).Equals(CommandSeparator))
             {
-                _currentKind = TokenKind.COMMAND_SEPARATOR;
+                _currentKind = TokenKind.EXECUTION_SEPARATOR;
                 TakeIt(CommandSeparator.Length);
             }
             else if (CurrentString(CommandConcatenator.Length).Equals(CommandConcatenator))
             {
-                _currentKind = TokenKind.COMMAND_CONCATENATOR;
+                _currentKind = TokenKind.EXECUTION_CONCATENATOR;
                 TakeIt(CommandConcatenator.Length);
             }
-            else if (CurrentString(Execute.Length).Equals( Execute))
+            else if (CurrentString(Execute.Length).Equals(Execute))
             {
                 _currentKind = TokenKind.EXECUTE;
                 TakeIt(Execute.Length);
             }
-            else if (CurrentString(Pipe.Length).Equals( Pipe))
+            else if (CurrentString(Pipe.Length).Equals(Pipe))
             {
-                _currentKind = TokenKind.COMMAND_PIPE;
+                _currentKind = TokenKind.EXECUTION_PIPE;
                 TakeIt(Pipe.Length);
             }
             else if (CurrentString(ArgumentSeparator.Length).Equals(ArgumentSeparator))
             {
                 _currentKind = TokenKind.ARGUMENT_SEPARATOR;
-                TakeIt(Pipe.Length);
+                TakeIt(ArgumentSeparator.Length);
+            }
+            else if (CurrentString(ArgumentSeparator.Length).Equals(ArgumentExecutableStarter))
+            {
+                _currentKind = TokenKind.ARGUMENT_EXECUTABLE_START;
+                TakeIt(ArgumentExecutableStarter.Length);
+            }
+            else if (CurrentString(ArgumentSeparator.Length).Equals(ArgumentExecutableStopper))
+            {
+                _currentKind = TokenKind.ARGUMENT_EXECUTABLE_STOP;
+                TakeIt(ArgumentExecutableStopper.Length);
             }
             else
             {

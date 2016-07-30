@@ -21,7 +21,7 @@ namespace Adaos.Shell.Execution
         /// <param name="environments"></param>
         /// <returns></returns>
         public Command Resolve(
-            ICommand command,
+            IExecution command,
             IEnumerable<IEnvironmentContext> environments)
         {
             Command result = null;
@@ -74,7 +74,7 @@ namespace Adaos.Shell.Execution
         }
 
         public IEnvironment GetEnvironmentOf (
-            ICommand command,
+            IExecution command,
             IEnumerable<IEnvironmentContext> environments)
         {
             Command result = null;

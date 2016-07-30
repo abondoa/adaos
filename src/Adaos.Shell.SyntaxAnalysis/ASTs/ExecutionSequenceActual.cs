@@ -3,31 +3,31 @@
 namespace Adaos.Shell.SyntaxAnalysis.ASTs
 {
     /// <summary>
-    /// A class for the actual <see cref="ProgramSequence"/> of the Adaos AST.
+    /// A class for the actual <see cref="ExecutionSequence"/> of the Adaos AST.
     /// The ProgramSequence is the root node of the AST, and its children are a sequence of commands.
     /// </summary>
-    public class ProgramSequenceActual : ProgramSequence
+    public class ExecutionSequenceActual : ExecutionSequence
     {
         /// <summary>
         /// Get the first command of the program sequence.
         /// </summary>
-        public Command Command { get; private set; }
+        public Execution Command { get; private set; }
 
         /// <summary>
-        /// Get a <see cref="ProgramSequenceFollow"/> AST node representing the following 
+        /// Get a <see cref="ExecutionSequenceFollow"/> AST node representing the following 
         /// sequence of commands, after the first command.
         /// </summary>
-        public ProgramSequenceFollow FollowingCommands { get; private set; }
+        public ExecutionSequenceFollow FollowingCommands { get; private set; }
 
         /// <summary>
         /// Enumerate the commands of the ProgramSequence.
         /// </summary>
-        public override IEnumerable<Command> Commands 
+        public override IEnumerable<Execution> Commands 
         {
             get 
             {
                 yield return Command;
-                foreach (Command com in FollowingCommands.Commands)
+                foreach (Execution com in FollowingCommands.Commands)
                 {
                     yield return com;
                 }
@@ -36,7 +36,7 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
 
         /// <summary>
         /// Get the position of the first character of the first command of this
-        /// <see cref="ProgramSequenceActual"/> node.
+        /// <see cref="ExecutionSequenceActual"/> node.
         /// </summary>
         public override int Position
         {
@@ -51,7 +51,7 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
         /// </summary>
         /// <param name="command">The first command node of the ProgramSequence.</param>
         /// <param name="followingCommands">A ProgramSequenceFollow node representing a sequence of commands following the first.</param>
-        public ProgramSequenceActual(Command command, ProgramSequenceFollow followingCommands)
+        public ExecutionSequenceActual(Execution command, ExecutionSequenceFollow followingCommands)
         {
             Command = command;
             FollowingCommands = followingCommands;
@@ -63,7 +63,7 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
         /// <param name="position">The position of the first character of this program sequence.</param>
         /// <param name="command">The first command node of the ProgramSequence.</param>
         /// <param name="followingCommands">A ProgramSequenceFollow node representing a sequence of commands following the first.</param>
-        public ProgramSequenceActual(int position, Command command, ProgramSequenceFollow followingCommands) : base(position)
+        public ExecutionSequenceActual(int position, Execution command, ExecutionSequenceFollow followingCommands) : base(position)
         {
             Command = command;
             FollowingCommands = followingCommands;

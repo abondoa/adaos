@@ -29,7 +29,7 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
         {
             if (wordToken.Kind != Tokens.TokenKind.MATH_SYMBOL)
             {
-                throw new ArgumentException("The token inserted into the WORD AST must be of the kind WORD");
+                throw new ArgumentException("The token inserted into the WordSymbol AST must be of the kind WORD");
             }
             WordToken = wordToken;
         }

@@ -3,9 +3,9 @@
 namespace Adaos.Shell.Interface
 {
     /// <summary>
-    /// An interface describing a command node in the Adaos AST. 
+    /// An interface describing execution node in the Adaos AST. 
     /// </summary>
-    public interface ICommand
+    public interface IExecution
     {
         /// <summary>
         /// Enumerates the environment names associated with this command node.
@@ -53,7 +53,7 @@ namespace Adaos.Shell.Interface
     }
 
     /// <summary>
-    /// A static extension class for the <see cref="ICommand"/> interface.
+    /// A static extension class for the <see cref="IExecution"/> interface.
     /// </summary>
     public static class CommandExtender
     {
@@ -63,7 +63,7 @@ namespace Adaos.Shell.Interface
         /// </summary>
         /// <param name="self"></param>
         /// <returns>True if the previous command is piped into this command.</returns>
-        public static bool IsPipeRecipient(this ICommand self)
+        public static bool IsPipeRecipient(this IExecution self)
         {
             return self.RelationToPrevious == CommandRelation.Piped;
         }
@@ -73,7 +73,7 @@ namespace Adaos.Shell.Interface
         /// </summary>
         /// <param name="self"></param>
         /// <returns>True if this command is concatenated with the previous command.</returns>
-        public static  bool IsConcatenated(this ICommand self)
+        public static  bool IsConcatenated(this IExecution self)
         {
             return self.RelationToPrevious == CommandRelation.Concatenated;
         }

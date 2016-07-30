@@ -123,7 +123,7 @@ namespace Adaos.Shell.Execution
             IEnumerable<IArgument> result;
             result = new IArgument[0];
 
-            foreach (ICommand comm in prog.Commands)
+            foreach (IExecution comm in prog.Commands)
             {
                 Adaos.Shell.Interface.Command toExec = null;
                 if (!comm.IsPipeRecipient())

@@ -6,7 +6,7 @@ using Adaos.Shell.Interface;
 
 namespace Adaos.Shell.Core
 {
-    public class DummyCommand : ICommand
+    public class DummyCommand : IExecution
     {
         public DummyCommand(string commandName,
             IEnumerable<string> environmentNames = null, 

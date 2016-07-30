@@ -53,17 +53,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ASTs\Argument.cs" />
+    <Compile Include="ASTs\ArgumentExecutable.cs" />
     <Compile Include="ASTs\ArgumentNested.cs" />
     <Compile Include="ASTs\ArgumentSequence.cs" />
     <Compile Include="ASTs\ArgumentSequenceActual.cs" />
     <Compile Include="ASTs\ArgumentSequenceEmpty.cs" />
     <Compile Include="ASTs\ArgumentWord.cs" />
     <Compile Include="ASTs\AST.cs" />
-    <Compile Include="ASTs\Command.cs" />
-    <Compile Include="ASTs\CommandActual.cs" />
+    <Compile Include="ASTs\Execution.cs" />
+    <Compile Include="ASTs\ExecutionActual.cs" />
     <Compile Include="ASTs\CommandName.cs" />
     <Compile Include="ASTs\CommandNameActual.cs" />
-    <Compile Include="ASTs\CommandBase.cs" />
+    <Compile Include="ASTs\ExecutionBase.cs" />
     <Compile Include="ASTs\CommandWithEnvironment.cs" />
     <Compile Include="ASTs\Environment.cs" />
     <Compile Include="ASTs\EnvironmentActual.cs" />
@@ -72,11 +73,11 @@
     <Compile Include="IVisitor.cs" />
     <Compile Include="ASTs\NestedWords.cs" />
     <Compile Include="ASTs\NestedWordsActual.cs" />
-    <Compile Include="ASTs\ProgramSequence.cs" />
-    <Compile Include="ASTs\ProgramSequenceActual.cs" />
-    <Compile Include="ASTs\ProgramSequenceFollow.cs" />
-    <Compile Include="ASTs\ProgramSequenceFollowActual.cs" />
-    <Compile Include="ASTs\ProgramSequenceFollowEmpty.cs" />
+    <Compile Include="ASTs\ExecutionSequence.cs" />
+    <Compile Include="ASTs\ExecutionSequenceActual.cs" />
+    <Compile Include="ASTs\ExecutionSequenceFollow.cs" />
+    <Compile Include="ASTs\ExecutionSequenceFollowActual.cs" />
+    <Compile Include="ASTs\ExecutionSequenceFollowEmpty.cs" />
     <Compile Include="ASTs\Word.cs" />
     <Compile Include="ASTs\WordActual.cs" />
     <Compile Include="Exceptions\IllegalCharacterException.cs" />

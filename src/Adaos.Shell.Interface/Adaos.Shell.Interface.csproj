@@ -52,7 +52,7 @@
     <Compile Include="Exceptions\ExitTerminalException.cs" />
     <Compile Include="IArgument.cs" />
     <Compile Include="IArgumentValueLookup.cs" />
-    <Compile Include="ICommand.cs" />
+    <Compile Include="IExecution.cs" />
     <Compile Include="IEnvironment.cs" />
     <Compile Include="ErrorHandler.cs" />
     <Compile Include="IEnvironmentContainer.cs" />

@@ -41,6 +41,9 @@
         /// </summary>
         string ArgumentSeparator { get; set; }
 
+        string ArgumentExecutableStarter { get; set; }
+        string ArgumentExecutableStopper { get; set; }
+
         /// <summary>
         /// Copy the scanner table.
         /// </summary>

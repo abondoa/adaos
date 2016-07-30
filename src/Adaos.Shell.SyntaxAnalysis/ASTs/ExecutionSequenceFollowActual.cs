@@ -5,16 +5,16 @@ using System.Text;
 
 namespace Adaos.Shell.SyntaxAnalysis.ASTs
 {
-    public class ProgramSequenceFollowActual : ProgramSequenceFollow
+    public class ExecutionSequenceFollowActual : ExecutionSequenceFollow
     {
-        public Command Command { get; private set; }
-        public ProgramSequenceFollow FollowingCommands { get; private set; }
-        public override IEnumerable<Command> Commands 
+        public Execution Command { get; private set; }
+        public ExecutionSequenceFollow FollowingCommands { get; private set; }
+        public override IEnumerable<Execution> Commands 
         {
             get 
             {
                 yield return Command;
-                foreach (Command com in FollowingCommands.Commands)
+                foreach (Execution com in FollowingCommands.Commands)
                 {
                     yield return com;
                 }
@@ -28,14 +28,14 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
             }
         }
 
-        public ProgramSequenceFollowActual(int position, Command command, ProgramSequenceFollow followingCommands)
+        public ExecutionSequenceFollowActual(int position, Execution command, ExecutionSequenceFollow followingCommands)
             : base(position)
         {
             Command = command;
             FollowingCommands = followingCommands;
         }
 
-        public ProgramSequenceFollowActual(Command command, ProgramSequenceFollow followingCommands)
+        public ExecutionSequenceFollowActual(Execution command, ExecutionSequenceFollow followingCommands)
         {
             Command = command;
             FollowingCommands = followingCommands;

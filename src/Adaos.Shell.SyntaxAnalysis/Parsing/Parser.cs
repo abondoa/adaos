@@ -36,14 +36,14 @@ namespace Adaos.Shell.SyntaxAnalysis.Parsing
         public IProgramSequence Parse(string input, int initialPosition)
         {
             Errors = new List<ParserException>();
-            ProgramSequence result = new ProgramSequenceActual(null, null);
+            ExecutionSequence result = new ExecutionSequenceActual(null, null);
             try
             {
                 _scanner = ScannerFactory.Create(input, initialPosition);
                 _currentToken = _scanner.Scan();
                 try
                 {
-                    result = ParseProgramSequence();
+                    result = ParseExecutionSequence();
                 }
                 catch (ParserException e)
                 {
@@ -85,7 +85,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Parsing
             {
                 if (_currentToken.Kind == TokenKind.EOF)
                 {
-                    throw new IllegalTokenException(_currentToken, TokenKind.NESTEDWORDS, TokenKind.ENVIRONMENT_SEPARATOR, TokenKind.COMMAND_SEPARATOR, TokenKind.WORD, TokenKind.EXECUTE, TokenKind.MATH_SYMBOL);
+                    throw new IllegalTokenException(_currentToken, TokenKind.NESTEDWORDS, TokenKind.ENVIRONMENT_SEPARATOR, TokenKind.EXECUTION_SEPARATOR, TokenKind.WORD, TokenKind.EXECUTE, TokenKind.MATH_SYMBOL);
                 }
                 _currentToken = _scanner.Scan();
             }
@@ -102,56 +102,61 @@ namespace Adaos.Shell.SyntaxAnalysis.Parsing
             }
         }
 
-        private ProgramSequence ParseProgramSequence()
+        private ExecutionSequence ParseExecutionSequence(bool innerParsing = false)
         {
-            ASTs.Command comm = ParseCommand();
-            ProgramSequenceFollow fol = ParseProgramSequenceFollow();
+            ASTs.Execution comm = ParseCommand();
+            ExecutionSequenceFollow fol = ParseProgramSequenceFollow();
 
             if (_currentToken.Kind != TokenKind.EOF)
-            { 
-                Errors.Add(new IllegalTokenException(_currentToken,"Should have encountered end of file",TokenKind.EOF));
+            {
+                if (innerParsing && _currentToken.Kind == TokenKind.ARGUMENT_EXECUTABLE_STOP)
+                { } // OK
+                else
+                {
+                    Errors.Add(new IllegalTokenException(_currentToken, "Should have encountered end of file", TokenKind.EOF));
+                }
             }
 
-            return new ProgramSequenceActual(comm, fol);
+            return new ExecutionSequenceActual(comm, fol);
         }
 
-        private ProgramSequenceFollow ParseProgramSequenceFollow()
+        private ExecutionSequenceFollow ParseProgramSequenceFollow()
         {
             
-            ProgramSequenceFollow result = null;
-            if (_currentToken.Kind == TokenKind.COMMAND_SEPARATOR)
+            ExecutionSequenceFollow result = null;
+            if (_currentToken.Kind == TokenKind.EXECUTION_SEPARATOR)
             {
-                Accept(TokenKind.COMMAND_SEPARATOR);
-                ASTs.Command comm = ParseCommand();
-                ProgramSequenceFollow fol = ParseProgramSequenceFollow();
-                result = new ProgramSequenceFollowActual(comm, fol);
+                Accept(TokenKind.EXECUTION_SEPARATOR);
+                ASTs.Execution comm = ParseCommand();
+                ExecutionSequenceFollow fol = ParseProgramSequenceFollow();
+                result = new ExecutionSequenceFollowActual(comm, fol);
 
             }
-            else if (_currentToken.Kind == TokenKind.COMMAND_PIPE)
+            else if (_currentToken.Kind == TokenKind.EXECUTION_PIPE)
             {
-                Accept(TokenKind.COMMAND_PIPE);
-                ASTs.Command comm = ParseCommand();
+                Accept(TokenKind.EXECUTION_PIPE);
+                ASTs.Execution comm = ParseCommand();
                 comm.RelationToPrevious = CommandRelation.Piped;
-                ProgramSequenceFollow fol = ParseProgramSequenceFollow();
-                result = new ProgramSequenceFollowActual(comm, fol);
+                ExecutionSequenceFollow fol = ParseProgramSequenceFollow();
+                result = new ExecutionSequenceFollowActual(comm, fol);
             }
-            else if (_currentToken.Kind == TokenKind.COMMAND_CONCATENATOR)
+            else if (_currentToken.Kind == TokenKind.EXECUTION_CONCATENATOR)
             {
-                Accept(TokenKind.COMMAND_CONCATENATOR);
-                ASTs.Command comm = ParseCommand();
+                Accept(TokenKind.EXECUTION_CONCATENATOR);
+                ASTs.Execution comm = ParseCommand();
                 comm.RelationToPrevious = CommandRelation.Concatenated;
-                ProgramSequenceFollow fol = ParseProgramSequenceFollow();
-                result = new ProgramSequenceFollowActual(comm, fol);
+                ExecutionSequenceFollow fol = ParseProgramSequenceFollow();
+                result = new ExecutionSequenceFollowActual(comm, fol);
             }
             else
             {
-                result = new ProgramSequenceFollowEmpty(_currentToken.Position);
+                result = new ExecutionSequenceFollowEmpty(_currentToken.Position);
             }
 
             return result;
         }
 
-        private ASTs.Command ParseCommand()
+        private ASTs.Execution ParseCommand()
         {
             IList<Adaos.Shell.SyntaxAnalysis.ASTs.Environment> envs = new List<Adaos.Shell.SyntaxAnalysis.ASTs.Environment>();
             Word w = null;
@@ -174,11 +179,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Parsing
         private ArgumentSequence ParseArgumentSequence()
         {
             ArgumentSequence result = null;
-            if (_currentToken.Kind == TokenKind.EOF)
-            {
-                result = new ArgumentSequenceEmpty(_currentToken.Position);
-            }
-            else if (CommandEnd())
+            if (CommandEnd())
             {
                 result = new ArgumentSequenceEmpty(_currentToken.Position);
             }
@@ -195,16 +196,51 @@ namespace Adaos.Shell.SyntaxAnalysis.Parsing
         private bool CommandEnd()
         {
             return 
-                _currentToken.Kind == TokenKind.COMMAND_SEPARATOR || 
-                _currentToken.Kind == TokenKind.COMMAND_PIPE || 
-                _currentToken.Kind == TokenKind.COMMAND_CONCATENATOR;
+                _currentToken.Kind == TokenKind.EOF || 
+                _currentToken.Kind == TokenKind.ARGUMENT_EXECUTABLE_STOP || 
+                _currentToken.Kind == TokenKind.EXECUTION_SEPARATOR ||
+                _currentToken.Kind == TokenKind.EXECUTION_PIPE || 
+                _currentToken.Kind == TokenKind.EXECUTION_CONCATENATOR;
         }
 
         private Argument ParseArgument()
         {
-            Argument result = null;
-            Word w = null;
-            NestedWords nest = null;
+            if (_currentToken.Kind == TokenKind.EXECUTE)
+            {
+                return ParseValue(null);
+            }
+
+            switch (_currentToken.Kind)
+            { 
+                case TokenKind.WORD:
+                    var word = ParseWord();
+                    if (_currentToken.Kind == TokenKind.ARGUMENT_SEPARATOR)
+                    {
+                        AcceptIt();
+                        return ParseValue(word);
+                    }
+                    else
+                    {
+                        return new ArgumentWord(false, word);
+                    }
+                case TokenKind.NESTEDWORDS:
+                case TokenKind.ARGUMENT_EXECUTABLE_START:
+                    return ParseValue(null);
+                default:
+                    Errors.Add(new IllegalTokenException(_currentToken, TokenKind.WORD, TokenKind.NESTEDWORDS, TokenKind.ARGUMENT_EXECUTABLE_START));
+                    while(
+                        _currentToken.Kind != TokenKind.WORD &&
+                        _currentToken.Kind != TokenKind.NESTEDWORDS &&
+                        _currentToken.Kind != TokenKind.ARGUMENT_EXECUTABLE_START)
+                    {
+                        AcceptIt();
+                    }
+                    return ParseArgument();
+            }
+        }
+
+        private Argument ParseValue(Word wordName)
+        {
             bool exec = _currentToken.Kind == TokenKind.EXECUTE;
             if (exec)
             {
@@ -212,88 +248,31 @@ namespace Adaos.Shell.SyntaxAnalysis.Parsing
             }
 
             switch (_currentToken.Kind)
-            { 
-                case TokenKind.WORD:
-                    w = ParseWord();
-                    if (exec)
-                    {
-                        result = new ArgumentWord(exec, w);
-                        break;
-                    }
-                    if (_currentToken.Kind == TokenKind.ARGUMENT_SEPARATOR)
-                    {
-                        AcceptIt();
-                        Argument temp = ParseValue();
-                        if (temp is ArgumentNested)
-                        {
-                            result = new ArgumentNested(temp.ToExecute, (temp as ArgumentNested).Nested, w);
-                        }
-                        else if (temp is ArgumentWord)
-                        {
-                            result = new ArgumentWord(temp.ToExecute, (temp as ArgumentWord).Word, w);
-                        }
-                        else
-                        {
-                            throw new NotImplementedException("New argument type?");
-                        }
-                    }
-                    else
-                    {
-                        result = new ArgumentWord(exec, w);
-                        break;
-                    }
-                    break;
-                case TokenKind.NESTEDWORDS:
-                    nest = ParseNestedWord();
-                    result = new ArgumentNested(exec, nest);
-                    break;
-                default:
-                    Errors.Add(new IllegalTokenException(_currentToken, TokenKind.WORD, TokenKind.NESTEDWORDS));
-                    while(
-                        _currentToken.Kind != TokenKind.WORD &&
-                        _currentToken.Kind != TokenKind.NESTEDWORDS)
-                    {
-                        AcceptIt();
-                    }
-                    result = ParseArgument();
-                    break;
-            }
-            return result;
-        }
-
-        private Argument ParseValue()
-        {
-            Argument result = null;
-            NestedWords nest = null;
-            Word w = null;
-            bool exec = _currentToken.Kind == TokenKind.EXECUTE;
-            if (exec)
-            {
-                Accept(TokenKind.EXECUTE);
-            }
-
-            switch (_currentToken.Kind)
             {
                 case TokenKind.NESTEDWORDS:
-                    nest = ParseNestedWord();
-                    result = new ArgumentNested(exec, nest);
-                    break;
+                    var nest = ParseNestedWord();
+                    return new ArgumentNested(exec, nest, wordName);
                 case TokenKind.WORD:
-                    w = ParseWord();
-                    result = new ArgumentWord(exec, w);
-                    break;
+                    var word = ParseWord();
+                    return new ArgumentWord(exec, word, wordName);
+                case TokenKind.ARGUMENT_EXECUTABLE_START:
+                    int position = _currentToken.Position;
+                    AcceptIt();
+                    var executionSequence = ParseExecutionSequence(true);
+                    var result = new ArgumentExecutable(executionSequence, position, exec, wordName);
+                    Accept(TokenKind.ARGUMENT_EXECUTABLE_STOP);
+                    return result;
                 default:
-                    Errors.Add(new IllegalTokenException(_currentToken, TokenKind.WORD, TokenKind.NESTEDWORDS));
+                    Errors.Add(new IllegalTokenException(_currentToken, TokenKind.WORD, TokenKind.NESTEDWORDS, TokenKind.ARGUMENT_EXECUTABLE_START));
                     while (
                         _currentToken.Kind != TokenKind.WORD &&
-                        _currentToken.Kind != TokenKind.NESTEDWORDS)
+                        _currentToken.Kind != TokenKind.NESTEDWORDS &&
+                        _currentToken.Kind != TokenKind.ARGUMENT_EXECUTABLE_START)
                     {
                         AcceptIt();
                     }
-                    result = ParseArgument();
-                    break;
+                    return ParseArgument();
             }
-            return result;
         }
 
         private NestedWords ParseNestedWord()

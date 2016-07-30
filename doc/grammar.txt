@@ -2,15 +2,15 @@
 ##########          ADAOS       ##############
 ##############################################
 EBNF:
-program-seq	::= command (; command)*
-command		::= command-name argument*
-argument	::= word | "inner-double" | 'inner-single'
+execution-seq	::= execution (; execution)*
+execution		::= command-name argument*
+argument		::= word | "inner-double" | 'inner-single'
 inner-double	::= ('inner-single' | word)*
 inner-single	::= ("inner-double" | word)*
 command-name	::= word
-word		::= (letter | digigt | _)(letter | digigt | _ | -)*
-letter		::= [a-z] | [A-Z]
-digit		::= [0-9]
+word			::= (letter | digigt | _)(letter | digigt | _ | -)*
+letter			::= [a-z] | [A-Z]
+digit			::= [0-9]
 
 
 
@@ -22,20 +22,22 @@ Adaos - Adaos Debugging And Operation Shell
 
 
 BNF:
-program-seq		::= command program-seq-f
-program-seq-f	::= ; command program-seq-f | '|' command program-seq-f | epsilon	
+execution-seq	::= execution execution-seq-f
+execution-seq-f	::= execution-sepa execution execution-seq-f | epsilon	
+execution-sepa  ::= '|' | ; | ,
+execution	    ::= environment-seq command-name argument-seq
+command-name    ::= word
+environment-seq ::= environment . environment-seq | environment
 environment		::= word
-environment-seq ::= environment . environment-seq | epsilon
-command			::= environment-seq command-name argument-seq
 argument-seq	::= argument argument-seq | epsilon
-argument		::= value | word:value
-value           ::= word | nested-words | $word | $nested-words
+argument		::= value | argument-name:value
+argument-name   ::= word
+value           ::= word | nested-words | $word | $nested-words | '('execution-seq')' | $'('execution-seq')'
 nested-words	::= "inner-double" | 'inner-single'
 inner-double	::= 'inner-single' inner-double | word inner-double | epsilon
 inner-single	::= "inner-double" inner-single | word inner-single | epsilon
-command-name	::= word
-word			::= (letter | digigt | _ | -)word-follow
-word-follow		::= (letter | digigt | _ | -)word-follow | epsilon
+word			::= (letter | digit | _ | -)word-follow
+word-follow		::= (letter | digit | _ | -)word-follow | epsilon
 letter			::= [a-z] | [A-Z]
 digit			::= [0-9]
 

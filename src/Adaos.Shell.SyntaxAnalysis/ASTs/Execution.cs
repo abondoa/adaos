@@ -4,20 +4,20 @@ using Adaos.Shell.Interface;
 namespace Adaos.Shell.SyntaxAnalysis.ASTs
 {
     /// <summary>
-    /// An abstract class defining a <see cref="ICommand"/> in the Adaos AST.
+    /// An abstract class defining a <see cref="IExecution"/> in the Adaos AST.
     /// </summary>
-    public abstract class Command : AST, ICommand
+    public abstract class Execution : AST, IExecution
     {
         /// <summary>
         /// The default constructor for the Command class.
         /// </summary>
-        protected Command() { }
+        protected Execution() { }
 
         /// <summary>
         /// A constructor for the Command class.
         /// </summary>
         /// <param name="position">The position of the first character of the command.</param>
-        protected Command(int position) : base(position) 
+        protected Execution(int position) : base(position) 
         {
             RelationToPrevious = CommandRelation.Separated;
         }

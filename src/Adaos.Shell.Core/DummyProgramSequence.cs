@@ -9,7 +9,7 @@ namespace Adaos.Shell.Core
 {
     public class DummyProgramSequence: IProgramSequence
     {
-        public IEnumerable<ICommand> Commands
+        public IEnumerable<IExecution> Commands
         {
             get;
             private set;
@@ -21,9 +21,9 @@ namespace Adaos.Shell.Core
             private set;
         }
 
-        public DummyProgramSequence(params ICommand[] commands) : this(new AdaosException[0],commands) {  }
+        public DummyProgramSequence(params IExecution[] commands) : this(new AdaosException[0],commands) {  }
 
-        public DummyProgramSequence(IEnumerable<AdaosException> errors, params ICommand[] commands)
+        public DummyProgramSequence(IEnumerable<AdaosException> errors, params IExecution[] commands)
         {
             Errors = errors;
             Commands = commands;

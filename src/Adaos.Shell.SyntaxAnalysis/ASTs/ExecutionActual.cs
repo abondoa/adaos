@@ -6,13 +6,13 @@ using Adaos.Shell.Interface;
 
 namespace Adaos.Shell.SyntaxAnalysis.ASTs
 {
-    public class CommandActual : CommandBase
+    public class ExecutionActual : ExecutionBase
     {
-        public CommandActual(int position, CommandName commandName, ArgumentSequence arguments) : base(position,commandName,arguments)
+        public ExecutionActual(int position, CommandName commandName, ArgumentSequence arguments) : base(position,commandName,arguments)
         {
         }
 
-        public CommandActual(CommandName commandName, ArgumentSequence arguments) : base(commandName,arguments)
+        public ExecutionActual(CommandName commandName, ArgumentSequence arguments) : base(commandName,arguments)
         {
         }
 

@@ -6,7 +6,7 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
     /// <summary>
     /// An abstract base class for command nodes in the Adaos AST.
     /// </summary>
-    public abstract class CommandBase : Command
+    public abstract class ExecutionBase : Execution
     {
         /// <summary>
         /// Get the AST node representing the command name.
@@ -55,7 +55,7 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
         /// </summary>
         /// <param name="commandName">The AST node representing the name of the command.</param>
         /// <param name="arguments">The AST node representing the argument sequence associated with the command.</param>
-        protected CommandBase(CommandName commandName, ArgumentSequence arguments)
+        protected ExecutionBase(CommandName commandName, ArgumentSequence arguments)
         {
             CommName = commandName;
             Args = arguments;
@@ -67,7 +67,7 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
         /// <param name="position">The position of the first character of the command name in the source string.</param>
         /// <param name="commandName">The AST node representing the name of the command.</param>
         /// <param name="arguments">The AST node representing the argument sequence associated with the command.</param>
-        protected CommandBase(int position, CommandName commandName, ArgumentSequence arguments) : base(position)
+        protected ExecutionBase(int position, CommandName commandName, ArgumentSequence arguments) : base(position)
         {
             CommName = commandName;
             Args = arguments;

@@ -45,7 +45,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
             _parser = new Parser();
             IProgramSequence result = _parser.Parse(legalInput);
             Assert.AreEqual(0, result.Errors.Count());
-            (result as ProgramSequence).Visit(new VisitUserCreateAle1234_4321ProgSeq(), null);
+            (result as ExecutionSequence).Visit(new VisitUserCreateAle1234_4321ProgSeq(), null);
         }
 
         [TestMethod]
@@ -101,7 +101,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
             IProgramSequence result = _parser.Parse("echo $'view 1 si'");
             Assert.AreEqual(0, result.Errors.Count());
 
-            Assert.IsTrue((result as ProgramSequenceActual).Command.Arguments.First().ToExecute);
+            Assert.IsTrue((result as ExecutionSequenceActual).Command.Arguments.First().ToExecute);
 
             result = _parser.Parse("echo test");
             Assert.AreEqual(0, result.Errors.Count());
@@ -150,7 +150,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
             IProgramSequence result = _parser.Parse("view 1 si | echo");
             Assert.AreEqual(0, result.Errors.Count());
 
-            Assert.IsTrue((result as ProgramSequenceActual).Commands.Skip(1).First().IsPipeRecipient());
+            Assert.IsTrue((result as ExecutionSequenceActual).Commands.Skip(1).First().IsPipeRecipient());
 
             result = _parser.Parse("echo test");
             Assert.AreEqual(0, result.Errors.Count());
@@ -160,16 +160,16 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
         }
 
         [TestMethod]
-        public void ParseConcatenatedProgram()
+        public void Parse_ConcatenatedProgram()
         {
             _parser = new Parser();
 
             IProgramSequence result = _parser.Parse("sum 1 2 , sum 3 4 | echo");
             Assert.AreEqual(0, result.Errors.Count());
 
-            Assert.AreEqual(CommandRelation.Separated,(result as ProgramSequenceActual).Commands.First().RelationToPrevious);
-            Assert.AreEqual(CommandRelation.Concatenated,(result as ProgramSequenceActual).Commands.Skip(1).First().RelationToPrevious);
-            Assert.AreEqual(CommandRelation.Piped,(result as ProgramSequenceActual).Commands.Skip(2).First().RelationToPrevious);
+            Assert.AreEqual(CommandRelation.Separated,(result as ExecutionSequenceActual).Commands.First().RelationToPrevious);
+            Assert.AreEqual(CommandRelation.Concatenated,(result as ExecutionSequenceActual).Commands.Skip(1).First().RelationToPrevious);
+            Assert.AreEqual(CommandRelation.Piped,(result as ExecutionSequenceActual).Commands.Skip(2).First().RelationToPrevious);
 
             result = _parser.Parse("echo test");
             Assert.AreEqual(0, result.Errors.Count());
@@ -179,12 +179,30 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
         }
 
         [TestMethod]
-        public void ParseProgramSequence()
+        public void Parse_ProgramSequenceWithExecutionSeparation_0Errors()
         {
-            _parser = new Parsing.Parser();
+            _parser = new Parser();
 
             IProgramSequence result = _parser.Parse("echo hej; echo hej");
             Assert.AreEqual(0, result.Errors.Count());
+        }
+
+        [TestMethod]
+        public void Parse_WithExecutableArgument_0Errors()
+        {
+            _parser = new Parser();
+
+            IProgramSequence result = _parser.Parse("echo (hej)");
+            Assert.AreEqual(0, result.Errors.Count());
+        }
+
+        [TestMethod]
+        public void Parse_WithEndingWithParenthesis()
+        {
+            _parser = new Parser();
+
+            IProgramSequence result = _parser.Parse("echo )");
+            Assert.AreEqual(1, result.Errors.Count());
         }
 
         private class VisitUserCreateAle1234_4321ProgSeq : IVisitor
@@ -210,7 +228,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
                 throw new NotImplementedException();
             }
 
-            public object Visit(CommandActual comm, object obj)
+            public object Visit(ExecutionActual comm, object obj)
             {
                 throw new NotImplementedException();
             }
@@ -220,7 +238,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
                 throw new NotImplementedException();
             }
 
-            public object Visit(ProgramSequenceActual prog, object obj)
+            public object Visit(ExecutionSequenceActual prog, object obj)
             {
                 Assert.AreEqual(1, prog.Position);
                 prog.Command.Visit(new VisitUserCreateAle1234_4321Comm(), null);
@@ -228,12 +246,12 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
                 return null;
             }
 
-            public object Visit(ProgramSequenceFollowActual progF, object obj)
+            public object Visit(ExecutionSequenceFollowActual progF, object obj)
             {
                 throw new NotImplementedException();
             }
 
-            public object Visit(ProgramSequenceFollowEmpty progF, object obj)
+            public object Visit(ExecutionSequenceFollowEmpty progF, object obj)
             {
                 throw new NotImplementedException();
             }
@@ -254,6 +272,10 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
                 throw new NotImplementedException();
             }
 
+            public object Visit(ArgumentExecutable argumentExecution, object obj)
+            {
+                throw new NotImplementedException();
+            }
 
             public object Visit(CommandWithEnvironment comm, object obj)
             {
@@ -280,7 +302,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
                 throw new NotImplementedException();
             }
 
-            object IVisitor.Visit(CommandActual comm, object obj)
+            object IVisitor.Visit(ExecutionActual comm, object obj)
             {
                 throw new NotImplementedException();
             }
@@ -290,12 +312,12 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
                 throw new NotImplementedException();
             }
 
-            object IVisitor.Visit(ProgramSequenceFollowActual progF, object obj)
+            object IVisitor.Visit(ExecutionSequenceFollowActual progF, object obj)
             {
                 throw new NotImplementedException();
             }
 
-            object IVisitor.Visit(ProgramSequenceFollowEmpty progF, object obj)
+            object IVisitor.Visit(ExecutionSequenceFollowEmpty progF, object obj)
             {
                 throw new NotImplementedException();
             }
@@ -344,7 +366,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
                 throw new NotImplementedException();
             }
 
-            public object Visit(CommandActual comm, object obj)
+            public object Visit(ExecutionActual comm, object obj)
             {
                 throw new NotImplementedException();
             }
@@ -354,17 +376,22 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
                 throw new NotImplementedException();
             }
 
-            public object Visit(ProgramSequenceActual prog, object obj)
+            public object Visit(ArgumentExecutable argumentExecution, object obj)
             {
                 throw new NotImplementedException();
             }
 
-            public object Visit(ProgramSequenceFollowActual progF, object obj)
+            public object Visit(ExecutionSequenceActual prog, object obj)
             {
                 throw new NotImplementedException();
             }
 
-            public object Visit(ProgramSequenceFollowEmpty progF, object obj)
+            public object Visit(ExecutionSequenceFollowActual progF, object obj)
+            {
+                throw new NotImplementedException();
+            }
+
+            public object Visit(ExecutionSequenceFollowEmpty progF, object obj)
             {
                 throw new NotImplementedException();
             }
@@ -427,7 +454,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
                 throw new NotImplementedException();
             }
 
-            public object Visit(CommandActual comm, object obj)
+            public object Visit(ExecutionActual comm, object obj)
             {
                 throw new NotImplementedException();
             }
@@ -437,17 +464,22 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
                 throw new NotImplementedException();
             }
 
-            public object Visit(ProgramSequenceActual prog, object obj)
+            public object Visit(ArgumentExecutable argumentExecution, object obj)
             {
                 throw new NotImplementedException();
             }
 
-            public object Visit(ProgramSequenceFollowActual progF, object obj)
+            public object Visit(ExecutionSequenceActual prog, object obj)
             {
                 throw new NotImplementedException();
             }
 
-            public object Visit(ProgramSequenceFollowEmpty progF, object obj)
+            public object Visit(ExecutionSequenceFollowActual progF, object obj)
+            {
+                throw new NotImplementedException();
+            }
+
+            public object Visit(ExecutionSequenceFollowEmpty progF, object obj)
             {
                 Assert.AreEqual(63, progF.Position,"Legal input length: " + legalInput.Length + "  " + legalInput);
                 return null;
@@ -505,7 +537,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
                 throw new NotImplementedException();
             }
 
-            public object Visit(CommandActual comm, object obj)
+            public object Visit(ExecutionActual comm, object obj)
             {
                 throw new NotImplementedException();
             }
@@ -520,17 +552,22 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
                 throw new Exception("Fail on comm name");
             }
 
-            public object Visit(ProgramSequenceActual prog, object obj)
+            public object Visit(ArgumentExecutable argumentExecution, object obj)
             {
                 throw new NotImplementedException();
             }
 
-            public object Visit(ProgramSequenceFollowActual progF, object obj)
+            public object Visit(ExecutionSequenceActual prog, object obj)
             {
                 throw new NotImplementedException();
             }
 
-            public object Visit(ProgramSequenceFollowEmpty progF, object obj)
+            public object Visit(ExecutionSequenceFollowActual progF, object obj)
+            {
+                throw new NotImplementedException();
+            }
+
+            public object Visit(ExecutionSequenceFollowEmpty progF, object obj)
             {
                 throw new NotImplementedException();
             }
@@ -601,7 +638,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
                 throw new NotImplementedException();
             }
 
-            public object Visit(CommandActual comm, object obj)
+            public object Visit(ExecutionActual comm, object obj)
             {
                 throw new NotImplementedException();
             }
@@ -611,17 +648,22 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
                 throw new NotImplementedException();
             }
 
-            public object Visit(ProgramSequenceActual prog, object obj)
+            public object Visit(ArgumentExecutable argumentExecution, object obj)
             {
                 throw new NotImplementedException();
             }
 
-            public object Visit(ProgramSequenceFollowActual progF, object obj)
+            public object Visit(ExecutionSequenceActual prog, object obj)
             {
                 throw new NotImplementedException();
             }
 
-            public object Visit(ProgramSequenceFollowEmpty progF, object obj)
+            public object Visit(ExecutionSequenceFollowActual progF, object obj)
+            {
+                throw new NotImplementedException();
+            }
+
+            public object Visit(ExecutionSequenceFollowEmpty progF, object obj)
             {
                 throw new NotImplementedException();
             }

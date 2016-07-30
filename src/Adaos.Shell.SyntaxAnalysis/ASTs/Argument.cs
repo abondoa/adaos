@@ -55,7 +55,7 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
         {
             get
             {
-                return WordName == null ? null : WordName.Spelling;
+                return WordName?.Spelling;
             }
         }
 

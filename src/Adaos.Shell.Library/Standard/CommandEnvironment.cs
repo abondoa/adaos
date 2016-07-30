@@ -119,11 +119,11 @@ namespace Adaos.Shell.Library.Standard
 					throw new SemanticException(e.Position + args.Second().Position - 1, "While resolving command '"+cmd.EnvironmentNames.Aggregate ((x,y) => x + _vm.Parser.ScannerTable.EnvironmentSeparator + y)+_vm.Parser.ScannerTable.EnvironmentSeparator+cmd.CommandName+"' the following error was received: "+e.Message);
                 }
             }
-            ICommand last = commandSeq.Commands.Last();
+            IExecution last = commandSeq.Commands.Last();
             Command execCommand = (x) =>
                 {
                     DummyCommand command = new DummyCommand(last.CommandName, last.EnvironmentNames, last.Arguments.Then(x.Aggregate((y,z) => y.Then(z))), last.Position, last.RelationToPrevious);
-                    DummyProgramSequence progSec = new DummyProgramSequence(commandSeq.Commands.Where(y => y != last).Then(new List<ICommand> { command }).ToArray());
+                    DummyProgramSequence progSec = new DummyProgramSequence(commandSeq.Commands.Where(y => y != last).Then(new List<IExecution> { command }).ToArray());
                     return _vm.Execute(progSec);
                 };
             if (custom.Retrieve(args.First().Value) != null)
@@ -184,7 +184,7 @@ namespace Adaos.Shell.Library.Standard
                 }
                 throw new SemanticException(-1, str.ToString());
             }
-            ICommand command = commandSeq.Commands.First();
+            IExecution command = commandSeq.Commands.First();
             var executableCommand = res.Resolve(command, _vm.EnvironmentContainer.LoadedEnvironments);
             foreach (var arg in args.Skip(1))
             {

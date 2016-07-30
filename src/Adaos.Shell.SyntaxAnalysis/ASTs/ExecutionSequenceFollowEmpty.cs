@@ -5,17 +5,17 @@ using System.Text;
 
 namespace Adaos.Shell.SyntaxAnalysis.ASTs
 {
-    public class ProgramSequenceFollowEmpty : ProgramSequenceFollow
+    public class ExecutionSequenceFollowEmpty : ExecutionSequenceFollow
     {
-        public override IEnumerable<Command> Commands
+        public override IEnumerable<Execution> Commands
         {
             get
             {
-                return new List<Command>();
+                return new List<Execution>();
             }
         }
 
-        public ProgramSequenceFollowEmpty(int position) : base(position) { }
+        public ExecutionSequenceFollowEmpty(int position) : base(position) { }
 
         public override object Visit(IVisitor visitor, object obj)
         {
