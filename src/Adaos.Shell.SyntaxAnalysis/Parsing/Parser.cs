@@ -7,13 +7,16 @@ using Adaos.Shell.SyntaxAnalysis.ASTs;
 using Adaos.Shell.SyntaxAnalysis.Tokens;
 using Adaos.Shell.SyntaxAnalysis.Exceptions;
 using Adaos.Shell.SyntaxAnalysis.Scanning;
+using Adaos.Common.Extenders;
 
 namespace Adaos.Shell.SyntaxAnalysis.Parsing
 {
     public class Parser : IShellParser
     {
         private IScanner<Token> _scanner;
+        private IEnumerable<TokenKind> _allTokenKinds = EnumUtils.GetValues<TokenKind>();
         private Token _currentToken;
+
         private List<ParserException> Errors {get; set;}
 
         public bool Panic { get; private set; }
@@ -28,12 +31,12 @@ namespace Adaos.Shell.SyntaxAnalysis.Parsing
             ScannerFactory = new ScannerFactory(new ScannerTable());
         }
 
-        public IProgramSequence Parse(string input)
+        public IExecutionSequence Parse(string input)
         {
             return Parse(input, 0);
         }
 
-        public IProgramSequence Parse(string input, int initialPosition)
+        public IExecutionSequence Parse(string input, int initialPosition)
         {
             Errors = new List<ParserException>();
             ExecutionSequence result = new ExecutionSequenceActual(null, null);
@@ -79,13 +82,14 @@ namespace Adaos.Shell.SyntaxAnalysis.Parsing
             AcceptIt();
         }
 
+
         private void AcceptIt()
         {
             try
             {
                 if (_currentToken.Kind == TokenKind.EOF)
                 {
-                    throw new IllegalTokenException(_currentToken, TokenKind.NESTEDWORDS, TokenKind.ENVIRONMENT_SEPARATOR, TokenKind.EXECUTION_SEPARATOR, TokenKind.WORD, TokenKind.EXECUTE, TokenKind.MATH_SYMBOL);
+                    throw new IllegalTokenException(_currentToken, _allTokenKinds.Where(x => x != TokenKind.EOF).ToArray());
                 }
                 _currentToken = _scanner.Scan();
             }
@@ -93,7 +97,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Parsing
             {
                 if (Panic)
                 {
-                    Errors.Add(new ParserException("Invalid input, discarded by scanner. See inner exception", e));
+                    Errors.Add(new ParserException("Invalid input, discarded by scanner. See inner exception.", e));
                 }
                 else
                 {
@@ -109,8 +113,13 @@ namespace Adaos.Shell.SyntaxAnalysis.Parsing
 
             if (_currentToken.Kind != TokenKind.EOF)
             {
-                if (innerParsing && _currentToken.Kind == TokenKind.ARGUMENT_EXECUTABLE_STOP)
-                { } // OK
+                if (innerParsing)
+                {
+                    if(_currentToken.Kind != TokenKind.ARGUMENT_EXECUTABLE_STOP)
+                    {
+                        Errors.Add(new IllegalTokenException(_currentToken, TokenKind.EOF, TokenKind.ARGUMENT_EXECUTABLE_STOP));
+                    }
+                } 
                 else
                 {
                     Errors.Add(new IllegalTokenException(_currentToken, "Should have encountered end of file", TokenKind.EOF));
@@ -223,6 +232,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Parsing
                     {
                         return new ArgumentWord(false, word);
                     }
+                case TokenKind.MATH_SYMBOL:
                 case TokenKind.NESTEDWORDS:
                 case TokenKind.ARGUMENT_EXECUTABLE_START:
                     return ParseValue(null);
@@ -255,6 +265,9 @@ namespace Adaos.Shell.SyntaxAnalysis.Parsing
                 case TokenKind.WORD:
                     var word = ParseWord();
                     return new ArgumentWord(exec, word, wordName);
+                case TokenKind.MATH_SYMBOL:
+                    var symbol = ParseSymbol();
+                    return new ArgumentWord(exec, symbol, wordName);
                 case TokenKind.ARGUMENT_EXECUTABLE_START:
                     int position = _currentToken.Position;
                     AcceptIt();
@@ -325,7 +338,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Parsing
                 }
                 while ((_currentToken.Kind != TokenKind.MATH_SYMBOL) && Panic);
             }
-            result = new WordSymbol(_currentToken);
+            result = new WordMathSymbol(_currentToken);
             AcceptIt();
             return result;
         }

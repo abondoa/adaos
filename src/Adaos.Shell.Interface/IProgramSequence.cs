@@ -9,11 +9,11 @@ namespace Adaos.Shell.Interface
     /// </summary>
     /// <typeparam name="CommandType">The type of commands in the program sequence.</typeparam>
     /// <typeparam name="ExceptionType">The type of errors of the prorgamsequence.</typeparam>
-    public interface IProgramSequence<CommandType,ExceptionType> 
+    public interface IExecutionSequence<CommandType,ExceptionType> 
         where CommandType : IExecution 
         where ExceptionType : AdaosException
     {
-        IEnumerable<CommandType> Commands { get; }
+        IEnumerable<CommandType> Executions { get; }
         IEnumerable<ExceptionType> Errors { get; }
     }
 
@@ -21,7 +21,7 @@ namespace Adaos.Shell.Interface
     /// An interface descrbining a programsequence node of the Adaos AST. 
     /// The program sequence is a list of <see cref="IExecution"/>s.
     /// </summary>
-    public interface IProgramSequence : IProgramSequence<IExecution,AdaosException>
+    public interface IExecutionSequence : IExecutionSequence<IExecution,AdaosException>
     {
     }
 }

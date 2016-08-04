@@ -16,12 +16,6 @@ namespace Adaos.Shell.Library.Standard
         virtual protected StreamWriter _output { get; private set;}
         virtual protected IVirtualMachine _vm { get; private set; }
 
-        private readonly List<string[]> CommonFlagsWithAlias = new List<string[]>
-        { 
-            new string[]{"-silent","-si"},
-            new string[]{"-verbose","-v"}
-        };
-
         public override string Name
         {
             get { return "command"; } 
@@ -31,18 +25,19 @@ namespace Adaos.Shell.Library.Standard
         {
             _output = output;
             _vm = vm;
-            Bind(Cmds, "commands", "cmds");
+            Bind(Cmds, "commands/cmds silent/si=false environments/*");
             Bind(MakeCommand, "makecommand", "mkcmd");
             Bind(RemoveCommand, "removecommand", "rmcmd");
             Bind(Repeat, "repeat", "rep");
         }
 
-        private IEnumerable<IArgument> Cmds(IEnumerable<IArgument> args)
+        private IEnumerable<IArgument> Cmds(IArgumentValueLookup lookup, params IEnumerable<IArgument>[] args)
         {
             List<IArgument> result = new List<IArgument>();
-            var flags = args.ParseFlagsWithAlias(CommonFlagsWithAlias.ToList(),false);
-            bool verbose = !flags.FirstOrDefault(x => x.Key.Equals("-silent")).Value;
-            foreach (var arg in args.Where(x => CommonFlagsWithAlias.FirstOrDefault(y => y.Contains(x.Value)) == null))
+            bool verbose;
+            lookup["silent"].TryParseTo(out verbose);
+            verbose = !verbose;
+            foreach (var arg in lookup.Lookup["environments"].Then(args.Flatten()))
             {
                 IEnvironment env = _vm.EnvironmentContainer.LoadedEnvironments.FirstOrDefault(x => x.QualifiedName (_vm.Parser.ScannerTable.EnvironmentSeparator).ToLower().Equals(arg.Value.ToLower()));
                 if (env == null)
@@ -104,7 +99,7 @@ namespace Adaos.Shell.Library.Standard
             }
             var res = _vm.Resolver;
             var listOfDeps = new List<Type>();
-            foreach (var cmd in commandSeq.Commands)
+            foreach (var cmd in commandSeq.Executions)
             {
                 try
                 {
@@ -119,11 +114,11 @@ namespace Adaos.Shell.Library.Standard
 					throw new SemanticException(e.Position + args.Second().Position - 1, "While resolving command '"+cmd.EnvironmentNames.Aggregate ((x,y) => x + _vm.Parser.ScannerTable.EnvironmentSeparator + y)+_vm.Parser.ScannerTable.EnvironmentSeparator+cmd.CommandName+"' the following error was received: "+e.Message);
                 }
             }
-            IExecution last = commandSeq.Commands.Last();
+            IExecution last = commandSeq.Executions.Last();
             Command execCommand = (x) =>
                 {
                     DummyCommand command = new DummyCommand(last.CommandName, last.EnvironmentNames, last.Arguments.Then(x.Aggregate((y,z) => y.Then(z))), last.Position, last.RelationToPrevious);
-                    DummyProgramSequence progSec = new DummyProgramSequence(commandSeq.Commands.Where(y => y != last).Then(new List<IExecution> { command }).ToArray());
+                    DummyProgramSequence progSec = new DummyProgramSequence(commandSeq.Executions.Where(y => y != last).Then(new List<IExecution> { command }).ToArray());
                     return _vm.Execute(progSec);
                 };
             if (custom.Retrieve(args.First().Value) != null)
@@ -184,7 +179,7 @@ namespace Adaos.Shell.Library.Standard
                 }
                 throw new SemanticException(-1, str.ToString());
             }
-            IExecution command = commandSeq.Commands.First();
+            IExecution command = commandSeq.Executions.First();
             var executableCommand = res.Resolve(command, _vm.EnvironmentContainer.LoadedEnvironments);
             foreach (var arg in args.Skip(1))
             {

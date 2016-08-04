@@ -55,6 +55,7 @@
     <Compile Include="Standard\StandardEnvironment.cs" />
     <Compile Include="Standard\SyntaxEnvironment.cs" />
     <Compile Include="ContextBuilder.cs" />
+    <Compile Include="Standard\VariableEnvironment.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Adaos.Common\Adaos.Common.csproj">
@@ -68,6 +69,10 @@
     <ProjectReference Include="..\Adaos.Shell.Interface\Adaos.Shell.Interface.csproj">
       <Project>{36761409-F8BB-4E79-8F7B-19AE64DA255A}</Project>
       <Name>Adaos.Shell.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Adaos.Shell.SyntaxAnalysis\Adaos.Shell.SyntaxAnalysis.csproj">
+      <Project>{303E6284-A7DA-4E1C-8FF8-3E0B59DE6CFB}</Project>
+      <Name>Adaos.Shell.SyntaxAnalysis</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

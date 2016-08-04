@@ -30,7 +30,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
         private string neverEndingApostropheContent = "'abc";
         private string neverEndingQuoteEmpty = "\"";
         private string neverEndingQuoteContent = "\"abc";
-        private string echoSlash = "echo /n";
+        private string echoTilde = "echo ~n";
         private readonly IScannerTable stdScannerTable = new ScannerTable();
         private IScannerTable scannerTable = new ScannerTable();
         private string escapedInWord = "let\\'sEscape\\!\\@TheMoment";
@@ -234,9 +234,9 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
         }
 
         [TestMethod]
-        public void SlashTest()
+        public void TildeTest()
         {
-            scanner = new Scanner(echoSlash, scannerTable);
+            scanner = new Scanner(echoTilde, scannerTable);
             try
             {
                 scanner.Scan();
@@ -249,7 +249,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
                 Tokens.Token result = scanner.Scan();
                 Assert.AreEqual(Tokens.TokenKind.WORD, result.Kind);
                 Assert.AreEqual("n", result.Spelling);
-                Assert.AreEqual(echoSlash.Length, result.Position);
+                Assert.AreEqual(echoTilde.Length, result.Position);
             }
         }
 
@@ -309,6 +309,42 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
             _test(escapedInNestedWord, Tokens.TokenKind.NESTEDWORDS, escapedInNestedWord.Replace("\\", ""));
         }
 
+        [TestMethod]
+        public void Scan_PlusMathSymbol()
+        {
+            _test("+", Tokens.TokenKind.MATH_SYMBOL);
+        }
+
+        [TestMethod]
+        public void Scan_PlusPlusMathSymbol()
+        {
+            _test("++", Tokens.TokenKind.MATH_SYMBOL);
+        }
+
+        [TestMethod]
+        public void Scan_MinusMathSymbol()
+        {
+            _test("-", Tokens.TokenKind.MATH_SYMBOL);
+        }
+
+        [TestMethod]
+        public void Scan_MinusMinusMathSymbol()
+        {
+            _test("-", Tokens.TokenKind.MATH_SYMBOL);
+        }
+
+        [TestMethod]
+        public void Scan_MultiplyMathSymbol()
+        {
+            _test("*", Tokens.TokenKind.MATH_SYMBOL);
+        }
+
+        [TestMethod]
+        public void Scan_DivideMathSymbol()
+        {
+            _test("/", Tokens.TokenKind.MATH_SYMBOL);
+        }
+
         private void _test(string input, Tokens.TokenKind expectedKind)
         {
             _test(input, expectedKind, input);
@@ -350,7 +386,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
             {
                 Assert.Inconclusive("_test method received bad inputs");
             }
-            scanner = new Scanner(input + " " + input, scannerTable);
+            scanner = new Scanner(input + " " + input, scannerTable, 0);
             for (int i = 0; i < initialScans; ++i)
             {
                 scanner.Scan();

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Adaos.Shell.SyntaxAnalysis.ASTs
 {
-    public class WordSymbol : Word
+    public class WordMathSymbol : Word
     {
         internal Tokens.Token WordToken { get; private set; }
         public override string Spelling
@@ -24,7 +24,7 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
             }
         }
 
-        internal WordSymbol(Tokens.Token wordToken)
+        internal WordMathSymbol(Tokens.Token wordToken)
             : base(wordToken.Position)
         {
             if (wordToken.Kind != Tokens.TokenKind.MATH_SYMBOL)

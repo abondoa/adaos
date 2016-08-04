@@ -27,6 +27,7 @@ namespace Adaos.Shell.Execution
         private IModuleManager _moduleManager;
         private ErrorHandler _handleError;
         private IEnvironmentContainer _envContainer;
+        private IEnumerable<IArgument>[] NoArguments = new IEnumerable<IArgument>[] {new IArgument[0] };
 
         public VirtualMachine(StreamWriter output, StreamWriter log, params IEnvironment[] environments)
         {
@@ -72,7 +73,12 @@ namespace Adaos.Shell.Execution
             }*/
         }
 
-        public virtual IEnumerable<IArgument> Execute(IProgramSequence prog)
+        public virtual IEnumerable<IArgument> Execute(IExecutionSequence prog)
+        {
+            return Execute(prog, NoArguments);
+        }
+
+        public IEnumerable<IArgument> Execute(IExecutionSequence prog, IEnumerable<IArgument>[] args)
         {
             if (prog.Errors.Count() > 0)
             {
@@ -84,7 +90,7 @@ namespace Adaos.Shell.Execution
             }
             try
             {
-                return InternExecute(prog).ToArray();
+                return InternExecute(prog,args).ToArray();
             }
             catch (ExitTerminalException)
             {
@@ -104,8 +110,7 @@ namespace Adaos.Shell.Execution
 
         public IEnumerable<IArgument> InternExecute(string command, int initialPosition = 0)
         {
-
-            IProgramSequence prog = _parser.Parse(command, initialPosition);
+            IExecutionSequence prog = _parser.Parse(command, initialPosition);
             if (prog.Errors.Count() > 0)
             {
                 foreach (var error in prog.Errors)
@@ -114,16 +119,14 @@ namespace Adaos.Shell.Execution
                 }
                 return new List<IArgument>();
             }
-            return InternExecute(prog);
-            
+            return InternExecute(prog, NoArguments);
         }
 
-        internal IEnumerable<IArgument> InternExecute(IProgramSequence prog)
+        internal IEnumerable<IArgument> InternExecute(IExecutionSequence prog, IEnumerable<IArgument>[] args)
         {
-            IEnumerable<IArgument> result;
-            result = new IArgument[0];
+            IEnumerable<IEnumerable<IArgument>> result = args;
 
-            foreach (IExecution comm in prog.Commands)
+            foreach (IExecution comm in prog.Executions)
             {
                 Adaos.Shell.Interface.Command toExec = null;
                 if (!comm.IsPipeRecipient())
@@ -133,21 +136,25 @@ namespace Adaos.Shell.Execution
 
                 toExec = _resolver.Resolve(comm, EnvironmentContainer.LoadedEnvironments);
 
+                var commandlineArguments = new IEnumerable<IArgument>[] { HandleArguments(comm.Arguments) };
+
                 switch (comm.RelationToPrevious)
                 {
                     case CommandRelation.Concatenated:
-                        result = result.Then(toExec(HandleArguments(comm.Arguments)));
+                        result = result.Then(toExec(commandlineArguments));
                         break;
                     case CommandRelation.Piped:
-                        result = toExec(HandleArguments(comm.Arguments),result);
+                        var output = toExec(commandlineArguments.Then(result).ToArray());
+                        result = new IEnumerable<IArgument>[] { output };
                         break;
                     case CommandRelation.Separated:
-                        result = toExec(HandleArguments(comm.Arguments));
+                        output = toExec(commandlineArguments);
+                        result = new IEnumerable<IArgument>[] { output };
                         break;
                 }
             }
 
-            foreach (var arg in result)
+            foreach (var arg in result.First())
             {
                 yield return arg;
             }
@@ -275,8 +282,8 @@ namespace Adaos.Shell.Execution
 
         public string SuggestCommand(string partialCommand)
         {
-            IProgramSequence prog = _parser.Parse(partialCommand);
-			var lastCommand = prog.Commands.LastOrDefault();
+            IExecutionSequence prog = _parser.Parse(partialCommand);
+			var lastCommand = prog.Executions.LastOrDefault();
 			if (lastCommand == null)
 				return null;
 			string qualifiedEnvName = lastCommand.EnvironmentNames.Aggregate (

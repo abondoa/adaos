@@ -5,8 +5,8 @@
     /// </summary>
     /// <typeparam name="ProgramType">The type of the Adaos program to parse. 
     /// This is the root of the parse tree/concrete syntax tree to be created when parsing the Adaos language 
-    /// and thus is required to implement the <see cref="IProgramSequence"/> interface.</typeparam>
-    public interface IShellParser<ProgramType> where ProgramType : IProgramSequence
+    /// and thus is required to implement the <see cref="IExecutionSequence"/> interface.</typeparam>
+    public interface IShellParser<ProgramType> where ProgramType : IExecutionSequence
     {
         /// <summary>
         /// Parse an input string in the Adaos language. 
@@ -38,7 +38,7 @@
     /// <summary>
     /// An interface describing a parser for the Adaos shell language.
     /// </summary>
-    public interface IShellParser : IShellParser<IProgramSequence> 
+    public interface IShellParser : IShellParser<IExecutionSequence> 
     {
     }
 }

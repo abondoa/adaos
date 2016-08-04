@@ -47,7 +47,7 @@ namespace Adaos.Shell.Execution.Test
         {
             vm = new VirtualMachine(systemOut, systemLog);
             Assert.IsNotNull(vm);
-            Assert.AreEqual(11, vm.EnvironmentContainer.LoadedEnvironments.Count());
+            Assert.AreEqual(12, vm.EnvironmentContainer.LoadedEnvironments.Count());
         }
 
         //TODO: We are not using the environment input for anything as it is...
@@ -431,7 +431,7 @@ namespace Adaos.Shell.Execution.Test
         public void GetPrimaryEnvironmentSilent()
         {
             vm = (systemMachine as VirtualMachine);
-            var res = vm.InternExecute("environments -silent").ToArray();
+            var res = vm.InternExecute("environments silent:true").ToArray();
             Assert.AreEqual(vm.EnvironmentContainer.LoadedEnvironments.First().Name, res.First().Value);
         }
 
@@ -440,7 +440,7 @@ namespace Adaos.Shell.Execution.Test
         {
             vm = (systemMachine as VirtualMachine);
             vm.InternExecute("promoteenvironments custom").ToArray();
-            var res = vm.InternExecute("environments -silent").ToArray();
+            var res = vm.InternExecute("environments silent:true").ToArray();
             Assert.AreEqual(vm.EnvironmentContainer.LoadedEnvironments.First().AsContext().QualifiedName("."), res.First().Value);
             Assert.AreEqual("std.custom", res.First().Value);
         }

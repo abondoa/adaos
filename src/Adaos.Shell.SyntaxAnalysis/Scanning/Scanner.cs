@@ -52,7 +52,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Scanning
             return _workingString.Substring(_position, length);
         }
 
-        public Scanner(string input, IScannerTable scannerTable,int extraPosition = 0)
+        public Scanner(string input, IScannerTable scannerTable, int extraPosition = 0)
         {
             if (input == null)
             {
@@ -103,16 +103,40 @@ namespace Adaos.Shell.SyntaxAnalysis.Scanning
             return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
         }
 
+        private bool IsMathSymbol(char c)
+        {
+            switch(c)
+            {
+                case '+':
+                case '-':
+                case '*':
+                case '/':
+                case '=':
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
         private bool IsSeparator(char c)
         {
-            return c == ' ' || c == '\n' || c == '\t' || c == '\r';
+            switch (CurrentChar)
+            {
+                case ' ':
+                case '\n':
+                case '\r':
+                case '\t':
+                    return true;
+                default:
+                    return false;
+            }
         }
 
         public Token Scan()
         {
             while (IsSeparator(CurrentChar))
             {
-                ScanSeparator();
+                TakeIt();
             }
 
             _currentSpelling = new StringBuilder();
@@ -120,19 +144,6 @@ namespace Adaos.Shell.SyntaxAnalysis.Scanning
             _currentKind = TokenKind.EOF;
             ScanToken();
             return new Token(initPosition + _extraPostion, _currentSpelling.ToString(), _currentKind);
-        }
-
-        private void ScanSeparator()
-        {
-            switch(CurrentChar)
-            {
-                case ' ':
-                case '\n':
-                case '\r':
-                case '\t':
-                    TakeIt();
-                    return;
-            }
         }
 
         private bool ScanSymbolTable()
@@ -204,42 +215,17 @@ namespace Adaos.Shell.SyntaxAnalysis.Scanning
             if (ScanSymbolTable())
             {
             }
+            else if (IsStartOfMathSymbol(CurrentChar))
+            {
+                ScanMathSymbol();
+            }
             else if (IsStartOfWord(CurrentChar) || CheckEscapedAndSkip())
             {
-                _currentKind = TokenKind.WORD;
-                TakeIt();
-                while (IsInsideOfWord(CurrentChar) || CheckEscapedAndSkip())
-                {
-                    TakeIt();
-                }
+                ScanWord();
             }
             else if (CurrentChar == '"' || CurrentChar == '\'')
             {
-                _currentKind = TokenKind.NESTEDWORDS;
-                char lastNester = CurrentChar;
-                char nextNester = CurrentChar == '"' ? '\'' : '"';
-                int nestingLevel = 1;
-                TakeIt();
-                while (nestingLevel >= 1)
-                {
-                    if (CurrentChar == lastNester)
-                    {
-                        nestingLevel--;
-                        Swap(ref nextNester, ref lastNester);
-                    }
-                    else if (CurrentChar == nextNester)
-                    {
-                        nestingLevel++;
-                        Swap(ref nextNester, ref lastNester);
-                    }
-                    else if (CurrentChar == (char)0)
-                    {
-                        throw new ScannerException("Premature EOF, current nesting level: " + nestingLevel);
-                    }
-                    CheckEscapedAndSkip();
-
-                    TakeIt();
-                }
+                ScanNestedWord();
             }
             else if (CurrentChar == (char)0)
             {
@@ -247,12 +233,71 @@ namespace Adaos.Shell.SyntaxAnalysis.Scanning
             }
             else
             {
-                char unknow = CurrentChar;
+                char unknown = CurrentChar;
                 TakeIt();
-                throw new UnknownCharacterException(unknow);
+                throw new UnknownCharacterException(unknown);
             }
 
             return;
+        }
+
+        private void ScanNestedWord()
+        {
+            _currentKind = TokenKind.NESTEDWORDS;
+            char lastNester = CurrentChar;
+            char nextNester = CurrentChar == '"' ? '\'' : '"';
+            int nestingLevel = 1;
+            TakeIt();
+            while (nestingLevel >= 1)
+            {
+                if (CurrentChar == lastNester)
+                {
+                    nestingLevel--;
+                    Swap(ref nextNester, ref lastNester);
+                }
+                else if (CurrentChar == nextNester)
+                {
+                    nestingLevel++;
+                    Swap(ref nextNester, ref lastNester);
+                }
+                else if (CurrentChar == (char)0)
+                {
+                    throw new ScannerException("Premature EOF, current nesting level: " + nestingLevel);
+                }
+                CheckEscapedAndSkip();
+
+                TakeIt();
+            }
+        }
+
+        private void ScanMathSymbol()
+        {
+            _currentKind = TokenKind.MATH_SYMBOL;
+            TakeIt();
+            if (IsInsideOfMathSymbol(CurrentChar))
+            {
+                TakeIt();
+            }
+        }
+
+        private void ScanWord()
+        {
+            _currentKind = TokenKind.WORD;
+            TakeIt();
+            while (IsInsideOfWord(CurrentChar) || CheckEscapedAndSkip())
+            {
+                TakeIt();
+            }
+        }
+
+        private bool IsInsideOfMathSymbol(char c)
+        {
+            return IsMathSymbol(c);
+        }
+
+        private bool IsStartOfMathSymbol(char c)
+        {
+            return IsMathSymbol(c);
         }
 
         private bool IsStartOfWord(char c)

@@ -8,7 +8,7 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
 {
     public class ArgumentExecutable : Argument
     {
-        ExecutionSequence ExecutionSequence { get; }
+        public ExecutionSequence ExecutionSequence { get; }
 
         public ArgumentExecutable(ExecutionSequence executionSequence, int position, bool execute, Word wordName = null) : base(position, execute, wordName)
         {

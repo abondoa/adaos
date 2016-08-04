@@ -8,7 +8,7 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
     /// An abstract class representing a <see cref="ExecutionSequence"/> of the Adaos AST.
     /// The ProgramSequence is the root node of the AST, and its children are a sequence of commands.
     /// </summary>
-    public abstract class ExecutionSequence : AST, IProgramSequence
+    public abstract class ExecutionSequence : AST, IExecutionSequence
     {
         /// <summary>
         /// Enumerate the commands of the ProgramSequence.
@@ -29,7 +29,7 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
         /// <summary>
         /// Enumerate the <see cref="IExecution"/> nodes of the programsequence nodes.
         /// </summary>
-        IEnumerable<IExecution> IProgramSequence<IExecution, AdaosException>.Commands
+        IEnumerable<IExecution> IExecutionSequence<IExecution, AdaosException>.Executions
         {
             get { return Commands; }
         }

@@ -15,11 +15,6 @@ namespace Adaos.Shell.Library.Standard
     {
         virtual protected StreamWriter _output {get; private set;}
         virtual protected IVirtualMachine _vm { get; private set; }
-        private readonly List<string[]> CommonFlagsWithAlias = new List<string[]>
-        { 
-            new string[]{"-silent","-si"},
-            new string[]{"-verbose","-v"}
-        };
 
         public override string Name
         {
@@ -32,9 +27,9 @@ namespace Adaos.Shell.Library.Standard
             _vm = vm;
             Bind(EnableEnvironment, "enableenvironment", "eenv");
             Bind(UnloadEnvironment, "disableenvironment", "denv");
-            Bind(Environments, "environments", "envs");
-            Bind(PromoteEnvironments, "promoteenvironments", "proenv");
-            Bind(DependenciesCommand, "dependencies", "deps");
+            Bind(Environments, "environments/envs silent/si=false");
+            Bind(PromoteEnvironments, "promoteenvironments/proenv silent/si=false environments/*");
+            Bind(DependenciesCommand, "dependencies/deps silent/si=false environments/*");
             Bind(args => UnloadEnvironment(args).Then(EnableEnvironment(args)), "demoteenvironments", "demenv");
             Bind(DrawEnvironmentTree, "drawenviroments/denvs/printenvs");
         }
@@ -77,11 +72,12 @@ namespace Adaos.Shell.Library.Standard
             yield break;
         } 
 
-        private IEnumerable<IArgument> Environments(IEnumerable<IArgument> args)
+        private IEnumerable<IArgument> Environments(IArgumentValueLookup lookup, params IEnumerable<IArgument>[] args)
         {
             List<IArgument> result = new List<IArgument>();
-            var flags = args.ParseFlagsWithAlias(CommonFlagsWithAlias.ToList());
-            bool verbose = !flags.FirstOrDefault(x => x.Key.Equals("-silent")).Value;
+            bool verbose;
+            lookup["silent"].TryParseTo(out verbose);
+            verbose = !verbose;
             if (verbose)
             {
                 _output.WriteLine("Loaded environments:");
@@ -115,12 +111,13 @@ namespace Adaos.Shell.Library.Standard
             return result;
         }
 
-        private IEnumerable<IArgument> DependenciesCommand(IEnumerable<IArgument> args)
+        private IEnumerable<IArgument> DependenciesCommand(IArgumentValueLookup lookup, params IEnumerable<IArgument>[] args)
         {
             List<IArgument> result = new List<IArgument>();
-            var flags = args.ParseFlagsWithAlias(CommonFlagsWithAlias.ToList(), false);
-            bool verbose = !flags.FirstOrDefault(x => x.Key.Equals("-silent")).Value;
-            foreach (var arg in args.Where(x => CommonFlagsWithAlias.FirstOrDefault(y => y.Contains(x.Value)) == null))
+            bool verbose;
+            lookup["silent"].TryParseTo(out verbose);
+            verbose = !verbose;
+            foreach (var arg in lookup.Lookup["environments"].Then(args.Flatten()))
             {
                 IEnvironment env = _vm.EnvironmentContainer.LoadedEnvironments.FirstOrDefault(x => x.Name.ToLower().Equals(arg.Value.ToLower()));
                 if (env == null)
@@ -154,17 +151,17 @@ namespace Adaos.Shell.Library.Standard
         }
 
         //Function to set primary environment/order of environments to look through
-        private IEnumerable<IArgument> PromoteEnvironments(IEnumerable<IArgument> args)
+        private IEnumerable<IArgument> PromoteEnvironments(IArgumentValueLookup lookup, params IEnumerable<IArgument>[] args)
         {
             if (_vm == null)
             {
                 throw new SemanticException(-1, "Virtual machine not set - Cannot get/set primary environment.");
             }
-            var flags = args.ParseFlagsWithAlias(CommonFlagsWithAlias.ToList(), false).ToDictionary(x => x.Key, x => x.Value);
-            bool verbose = flags["-verbose"];
-            bool silent = flags["-silent"];
-            args = args.Where(x => CommonFlagsWithAlias.FirstOrDefault(y => y.Contains(x.Value)) == null);
-            if (args.Count() == 0)
+            bool verbose;
+            lookup["silent"].TryParseTo(out verbose);
+            verbose = !verbose;
+            var environments = lookup.Lookup["environments"].Then(args.Flatten());
+            if (environments.Count() == 0)
             {
                 IEnvironmentContext env = _vm.EnvironmentContainer.LoadedEnvironments.FirstOrDefault();
                 if (env == null)
@@ -181,7 +178,7 @@ namespace Adaos.Shell.Library.Standard
             }
             else
             {
-                foreach (var arg in args.Reverse())
+                foreach (var arg in environments.Reverse())
                 {
                     IArgument result = null;
                     var toSet = _vm.EnvironmentContainer.LoadedEnvironments.FirstOrDefault(x => x.Name.ToLower().Equals(arg.Value.ToLower()));

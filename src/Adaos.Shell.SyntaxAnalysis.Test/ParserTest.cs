@@ -19,7 +19,9 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
 
         [TestInitialize]
         public void SetUp()
-        { }
+        {
+            _parser = new Parser(false);
+        }
 
         [TestCleanup]
         public void TearDown()
@@ -43,7 +45,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
         public void ParseLegal()
         {
             _parser = new Parser();
-            IProgramSequence result = _parser.Parse(legalInput);
+            IExecutionSequence result = _parser.Parse(legalInput);
             Assert.AreEqual(0, result.Errors.Count());
             (result as ExecutionSequence).Visit(new VisitUserCreateAle1234_4321ProgSeq(), null);
         }
@@ -53,17 +55,25 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
         {
             _parser = new Parsing.Parser();
 
-            IProgramSequence result = _parser.Parse("echo /n");
-            Assert.AreEqual(1, result.Errors.Count());
-
+            IExecutionSequence result = _parser.Parse("echo /n");
+            Assert.AreEqual(0, result.Errors.Count());
         }
 
         [TestMethod]
-        public void ParseSlashExtensive()
+        public void ParseTilde()
+        {
+            _parser = new Parsing.Parser();
+
+            IExecutionSequence result = _parser.Parse("echo ~n");
+            Assert.AreEqual(1, result.Errors.Count());
+        }
+
+        [TestMethod]
+        public void ParseTildeExtensive()
         {
             _parser = new Parser();
 
-            IProgramSequence result = _parser.Parse("echo /n");
+            IExecutionSequence result = _parser.Parse("echo ~n");
             Assert.AreEqual(1, result.Errors.Count());
 
             result = _parser.Parse("echo test");
@@ -79,9 +89,9 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
         {
             _parser = new Parser();
 
-            IProgramSequence result = _parser.Parse("env1.env2.command");
+            IExecutionSequence result = _parser.Parse("env1.env2.command");
             Assert.AreEqual(result.Errors.Count(), 0);
-            Assert.AreEqual(result.Commands.First().EnvironmentNames.ToList().Count, 2);
+            Assert.AreEqual(result.Executions.First().EnvironmentNames.ToList().Count, 2);
         }
 
         [TestMethod]
@@ -89,7 +99,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
         {
             _parser = new Parser();
 
-            IProgramSequence result = _parser.Parse("env1.env1.");
+            IExecutionSequence result = _parser.Parse("env1.env1.");
             Assert.AreEqual(result.Errors.Count(), 1);
         }
 
@@ -98,7 +108,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
         {
             _parser = new Parser();
 
-            IProgramSequence result = _parser.Parse("echo $'view 1 si'");
+            IExecutionSequence result = _parser.Parse("echo $'view 1 si'");
             Assert.AreEqual(0, result.Errors.Count());
 
             Assert.IsTrue((result as ExecutionSequenceActual).Command.Arguments.First().ToExecute);
@@ -115,7 +125,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
         {
             _parser = new Parser();
 
-            IProgramSequence result = _parser.Parse("$");
+            IExecutionSequence result = _parser.Parse("$");
             Assert.AreEqual(2, result.Errors.Count());
             Assert.IsInstanceOfType(result.Errors.First(),typeof(ParserException)); // Illegal token received (not word)
             Assert.IsInstanceOfType(result.Errors.Skip(1).First(), typeof(ParserException)); // Illegal EOF (due to panic mode)
@@ -126,7 +136,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
         {
             _parser = new Parser(false);
 
-            IProgramSequence result = _parser.Parse("$");
+            IExecutionSequence result = _parser.Parse("$");
             Assert.AreEqual(1, result.Errors.Count());
             Assert.IsInstanceOfType(result.Errors.First(),typeof(ParserException)); // Illegal token received (not word)
         }
@@ -136,7 +146,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
         {
             _parser = new Parser();
 
-            IProgramSequence result = _parser.Parse("echo $$$$");
+            IExecutionSequence result = _parser.Parse("echo $$$$");
             Assert.AreEqual(2, result.Errors.Count());
             Assert.IsInstanceOfType(result.Errors.First(),typeof(ParserException)); // Illegal token received (not word)
             Assert.IsInstanceOfType(result.Errors.Skip(1).First(), typeof(ParserException)); // Illegal EOF (due to panic mode)
@@ -147,7 +157,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
         {
             _parser = new Parsing.Parser();
 
-            IProgramSequence result = _parser.Parse("view 1 si | echo");
+            IExecutionSequence result = _parser.Parse("view 1 si | echo");
             Assert.AreEqual(0, result.Errors.Count());
 
             Assert.IsTrue((result as ExecutionSequenceActual).Commands.Skip(1).First().IsPipeRecipient());
@@ -164,7 +174,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
         {
             _parser = new Parser();
 
-            IProgramSequence result = _parser.Parse("sum 1 2 , sum 3 4 | echo");
+            IExecutionSequence result = _parser.Parse("sum 1 2 , sum 3 4 | echo");
             Assert.AreEqual(0, result.Errors.Count());
 
             Assert.AreEqual(CommandRelation.Separated,(result as ExecutionSequenceActual).Commands.First().RelationToPrevious);
@@ -179,30 +189,62 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
         }
 
         [TestMethod]
-        public void Parse_ProgramSequenceWithExecutionSeparation_0Errors()
+        public void Parse_ProgramSequenceWithExecutionSeparation_NoErrors()
         {
             _parser = new Parser();
 
-            IProgramSequence result = _parser.Parse("echo hej; echo hej");
+            IExecutionSequence result = _parser.Parse("echo hej; echo hej");
             Assert.AreEqual(0, result.Errors.Count());
         }
 
         [TestMethod]
-        public void Parse_WithExecutableArgument_0Errors()
+        public void Parse_WithExecutableArgument_NoErrors()
         {
             _parser = new Parser();
 
-            IProgramSequence result = _parser.Parse("echo (hej)");
+            IExecutionSequence result = _parser.Parse("echo (hej)");
             Assert.AreEqual(0, result.Errors.Count());
         }
 
         [TestMethod]
-        public void Parse_WithEndingWithParenthesis()
+        public void Parse_WithEndingWithParenthesis_Error()
         {
             _parser = new Parser();
 
-            IProgramSequence result = _parser.Parse("echo )");
+            IExecutionSequence result = _parser.Parse("echo )");
             Assert.AreEqual(1, result.Errors.Count());
+        }
+
+        [TestMethod]
+        public void Parse_EmptyExecutableArgument_Errors()
+        {
+            _parser = new Parser();
+
+            IExecutionSequence result = _parser.Parse("echo ()");
+            Assert.AreEqual(2, result.Errors.Count());
+        }
+
+        [TestMethod]
+        public void Parse_ExecutableArgumentWithoutEnd_Errors()
+        {
+            _parser = new Parser();
+
+            IExecutionSequence result = _parser.Parse("echo (hej");
+            Assert.AreEqual(2, result.Errors.Count());
+        }
+
+        [TestMethod]
+        public void Parse_NestedExecutableArgument_NoErrors()
+        {
+            IExecutionSequence result = _parser.Parse("cmd (env.cmd (env.nest))");
+            Assert.AreEqual(0, result.Errors.Count());
+        }
+
+        [TestMethod]
+        public void Parse_MathSymbol_NoErrors()
+        {
+            IExecutionSequence result = _parser.Parse("cmd + - * / =");
+            Assert.AreEqual(0, result.Errors.Count());
         }
 
         private class VisitUserCreateAle1234_4321ProgSeq : IVisitor
@@ -327,7 +369,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
                 throw new NotImplementedException();
             }
 
-            object IVisitor.Visit(WordSymbol word, object obj)
+            object IVisitor.Visit(WordMathSymbol word, object obj)
             {
                 throw new NotImplementedException();
             }
@@ -425,7 +467,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
             }
 
 
-            public object Visit(WordSymbol word, object obj)
+            public object Visit(WordMathSymbol word, object obj)
             {
                 throw new NotImplementedException();
             }
@@ -508,7 +550,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
             }
 
 
-            public object Visit(WordSymbol word, object obj)
+            public object Visit(WordMathSymbol word, object obj)
             {
                 throw new NotImplementedException();
             }
@@ -595,7 +637,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
             }
 
 
-            public object Visit(WordSymbol word, object obj)
+            public object Visit(WordMathSymbol word, object obj)
             {
                 throw new NotImplementedException();
             }
@@ -690,7 +732,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
             }
 
 
-            public object Visit(WordSymbol word, object obj)
+            public object Visit(WordMathSymbol word, object obj)
             {
                 throw new NotImplementedException();
             }

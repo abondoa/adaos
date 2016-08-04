@@ -19,7 +19,7 @@ namespace Adaos.Shell.SyntaxAnalysis
         object Visit(ExecutionSequenceFollowActual progF, object obj);
         object Visit(ExecutionSequenceFollowEmpty progF, object obj);
         object Visit(WordActual word, object obj);
-        object Visit(WordSymbol word, object obj);
+        object Visit(WordMathSymbol word, object obj);
         object Visit(ArgumentExecutable argumentExecution, object obj);
         object Visit(EnvironmentActual env, object obj);
         object Visit(NestedWordsActual nest, object obj);
