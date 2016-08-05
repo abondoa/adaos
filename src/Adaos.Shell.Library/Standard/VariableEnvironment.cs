@@ -91,10 +91,6 @@ namespace Adaos.Shell.Library.Standard
             {
                 command = (args) =>
                 {
-                    if (args.Flatten().Any())
-                    {
-                        return SetVariable(variable, args.Flatten(),false);
-                    }
                     var arg = values.First() as ArgumentExecutable;
                     return _vm.Execute(arg.ExecutionSequence, args);
                 };
