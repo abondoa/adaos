@@ -7,7 +7,7 @@ using Adaos.Shell.Interface.Exceptions;
 
 namespace Adaos.Shell.Core
 {
-    public class DummyProgramSequence: IExecutionSequence
+    public class DummyExecutionSequence: IExecutionSequence
     {
         public IEnumerable<IExecution> Executions
         {
@@ -21,9 +21,9 @@ namespace Adaos.Shell.Core
             private set;
         }
 
-        public DummyProgramSequence(params IExecution[] commands) : this(new AdaosException[0],commands) {  }
+        public DummyExecutionSequence(params IExecution[] commands) : this(new AdaosException[0],commands) {  }
 
-        public DummyProgramSequence(IEnumerable<AdaosException> errors, params IExecution[] commands)
+        public DummyExecutionSequence(IEnumerable<AdaosException> errors, params IExecution[] commands)
         {
             Errors = errors;
             Executions = commands;

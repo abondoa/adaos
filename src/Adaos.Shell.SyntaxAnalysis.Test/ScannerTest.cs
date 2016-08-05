@@ -6,6 +6,7 @@ using Adaos.Shell.SyntaxAnalysis.Scanning;
 using Adaos.Shell.SyntaxAnalysis.Exceptions;
 using Adaos.Shell.Interface;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Adaos.Shell.SyntaxAnalysis.Tokens;
 
 namespace Adaos.Shell.SyntaxAnalysis.Test
 {
@@ -33,7 +34,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
         private string echoTilde = "echo ~n";
         private readonly IScannerTable stdScannerTable = new ScannerTable();
         private IScannerTable scannerTable = new ScannerTable();
-        private string escapedInWord = "let\\'sEscape\\!\\@TheMoment";
+        private string escapedInWord = "let\\'sEscape\\!\\$TheMoment";
         private string escapedInNestedWord = "\"user create AleTheMale\\!\\! @'random number \"0\" \"9999\" width 4'\"";
         private string arguementExecutableStart = "(";
         private string arguementExecutableStop = ")";
@@ -343,6 +344,20 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
         public void Scan_DivideMathSymbol()
         {
             _test("/", Tokens.TokenKind.MATH_SYMBOL);
+        }
+
+        [TestMethod]
+        public void Scan_PlusMinusMathSymbols()
+        {
+            scanner = new Scanner("+-", scannerTable);
+            var token1 = scanner.Scan();
+            var token2 = scanner.Scan();
+            var token3 = scanner.Scan();
+            Assert.AreEqual(TokenKind.MATH_SYMBOL, token1.Kind);
+            Assert.AreEqual("+", token1.Spelling);
+            Assert.AreEqual(TokenKind.MATH_SYMBOL, token2.Kind);
+            Assert.AreEqual("-", token2.Spelling);
+            Assert.AreEqual(TokenKind.EOF, token3.Kind);
         }
 
         private void _test(string input, Tokens.TokenKind expectedKind)

@@ -118,6 +118,18 @@ namespace Adaos.Shell.SyntaxAnalysis.Scanning
             }
         }
 
+        private bool IsMathSymbol(string str)
+        {
+            switch (str)
+            {
+                case "++":
+                case "--":
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
         private bool IsSeparator(char c)
         {
             switch (CurrentChar)
@@ -273,8 +285,11 @@ namespace Adaos.Shell.SyntaxAnalysis.Scanning
         private void ScanMathSymbol()
         {
             _currentKind = TokenKind.MATH_SYMBOL;
-            TakeIt();
-            if (IsInsideOfMathSymbol(CurrentChar))
+            if (IsMathSymbol(CurrentString(2)))
+            {
+                TakeIt(2);
+            }
+            else
             {
                 TakeIt();
             }

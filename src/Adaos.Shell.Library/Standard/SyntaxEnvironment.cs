@@ -12,7 +12,6 @@ namespace Adaos.Shell.Library.Standard
     class SyntaxEnvironment : BaseEnvironment
     {
         private IVirtualMachine _vm;
-        private IShellParser _initialParser;
         private IShellParser Parser { get { return _vm.Parser; } }
 
         public override string Name
@@ -27,7 +26,6 @@ namespace Adaos.Shell.Library.Standard
                 throw new ArgumentNullException("SyntaxEnvironment requires an actual IVirtualMachine.");
             }
             _vm = vm;
-            _initialParser = vm.Parser;
             Bind(Pipe, "pipe", "commandpipe","cmdpipe");
             Bind(Execute, "execute", "exec");
             Bind(CommandSeparator, "commandseparator", "cmdsep");

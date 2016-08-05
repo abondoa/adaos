@@ -118,7 +118,7 @@ namespace Adaos.Shell.Library.Standard
             Command execCommand = (x) =>
                 {
                     DummyCommand command = new DummyCommand(last.CommandName, last.EnvironmentNames, last.Arguments.Then(x.Aggregate((y,z) => y.Then(z))), last.Position, last.RelationToPrevious);
-                    DummyProgramSequence progSec = new DummyProgramSequence(commandSeq.Executions.Where(y => y != last).Then(new List<IExecution> { command }).ToArray());
+                    DummyExecutionSequence progSec = new DummyExecutionSequence(commandSeq.Executions.Where(y => y != last).Then(new List<IExecution> { command }).ToArray());
                     return _vm.Execute(progSec);
                 };
             if (custom.Retrieve(args.First().Value) != null)

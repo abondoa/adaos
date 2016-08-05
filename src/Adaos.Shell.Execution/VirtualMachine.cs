@@ -29,25 +29,43 @@ namespace Adaos.Shell.Execution
         private IEnvironmentContainer _envContainer;
         private IEnumerable<IArgument>[] NoArguments = new IEnumerable<IArgument>[] {new IArgument[0] };
 
-        public VirtualMachine(StreamWriter output, StreamWriter log, params IEnvironment[] environments)
+        public VirtualMachine(StreamWriter output, StreamWriter log)
         {
             if (output == null)
             {
-                throw new ArgumentNullException("Output");
+                throw new ArgumentNullException(nameof(output));
             }
             if (log == null)
             {
-                throw new ArgumentNullException("Log");
-            }
-            if (environments == null)
-            {
-                throw new ArgumentNullException("Environments");
+                throw new ArgumentNullException(nameof(log));
             }
             _output = output;
             _log = log;
-            
 
-			_envContainer = new EnvironmentContainer (Library.ContextBuilder.Instance.BuildStandardEnvironment(this).ToEnum<IEnvironment>());
+            _envContainer = new EnvironmentContainer(Library.ContextBuilder.Instance.BuildStandardEnvironment(this).ToEnum<IEnvironment>());
+            _parser = new Parser();
+            _resolver = new Resolver();
+            _moduleManager = new ModuleManager(this);
+        }
+
+        public VirtualMachine(StreamWriter output, StreamWriter log, IEnvironmentContainer container)
+        {
+            if (output == null)
+            {
+                throw new ArgumentNullException(nameof(output));
+            }
+            if (log == null)
+            {
+                throw new ArgumentNullException(nameof(log));
+            }
+            if (container == null)
+            {
+                throw new ArgumentNullException(nameof(container));
+            }
+            _output = output;
+            _log = log;
+
+            _envContainer = container;
             _parser = new Parser();
             _resolver = new Resolver();
             _moduleManager = new ModuleManager(this);
@@ -178,13 +196,25 @@ namespace Adaos.Shell.Execution
 
         private IEnumerable<IArgument> HandleArguments(IEnumerable<IArgument> args)
         {
-            VirtualMachine vm = new VirtualMachine(_output,_log,EnvironmentContainer.LoadedEnvironments.ToArray());
-            vm.Parser.ScannerTable = Parser.ScannerTable.Copy();
+            VirtualMachine vm = null;
             foreach (var arg in args)
             {
                 if (arg.ToExecute)
                 {
-                    IEnumerable<IArgument> results = vm.InternExecute(arg.Value,arg.Position-1);
+                    if(vm == null)
+                    {
+                        vm = new VirtualMachine(_output, _log, EnvironmentContainer);
+                        vm.Parser.ScannerTable = Parser.ScannerTable.Copy();
+                    }
+                    IEnumerable<IArgument> results;
+                    try
+                    {
+                        results = vm.InternExecute(arg.Value, arg.Position - 1).ToArray();
+                    }
+                    catch (ExitTerminalException)
+                    {
+                        results = new IArgument[0];
+                    }
                     foreach (var res in results)
                     {
                         yield return res;
@@ -195,7 +225,6 @@ namespace Adaos.Shell.Execution
                     yield return arg;
                 }
             }
-            vm = null;
         }
 
         #region Properties

@@ -63,7 +63,7 @@ namespace Adaos.Shell.Execution.Test
         [TestMethod]
         public void SumWithoutEnvironment()
         {
-            vm = new VirtualMachine(systemOut, systemLog, math);
+            vm = new VirtualMachine(systemOut, systemLog);
             var res = vm.InternExecute("sum 1 2 3 4");
             Assert.AreEqual(10, int.Parse(res.ToArray()[0].Value));
         }
@@ -71,7 +71,7 @@ namespace Adaos.Shell.Execution.Test
         [TestMethod]
         public void SumWithEnvironment()
         {
-            vm = new VirtualMachine(systemOut, systemLog, math);
+            vm = new VirtualMachine(systemOut, systemLog);
             var res = vm.InternExecute("math.sum 1 2 3 4");
             Assert.AreEqual(10, int.Parse(res.ToArray()[0].Value));
         }
@@ -79,7 +79,7 @@ namespace Adaos.Shell.Execution.Test
         [TestMethod]
         public void MultiWithoutEnvironment()
         {
-            vm = new VirtualMachine(systemOut, systemLog, math);
+            vm = new VirtualMachine(systemOut, systemLog);
             var res = vm.InternExecute("multi 1 2 3 4");
             Assert.AreEqual(24, int.Parse(res.ToArray()[0].Value));
         }
@@ -87,7 +87,7 @@ namespace Adaos.Shell.Execution.Test
         [TestMethod]
         public void MultiWithEnvironment()
         {
-            vm = new VirtualMachine(systemOut, systemLog, math);
+            vm = new VirtualMachine(systemOut, systemLog);
             var res = vm.InternExecute("math.multi 1 2 3 4");
             Assert.AreEqual(24, int.Parse(res.ToArray()[0].Value));
         }
@@ -95,7 +95,7 @@ namespace Adaos.Shell.Execution.Test
         [TestMethod]
         public void MultiNoArguments()
         {
-            vm = new VirtualMachine(systemOut, systemLog, math);
+            vm = new VirtualMachine(systemOut, systemLog);
             var res = vm.InternExecute("math.multi");
             Assert.AreEqual(1, int.Parse(res.ToArray()[0].Value));
         }
@@ -103,7 +103,7 @@ namespace Adaos.Shell.Execution.Test
         [TestMethod]
         public void SumDouble()
         {
-            vm = new VirtualMachine(systemOut, systemLog, math);
+            vm = new VirtualMachine(systemOut, systemLog);
             var res = vm.InternExecute("math.sum double 1 2 3 4");
             Assert.AreEqual(10, double.Parse(res.ToArray()[0].Value));
         }
@@ -111,7 +111,7 @@ namespace Adaos.Shell.Execution.Test
         [TestMethod]
         public void SumNoArguments()
         {
-            vm = new VirtualMachine(systemOut, systemLog, math);
+            vm = new VirtualMachine(systemOut, systemLog);
             var res = vm.InternExecute("math.sum");
             Assert.AreEqual(0, int.Parse(res.ToArray()[0].Value));
         }
@@ -119,7 +119,7 @@ namespace Adaos.Shell.Execution.Test
         //[TestMethod]
         //public void SumHelp()
         //{
-        //    vm = new VirtualMachine(systemOut, systemLog, math);
+        //    vm = new VirtualMachine(systemOut, systemLog);
         //    long temp = mathOut.BaseStream.Position;
         //    var res = vm.InternExecute("math.sum help");
         //    foreach (var a in res)
@@ -133,7 +133,7 @@ namespace Adaos.Shell.Execution.Test
         [TestMethod]
         public void RandomInt()
         {
-            vm = new VirtualMachine(systemOut, systemLog, math);
+            vm = new VirtualMachine(systemOut, systemLog);
             var res = vm.InternExecute("math.random 0 1");
             Assert.IsTrue(int.Parse(res.ToArray()[0].Value) >= 0);
             Assert.IsTrue(int.Parse(res.ToArray()[0].Value) <= 1);
@@ -464,6 +464,14 @@ namespace Adaos.Shell.Execution.Test
             vm.Parser.ScannerTable.Escaper = "###";
             vm.InternExecute(@"module.load ""C:\Users\AlexBondo\code-playground\adaos\src\Adaos.Shell.ModuleA\bin\Debug\Adaos.Shell.ModuleA.dll""").ToArray();
 
+            Assert.AreEqual(temp, mathOut.BaseStream.Position);
+        }
+
+        [TestMethod]
+        public void Execute_ExitInsideSubExecution_ShouldNotThrowExistException()
+        {
+            long temp = systemOut.BaseStream.Position;
+            systemMachine.Execute("echo $exit"); // Should not throw exit terminal exception
             Assert.AreEqual(temp, mathOut.BaseStream.Position);
         }
     }
