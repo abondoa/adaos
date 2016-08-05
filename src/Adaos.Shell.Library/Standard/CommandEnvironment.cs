@@ -26,8 +26,6 @@ namespace Adaos.Shell.Library.Standard
             _output = output;
             _vm = vm;
             Bind(Cmds, "commands/cmds silent/si=false environments/*");
-            Bind(MakeCommand, "makecommand", "mkcmd");
-            Bind(RemoveCommand, "removecommand", "rmcmd");
             Bind(Repeat, "repeat", "rep");
         }
 
@@ -68,93 +66,6 @@ namespace Adaos.Shell.Library.Standard
                 }
             }
             return result;
-        }
-
-        private IEnumerable<IArgument> MakeCommand(IEnumerable<IArgument> args)
-        {
-            if (args.Count() != 2)
-            {
-                throw new SemanticException(-1,"MakeCommand must get exactly two arguments");
-            }
-            IEnvironment custom = _vm.EnvironmentContainer.LoadedEnvironments.FirstOrDefault(x => x.Name.Equals("custom"));
-            if (custom == null)
-            {
-                throw new SemanticException(-1, "ADAOS VM does not have a custom environment loaded");
-            }
-            var commandSeq = _vm.Parser.Parse(args.Skip(1).First().Value);
-            if (commandSeq == null || commandSeq.Errors == null)
-            {
-                throw new SemanticException(-1, "Failed to make new command: '" + args.First().Value + "'. The program '" + args.Skip(1).First().Value + "' could not be parsed");
-            }
-            if (commandSeq.Errors.Count() > 0)
-            {
-                StringBuilder str = new StringBuilder();
-                str.Append("Failed to make new command: '" + args.First().Value + "'. The program '" + args.Skip(1).First().Value + "' could not be parsed. Errors received: ");
-                str.Append(commandSeq.Errors.First().Message);
-                foreach (var err in commandSeq.Errors.Skip(1))
-                {
-                    str.Append("; " + err.Message);
-                }
-                throw new SemanticException(-1, str.ToString());
-            }
-            var res = _vm.Resolver;
-            var listOfDeps = new List<Type>();
-            foreach (var cmd in commandSeq.Executions)
-            {
-                try
-                {
-                    var env = res.GetEnvironmentOf(cmd, _vm.EnvironmentContainer.LoadedEnvironments);
-                    if (env != null)
-                    {
-                        addDependency(env.GetType(),listOfDeps);
-                    }
-                }
-                catch (SemanticException e)
-                {
-					throw new SemanticException(e.Position + args.Second().Position - 1, "While resolving command '"+cmd.EnvironmentNames.Aggregate ((x,y) => x + _vm.Parser.ScannerTable.EnvironmentSeparator + y)+_vm.Parser.ScannerTable.EnvironmentSeparator+cmd.CommandName+"' the following error was received: "+e.Message);
-                }
-            }
-            IExecution last = commandSeq.Executions.Last();
-            Command execCommand = (x) =>
-                {
-                    DummyCommand command = new DummyCommand(last.CommandName, last.EnvironmentNames, last.Arguments.Then(x.Aggregate((y,z) => y.Then(z))), last.Position, last.RelationToPrevious);
-                    DummyExecutionSequence progSec = new DummyExecutionSequence(commandSeq.Executions.Where(y => y != last).Then(new List<IExecution> { command }).ToArray());
-                    return _vm.Execute(progSec);
-                };
-            if (custom.Retrieve(args.First().Value) != null)
-            {
-                throw new SemanticException(args.First().Position,"Trying to make new command with exisiting name: '" + args.First().Value + "'. Please use 'rmcmd " + args.First().Value + "' to remove existing command");
-            }
-            if (custom is CustomEnvironment)
-            {
-                (custom as CustomEnvironment).Bind(args.First().Value, execCommand, listOfDeps);
-            }
-            else
-            {
-                custom.Bind(execCommand, args.First().Value);
-            }
-            yield break;
-        }
-
-        private IEnumerable<IArgument> RemoveCommand(IEnumerable<IArgument> args)
-        {
-            IEnvironment custom = _vm.EnvironmentContainer.LoadedEnvironments.FirstOrDefault(x => x.Name.Equals("custom"));
-            if (custom == null)
-            {
-                throw new SemanticException(-1, "ADAOS VM does not have a custom environment loaded");
-            }
-            if(custom.AllowUnbinding)
-            {
-                foreach (var arg in args)
-                {
-                    custom.Unbind(arg.Value);
-                }
-            }
-            else
-            {
-                throw new SemanticException(-1, "Custom environment does not allow unbinding");
-            }
-            yield break;
         }
 
         private IEnumerable<IArgument> Repeat(IEnumerable<IArgument> args)

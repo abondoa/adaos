@@ -273,6 +273,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Parsing
                     AcceptIt();
                     var executionSequence = ParseExecutionSequence(true);
                     var result = new ArgumentExecutable(executionSequence, position, exec, wordName);
+                    result.ExecutionSequence.Executions.First().RelationToPrevious = CommandRelation.Piped;
                     Accept(TokenKind.ARGUMENT_EXECUTABLE_STOP);
                     return result;
                 default:

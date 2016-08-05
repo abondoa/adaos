@@ -22,7 +22,7 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
         /// <summary>
         /// Enumerate the commands of the ProgramSequence.
         /// </summary>
-        public override IEnumerable<Execution> Commands 
+        public override IEnumerable<Execution> Executions 
         {
             get 
             {

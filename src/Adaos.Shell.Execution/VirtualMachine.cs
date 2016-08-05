@@ -149,7 +149,8 @@ namespace Adaos.Shell.Execution
                 Adaos.Shell.Interface.Command toExec = null;
                 if (!comm.IsPipeRecipient())
                 {
-                    result.ToArray(); //Execute previous before trying to resolve (maybe a new environment has been loaded just before)
+                    foreach(var temp in result)
+                        temp.ToArray(); //Execute previous before trying to resolve (maybe a new environment has been loaded just before)
                 }
 
                 toExec = _resolver.Resolve(comm, EnvironmentContainer.LoadedEnvironments);

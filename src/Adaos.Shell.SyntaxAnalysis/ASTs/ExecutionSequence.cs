@@ -13,25 +13,31 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
         /// <summary>
         /// Enumerate the commands of the ProgramSequence.
         /// </summary>
-        public abstract IEnumerable<Execution> Commands { get; }
+        public abstract IEnumerable<Execution> Executions { get; }
 
         /// <summary>
         /// The default constructor for the ProgramSequence.
         /// </summary>
-        protected ExecutionSequence() { }
+        protected ExecutionSequence()
+        {
+            Errors = new AdaosException[0];
+        }
 
         /// <summary>
         /// A constructor for the ProgramSequence.
         /// </summary>
         /// <param name="position">The position of the first character in the source code.</param>
-        protected ExecutionSequence(int position) : base(position) { }
+        protected ExecutionSequence(int position) : base(position)
+        {
+            Errors = new AdaosException[0];
+        }
 
         /// <summary>
         /// Enumerate the <see cref="IExecution"/> nodes of the programsequence nodes.
         /// </summary>
         IEnumerable<IExecution> IExecutionSequence<IExecution, AdaosException>.Executions
         {
-            get { return Commands; }
+            get { return Executions; }
         }
 
         /// <summary>

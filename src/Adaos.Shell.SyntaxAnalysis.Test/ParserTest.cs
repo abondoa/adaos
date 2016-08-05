@@ -160,7 +160,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
             IExecutionSequence result = _parser.Parse("view 1 si | echo");
             Assert.AreEqual(0, result.Errors.Count());
 
-            Assert.IsTrue((result as ExecutionSequenceActual).Commands.Skip(1).First().IsPipeRecipient());
+            Assert.IsTrue((result as ExecutionSequenceActual).Executions.Skip(1).First().IsPipeRecipient());
 
             result = _parser.Parse("echo test");
             Assert.AreEqual(0, result.Errors.Count());
@@ -177,9 +177,9 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
             IExecutionSequence result = _parser.Parse("sum 1 2 , sum 3 4 | echo");
             Assert.AreEqual(0, result.Errors.Count());
 
-            Assert.AreEqual(CommandRelation.Separated,(result as ExecutionSequenceActual).Commands.First().RelationToPrevious);
-            Assert.AreEqual(CommandRelation.Concatenated,(result as ExecutionSequenceActual).Commands.Skip(1).First().RelationToPrevious);
-            Assert.AreEqual(CommandRelation.Piped,(result as ExecutionSequenceActual).Commands.Skip(2).First().RelationToPrevious);
+            Assert.AreEqual(CommandRelation.Separated,(result as ExecutionSequenceActual).Executions.First().RelationToPrevious);
+            Assert.AreEqual(CommandRelation.Concatenated,(result as ExecutionSequenceActual).Executions.Skip(1).First().RelationToPrevious);
+            Assert.AreEqual(CommandRelation.Piped,(result as ExecutionSequenceActual).Executions.Skip(2).First().RelationToPrevious);
 
             result = _parser.Parse("echo test");
             Assert.AreEqual(0, result.Errors.Count());
