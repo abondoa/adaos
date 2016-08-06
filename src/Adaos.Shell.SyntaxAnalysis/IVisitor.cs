@@ -13,11 +13,11 @@ namespace Adaos.Shell.SyntaxAnalysis
         object Visit(ArgumentSequenceEmpty argSeq, object obj);
         object Visit(ArgumentWord arg, object obj);
         object Visit(ExecutionActual comm, object obj);
-        object Visit(CommandWithEnvironment comm, object obj);
+        object Visit(ExecutionWithEnvironment comm, object obj);
         object Visit(CommandNameActual commName, object obj);
         object Visit(ExecutionSequenceActual prog, object obj);
-        object Visit(ExecutionSequenceFollowActual progF, object obj);
-        object Visit(ExecutionSequenceFollowEmpty progF, object obj);
+        object Visit(ExecutionSequenceFollowActual execSeqF, object obj);
+        object Visit(ExecutionSequenceFollowEmpty execSeqF, object obj);
         object Visit(WordActual word, object obj);
         object Visit(WordMathSymbol word, object obj);
         object Visit(ArgumentExecutable argumentExecution, object obj);

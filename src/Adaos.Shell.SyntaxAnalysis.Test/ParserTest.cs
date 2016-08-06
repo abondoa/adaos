@@ -111,7 +111,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
             IExecutionSequence result = _parser.Parse("echo $'view 1 si'");
             Assert.AreEqual(0, result.Errors.Count());
 
-            Assert.IsTrue((result as ExecutionSequenceActual).Command.Arguments.First().ToExecute);
+            Assert.IsTrue((result as ExecutionSequenceActual).Execution.Arguments.First().ToExecute);
 
             result = _parser.Parse("echo test");
             Assert.AreEqual(0, result.Errors.Count());
@@ -283,8 +283,8 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
             public object Visit(ExecutionSequenceActual prog, object obj)
             {
                 Assert.AreEqual(1, prog.Position);
-                prog.Command.Visit(new VisitUserCreateAle1234_4321Comm(), null);
-                prog.FollowingCommands.Visit(new NullFollComm(), null);
+                prog.Execution.Visit(new VisitUserCreateAle1234_4321Comm(), null);
+                prog.FollowingExecutions.Visit(new NullFollComm(), null);
                 return null;
             }
 
@@ -319,7 +319,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
                 throw new NotImplementedException();
             }
 
-            public object Visit(CommandWithEnvironment comm, object obj)
+            public object Visit(ExecutionWithEnvironment comm, object obj)
             {
                 throw new NotImplementedException();
             }
@@ -349,7 +349,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
                 throw new NotImplementedException();
             }
 
-            object IVisitor.Visit(CommandWithEnvironment comm, object obj)
+            object IVisitor.Visit(ExecutionWithEnvironment comm, object obj)
             {
                 throw new NotImplementedException();
             }
@@ -455,7 +455,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
             }
 
 
-            public object Visit(CommandWithEnvironment comm, object obj)
+            public object Visit(ExecutionWithEnvironment comm, object obj)
             {
                 Assert.AreEqual(1, comm.Position);
                 Assert.AreEqual("system", comm.Environment.Name);
@@ -544,7 +544,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
             }
 
 
-            public object Visit(CommandWithEnvironment comm, object obj)
+            public object Visit(ExecutionWithEnvironment comm, object obj)
             {
                 throw new NotImplementedException();
             }
@@ -631,7 +631,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
             }
 
 
-            public object Visit(CommandWithEnvironment comm, object obj)
+            public object Visit(ExecutionWithEnvironment comm, object obj)
             {
                 throw new NotImplementedException();
             }
@@ -726,7 +726,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Test
             }
 
 
-            public object Visit(CommandWithEnvironment comm, object obj)
+            public object Visit(ExecutionWithEnvironment comm, object obj)
             {
                 throw new NotImplementedException();
             }

@@ -6,7 +6,7 @@ using Adaos.Shell.Interface;
 
 namespace Adaos.Shell.SyntaxAnalysis.ASTs
 {
-    public class CommandWithEnvironment : ExecutionBase
+    public class ExecutionWithEnvironment : ExecutionBase
     {
 		public override IEnumerable<string> EnvironmentNames
         {
@@ -33,24 +33,24 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
             }
         }
 
-        public CommandWithEnvironment(int position, IEnumerable<Environment> environments, CommandName commandName, ArgumentSequence arguments)
+        public ExecutionWithEnvironment(int position, IEnumerable<Environment> environments, CommandName commandName, ArgumentSequence arguments)
             : base(position, commandName, arguments)
         {
             Environments = environments;
         }
 
-        public CommandWithEnvironment(IEnumerable<Environment> environments, CommandName commandName, ArgumentSequence arguments)
+        public ExecutionWithEnvironment(IEnumerable<Environment> environments, CommandName commandName, ArgumentSequence arguments)
             : base(commandName, arguments)
         {
             Environments = environments;
         }
 
-        public CommandWithEnvironment(int position, Environment environment, CommandName commandName, ArgumentSequence arguments)
+        public ExecutionWithEnvironment(int position, Environment environment, CommandName commandName, ArgumentSequence arguments)
             : this(position,new Environment[]{environment}, commandName, arguments)
         {
         }
 
-        public CommandWithEnvironment(Environment environment, CommandName commandName, ArgumentSequence arguments)
+        public ExecutionWithEnvironment(Environment environment, CommandName commandName, ArgumentSequence arguments)
             : this (new Environment[]{environment},commandName, arguments)
         {
         }

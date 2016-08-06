@@ -179,7 +179,7 @@ namespace Adaos.Shell.Execution
             }
         }
 
-        public Adaos.Shell.Interface.ErrorHandler HandleError
+        public ErrorHandler HandleError
         {
             get
             {
@@ -210,7 +210,10 @@ namespace Adaos.Shell.Execution
                     IEnumerable<IArgument> results;
                     try
                     {
-                        results = vm.InternExecute(arg.Value, arg.Position - 1).ToArray();
+                        if (arg is ArgumentExecutable)
+                            results = vm.InternExecute((arg as ArgumentExecutable).ExecutionSequence, new[] { new IArgument[0] }).ToArray();
+                        else
+                            results = vm.InternExecute(arg.Value, arg.Position - 1).ToArray();
                     }
                     catch (ExitTerminalException)
                     {

@@ -11,13 +11,13 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
         /// <summary>
         /// Get the first command of the program sequence.
         /// </summary>
-        public Execution Command { get; private set; }
+        public Execution Execution { get; private set; }
 
         /// <summary>
         /// Get a <see cref="ExecutionSequenceFollow"/> AST node representing the following 
         /// sequence of commands, after the first command.
         /// </summary>
-        public ExecutionSequenceFollow FollowingCommands { get; private set; }
+        public ExecutionSequenceFollow FollowingExecutions { get; private set; }
 
         /// <summary>
         /// Enumerate the commands of the ProgramSequence.
@@ -26,8 +26,8 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
         {
             get 
             {
-                yield return Command;
-                foreach (Execution com in FollowingCommands.Commands)
+                yield return Execution;
+                foreach (Execution com in FollowingExecutions.Commands)
                 {
                     yield return com;
                 }
@@ -42,7 +42,7 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
         {
             get
             {
-                return Command.Position;
+                return Execution.Position;
             }
         }
 
@@ -53,8 +53,8 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
         /// <param name="followingCommands">A ProgramSequenceFollow node representing a sequence of commands following the first.</param>
         public ExecutionSequenceActual(Execution command, ExecutionSequenceFollow followingCommands)
         {
-            Command = command;
-            FollowingCommands = followingCommands;
+            Execution = command;
+            FollowingExecutions = followingCommands;
         }
 
         /// <summary>
@@ -65,8 +65,8 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
         /// <param name="followingCommands">A ProgramSequenceFollow node representing a sequence of commands following the first.</param>
         public ExecutionSequenceActual(int position, Execution command, ExecutionSequenceFollow followingCommands) : base(position)
         {
-            Command = command;
-            FollowingCommands = followingCommands;
+            Execution = command;
+            FollowingExecutions = followingCommands;
         }
 
 

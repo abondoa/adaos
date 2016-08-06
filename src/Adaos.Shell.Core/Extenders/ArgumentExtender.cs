@@ -37,10 +37,7 @@ namespace Adaos.Shell.Core.Extenders
             if (min == 0) return true;
             if (args.Skip(min-1).FirstOrDefault() == null /*count < min*/)
             {
-                if (errorHandler != null)
-                {
-                    errorHandler("Too few arguments. " + args.Count() + " received, at least " + min + " is required.");
-                }
+                errorHandler?.Invoke("Too few arguments. " + args.Count() + " received, at least " + min + " is required.");
                 return false;
             }
             return true;
@@ -54,10 +51,7 @@ namespace Adaos.Shell.Core.Extenders
             }
             else
             {
-                if (errorHandler != null)
-                {
-                    errorHandler("Unable to parse: '" + arg.Value + "' to a double");
-                }
+                errorHandler?.Invoke("Unable to parse: '" + arg.Value + "' to a double");
                 return false;
             }
         }
@@ -70,10 +64,7 @@ namespace Adaos.Shell.Core.Extenders
             }
             else
             {
-                if (errorHandler != null)
-                {
-                    errorHandler("Unable to parse: '" + arg.Value + "' to a bool");
-                }
+                errorHandler?.Invoke("Unable to parse: '" + arg.Value + "' to a bool");
                 return false;
             }
         }
@@ -86,10 +77,7 @@ namespace Adaos.Shell.Core.Extenders
             }
             else
             {
-                if (errorHandler != null)
-                {
-                    errorHandler("Unable to parse: '" + arg.Value + "' to a int");
-                }
+                errorHandler?.Invoke("Unable to parse: '" + arg.Value + "' to a int");
                 return false;
             }
         }
@@ -173,7 +161,6 @@ namespace Adaos.Shell.Core.Extenders
         {
             List<string[]> withAlias = optionNames.Select(x => new string[1]{x}).ToList();
             return ParseOptionsWithAlias(self, withAlias);
-            
         }
 
         /// <summary>

@@ -31,12 +31,12 @@ namespace Adaos.Shell.SyntaxAnalysis.Parsing
             ScannerFactory = new ScannerFactory(new ScannerTable());
         }
 
-        public IExecutionSequence Parse(string input)
+        public ExecutionSequence Parse(string input)
         {
             return Parse(input, 0);
         }
 
-        public IExecutionSequence Parse(string input, int initialPosition)
+        public ExecutionSequence Parse(string input, int initialPosition)
         {
             Errors = new List<ParserException>();
             ExecutionSequence result = new ExecutionSequenceActual(null, null);
@@ -182,7 +182,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Parsing
             name = new CommandNameActual(w);
             args = ParseArgumentSequence();
 
-            return new ASTs.CommandWithEnvironment(envs, name, args);
+            return new ASTs.ExecutionWithEnvironment(envs, name, args);
         }
 
         private ArgumentSequence ParseArgumentSequence()
@@ -272,7 +272,7 @@ namespace Adaos.Shell.SyntaxAnalysis.Parsing
                     int position = _currentToken.Position;
                     AcceptIt();
                     var executionSequence = ParseExecutionSequence(true);
-                    var result = new ArgumentExecutable(executionSequence, position, exec, wordName);
+                    var result = new ArgumentExecutable(executionSequence, position, exec, ScannerTable, wordName);
                     result.ExecutionSequence.Executions.First().RelationToPrevious = CommandRelation.Piped;
                     Accept(TokenKind.ARGUMENT_EXECUTABLE_STOP);
                     return result;
@@ -348,6 +348,16 @@ namespace Adaos.Shell.SyntaxAnalysis.Parsing
         {
             Word w = ParseWord();
             return new CommandNameActual(w);
+        }
+
+        IExecutionSequence IShellParser<IExecutionSequence>.Parse(string input)
+        {
+            return Parse(input, 0);
+        }
+
+        IExecutionSequence IShellParser<IExecutionSequence>.Parse(string input, int initialPosition)
+        {
+            return Parse(input, initialPosition);
         }
     }
 }

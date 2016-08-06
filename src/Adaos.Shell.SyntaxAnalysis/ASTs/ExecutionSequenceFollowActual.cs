@@ -7,14 +7,14 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
 {
     public class ExecutionSequenceFollowActual : ExecutionSequenceFollow
     {
-        public Execution Command { get; private set; }
-        public ExecutionSequenceFollow FollowingCommands { get; private set; }
+        public Execution Execution { get; private set; }
+        public ExecutionSequenceFollow FollowingExecutions { get; private set; }
         public override IEnumerable<Execution> Commands 
         {
             get 
             {
-                yield return Command;
-                foreach (Execution com in FollowingCommands.Commands)
+                yield return Execution;
+                foreach (Execution com in FollowingExecutions.Commands)
                 {
                     yield return com;
                 }
@@ -24,21 +24,21 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
         {
             get
             {
-                return Command.Position;
+                return Execution.Position;
             }
         }
 
         public ExecutionSequenceFollowActual(int position, Execution command, ExecutionSequenceFollow followingCommands)
             : base(position)
         {
-            Command = command;
-            FollowingCommands = followingCommands;
+            Execution = command;
+            FollowingExecutions = followingCommands;
         }
 
         public ExecutionSequenceFollowActual(Execution command, ExecutionSequenceFollow followingCommands)
         {
-            Command = command;
-            FollowingCommands = followingCommands;
+            Execution = command;
+            FollowingExecutions = followingCommands;
         }
 
         public override object Visit(IVisitor visitor, object obj)
