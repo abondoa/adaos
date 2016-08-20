@@ -155,7 +155,7 @@ namespace Adaos.Shell.Execution
 
                 toExec = _resolver.Resolve(comm, EnvironmentContainer.LoadedEnvironments);
 
-                var commandlineArguments = new IEnumerable<IArgument>[] { HandleArguments(comm.Arguments) };
+                var commandlineArguments = new IEnumerable<IArgument>[] { HandleArguments(comm.Arguments).ToArray() };
 
                 switch (comm.RelationToPrevious)
                 {

@@ -181,7 +181,7 @@ namespace Adaos.Shell.Terminal
                         char ch = next.KeyChar;
                         if (ch > 0)
                         {
-                            _currentLine = _currentLine.Insert(CursorPosition, ch.ToString());
+                             _currentLine = _currentLine.Insert(CursorPosition, ch.ToString());
                             _rewriteLine(null, CursorPosition+1);
                         }
                     }
