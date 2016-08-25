@@ -97,13 +97,13 @@ namespace Adaos.Shell.Library.Standard
             }
 
             Command command;
-            if (values.Count() == 1 && values.First() is ArgumentExecutable)
+            if (values.Count() == 1 && values.First() is IArgumentExecutable)
             {
                 command = (args) =>
                 {
                     try
                     {
-                        var arg = values.First() as ArgumentExecutable;
+                        var arg = values.First() as IArgumentExecutable;
                         return _vm.Execute(arg.ExecutionSequence, args);
                     }
                     catch (AdaosException e)

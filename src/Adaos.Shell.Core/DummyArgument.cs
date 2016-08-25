@@ -8,6 +8,8 @@ namespace Adaos.Shell.Core
 {
     public class DummyArgument : IArgument
     {
+        public static IArgument False => new DummyArgument("false");
+        public static IArgument True => new DummyArgument("true");
         public string Value
         {
             get;
@@ -26,9 +28,9 @@ namespace Adaos.Shell.Core
             private set;
         }
 
-        public DummyArgument(int position = -1) : this(false,null,position) { }
-        public DummyArgument(string value, int position = -1) : this(false,value,position) { }
-        public DummyArgument(bool toExecute, int position = -1) : this(toExecute, null,position) { }
+        public DummyArgument(int position = -1) : this(false, null, position) { }
+        public DummyArgument(string value, int position = -1) : this(false, value, position) { }
+        public DummyArgument(bool toExecute, int position = -1) : this(toExecute, null, position) { }
         public DummyArgument(bool toExecute, string value, int position = -1)
         {
             Value = value;
@@ -46,6 +48,22 @@ namespace Adaos.Shell.Core
         {
             get;
             private set;
+        }
+
+        public bool Equals(IArgument other)
+        {
+            return HasName == other.HasName &&
+                (!HasName || Name.Equals(other.Name)) &&
+                Position == other.Position &&
+                ToExecute == other.ToExecute &&
+                Value.Equals(other.Value);
+        }
+
+        public override bool Equals(object other)
+        {
+            if (other is IArgument)
+                return Equals(other as IArgument);
+            return false;
         }
     }
 }

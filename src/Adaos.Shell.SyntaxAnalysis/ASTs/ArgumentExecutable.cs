@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Adaos.Shell.SyntaxAnalysis.ASTs
 {
-    public class ArgumentExecutable : Argument
+    public class ArgumentExecutable : Argument, IArgumentExecutable
     {
         public ExecutionSequence ExecutionSequence { get; }
 
@@ -28,8 +28,9 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
             _scannerTable = scannerTable;
         }
 
-
         public override string Value => Visit(Printer, null).ToString();
+
+        IExecutionSequence IArgumentExecutable.ExecutionSequence => ExecutionSequence;
 
         public override object Visit(IVisitor visitor, object obj)
         {

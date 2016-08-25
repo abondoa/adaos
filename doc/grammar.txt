@@ -49,5 +49,6 @@ user.create aba @'math.random mode char 10 12' abondoa@gmail.com
 TODO:
 Make core envs:
  - io/console: read?
+ - Scope for variables
  - math
  - parallel: perfom loopish stuff in parallel

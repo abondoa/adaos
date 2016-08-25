@@ -242,5 +242,14 @@ namespace ModuleA
         {
             get { return false; }
         }
+
+        public bool Equals(IArgument other)
+        {
+            return HasName == other.HasName &&
+                (HasName || Name.Equals(other.Name)) &&
+                Position == other.Position &&
+                ToExecute == other.ToExecute &&
+                Value.Equals(other.Value);
+        }
     }
 }

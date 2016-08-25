@@ -1,9 +1,11 @@
-﻿namespace Adaos.Shell.Interface
+﻿using System;
+
+namespace Adaos.Shell.Interface
 {
     /// <summary>
     /// An interface describing an argument node in the Adaos AST.
     /// </summary>
-    public interface IArgument
+    public interface IArgument : IEquatable<IArgument>
     {
         /// <summary>
         /// Get the name of the argument.

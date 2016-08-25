@@ -1,4 +1,5 @@
-﻿using Adaos.Shell.Interface;
+﻿using System;
+using Adaos.Shell.Interface;
 
 namespace Adaos.Shell.SyntaxAnalysis.ASTs
 {
@@ -65,6 +66,15 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
         public virtual bool HasName
         {
             get { return WordName != null; }
+        }
+
+        public bool Equals(IArgument other)
+        {
+            return HasName == other.HasName &&
+                (HasName || Name.Equals(other.Name)) &&
+                Position == other.Position &&
+                ToExecute == other.ToExecute &&
+                Value.Equals(other.Value);
         }
     }
 }

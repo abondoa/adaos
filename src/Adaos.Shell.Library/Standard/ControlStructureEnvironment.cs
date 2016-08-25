@@ -8,36 +8,69 @@ using Adaos.Shell.Core.Extenders;
 using Adaos.Shell.Core;
 using Adaos.Common.Extenders;
 using Adaos.Shell.Interface.Exceptions;
+using Adaos.Shell.SyntaxAnalysis.ASTs;
 
 namespace Adaos.Shell.Library.Standard
 {
-    class ControlStructureEnvironment : BaseEnvironment
+    public class ControlStructureEnvironment : BaseEnvironment
     {
-        public override string Name
-        {
-            get { return "controlstructure"; }
-        }
+        public override string Name => "controlstructure"; 
+        virtual protected IVirtualMachine _vm { get; private set; }
 
-        public ControlStructureEnvironment()
+        public ControlStructureEnvironment(IVirtualMachine vm)
         {
+            _vm = vm;
             Bind(If, "if");
         }
 
-        private IEnumerable<IArgument> If(IEnumerable<IArgument> args)
+        public  IEnumerable<IArgument> If(IEnumerable<IArgument> args)
         {
             args.VerifyArgumentMinCount(2, x => { throw new SemanticException(-1, x); });
-            args.VerifyArgumentMaxCount(3, x => { throw new SemanticException(args.Skip(3).First().Position,x); });
+            //args.VerifyArgumentMaxCount(4, x => { throw new SemanticException(args.Skip(4).First().Position,x); });
+            if(args.VerifyArgumentMinCount(3))
+            {
+                if(args.Third().Value != "else")
+                {
+                    throw new SemanticException(args.Third().Position, "Third argument must be 'else'");
+                }
+                if(!args.VerifyArgumentMinCount(4))
+                {
+                    throw new SemanticException(-1, "When using the 'if' command with the 'else' argument, something must come after the else argument.");
+                }
+            }
             bool res;
             args.First().TryParseTo(out res, x => { throw new SemanticException(args.First().Position, x); });
+            
             if (res)
             {
-                yield return args.Second();
+                var then = args.Second();
+                if (then is IArgumentExecutable)
+                {
+                    var arg = then as IArgumentExecutable;
+                    return _vm.Execute(arg.ExecutionSequence);
+                }
+                else
+                {
+                    return new[] { then };
+                }
             }
             else if (args.ThirdOrDefault() != null)
             {
-                yield return args.Third();
+                var elseValue = args.Skip(3).First();
+                if (elseValue is IArgumentExecutable)
+                {
+                    var arg = elseValue as IArgumentExecutable;
+                    return _vm.Execute(arg.ExecutionSequence);
+                }
+                else
+                {
+                    if (elseValue.Value == "if")
+                        return If(args.Skip(4));
+                    else
+                        return new[] { elseValue };
+                }
             }
-            yield break;
+            return new IArgument[0];
         }
     }
 }

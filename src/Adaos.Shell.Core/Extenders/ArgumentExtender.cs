@@ -23,10 +23,7 @@ namespace Adaos.Shell.Core.Extenders
         {
             if (args.Skip(max).FirstOrDefault() != null)
             {
-                if (errorHandler != null)
-                {
-                    errorHandler("Too many arguments. " + args.Count() + " received, at most" + max + " is allowed.");
-                }
+                errorHandler?.Invoke("Too many arguments. " + args.Count() + " received, at most" + max + " is allowed.");
                 return false;
             }
             return true;

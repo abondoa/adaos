@@ -210,8 +210,8 @@ namespace Adaos.Shell.Execution
                     IEnumerable<IArgument> results;
                     try
                     {
-                        if (arg is ArgumentExecutable)
-                            results = vm.InternExecute((arg as ArgumentExecutable).ExecutionSequence, new[] { new IArgument[0] }).ToArray();
+                        if (arg is IArgumentExecutable)
+                            results = vm.InternExecute((arg as IArgumentExecutable).ExecutionSequence, new[] { new IArgument[0] }).ToArray();
                         else
                             results = vm.InternExecute(arg.Value, arg.Position - 1).ToArray();
                     }

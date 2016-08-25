@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adaos.Shell.SyntaxAnalysis.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adaos.Shell.Execution.Test", "Adaos.Shell.Execution.Test\Adaos.Shell.Execution.Test.csproj", "{A3097DBE-B47E-4077-BAD4-3B0805E2175E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adaos.Shell.LibraryTests", "Adaos.Shell.LibraryTests\Adaos.Shell.LibraryTests.csproj", "{C16C2440-6265-4E8B-9F70-313BDDACCD1D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -187,6 +189,18 @@ Global
 		{A3097DBE-B47E-4077-BAD4-3B0805E2175E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{A3097DBE-B47E-4077-BAD4-3B0805E2175E}.Release|x86.ActiveCfg = Release|Any CPU
 		{A3097DBE-B47E-4077-BAD4-3B0805E2175E}.Release|x86.Build.0 = Release|Any CPU
+		{C16C2440-6265-4E8B-9F70-313BDDACCD1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C16C2440-6265-4E8B-9F70-313BDDACCD1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C16C2440-6265-4E8B-9F70-313BDDACCD1D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{C16C2440-6265-4E8B-9F70-313BDDACCD1D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{C16C2440-6265-4E8B-9F70-313BDDACCD1D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C16C2440-6265-4E8B-9F70-313BDDACCD1D}.Debug|x86.Build.0 = Debug|Any CPU
+		{C16C2440-6265-4E8B-9F70-313BDDACCD1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C16C2440-6265-4E8B-9F70-313BDDACCD1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C16C2440-6265-4E8B-9F70-313BDDACCD1D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{C16C2440-6265-4E8B-9F70-313BDDACCD1D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{C16C2440-6265-4E8B-9F70-313BDDACCD1D}.Release|x86.ActiveCfg = Release|Any CPU
+		{C16C2440-6265-4E8B-9F70-313BDDACCD1D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
