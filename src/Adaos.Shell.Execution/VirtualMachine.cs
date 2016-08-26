@@ -330,7 +330,7 @@ namespace Adaos.Shell.Execution
 					var cmds = envs.First ().Commands.Where(x => x.StartsWith(lastCommand.CommandName));
 					if (cmds.FirstOrDefault () != null && cmds.Skip (1).FirstOrDefault () == null) 
 					{
-					    suggestion.Append (_parser.ScannerTable.EnvironmentSeparator + cmds.First ());
+					    suggestion.Append (_parser.ScannerTable.EnvironmentSeparator + cmds.First());
 					}
 				}
                 return  suggestion.ToString();

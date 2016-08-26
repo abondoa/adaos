@@ -26,6 +26,9 @@ namespace Adaos.Shell.Terminal
             });
             Reader.AddSpecialChar(ConsoleKey.UpArrow, x =>
             {
+                if (!_commands.Any())
+                    return "";
+
                 _commandPointer--;
                 if (_commandPointer < 0)
                 {
