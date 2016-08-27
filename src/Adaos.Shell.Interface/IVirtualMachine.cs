@@ -71,6 +71,11 @@ namespace Adaos.Shell.Interface
         /// Get or set the container used to store the environments available to the virtual machine.
         /// </summary>
         IEnvironmentContainer EnvironmentContainer { get; set; }
+
+        /// <summary>
+        /// Get or set the executor used to execute execution sequences
+        /// </summary>
+        IShellExecutor ShellExecutor { get; set; }
     }
 }
 

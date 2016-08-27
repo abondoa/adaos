@@ -47,7 +47,7 @@ namespace Adaos.Shell.Library.Standard
                 if (then is IArgumentExecutable)
                 {
                     var arg = then as IArgumentExecutable;
-                    return _vm.Execute(arg.ExecutionSequence);
+                    return _vm.ShellExecutor.Execute(arg.ExecutionSequence,_vm);
                 }
                 else
                 {
@@ -60,7 +60,7 @@ namespace Adaos.Shell.Library.Standard
                 if (elseValue is IArgumentExecutable)
                 {
                     var arg = elseValue as IArgumentExecutable;
-                    return _vm.Execute(arg.ExecutionSequence);
+                    return _vm.ShellExecutor.Execute(arg.ExecutionSequence,_vm);
                 }
                 else
                 {

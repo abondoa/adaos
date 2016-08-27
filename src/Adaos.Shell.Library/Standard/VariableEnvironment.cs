@@ -104,7 +104,7 @@ namespace Adaos.Shell.Library.Standard
                     try
                     {
                         var arg = values.First() as IArgumentExecutable;
-                        return _vm.Execute(arg.ExecutionSequence, args);
+                        return _vm.ShellExecutor.Execute(arg.ExecutionSequence, args,_vm);
                     }
                     catch (AdaosException e)
                     {

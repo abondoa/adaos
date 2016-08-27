@@ -166,7 +166,7 @@ namespace Adaos.Shell.Library.Standard.Tests
             var executionSequenceMock = new Mock<IExecutionSequence>();
             argExecutableMock.SetupGet(x => x.ExecutionSequence).Returns(executionSequenceMock.Object);
             var expectedOutput = new IArgument[] { };
-            _vmMock.Setup(x => x.Execute(executionSequenceMock.Object)).Returns(expectedOutput).Verifiable();
+            _vmMock.Setup(x => x.ShellExecutor.Execute(executionSequenceMock.Object,_vmMock.Object)).Returns(expectedOutput).Verifiable();
 
             var res = _controlStructureEnvironment.If(new IArgument[] {
                 True,
@@ -184,7 +184,7 @@ namespace Adaos.Shell.Library.Standard.Tests
             var executionSequenceMock = new Mock<IExecutionSequence>();
             argExecutableMock.SetupGet(x => x.ExecutionSequence).Returns(executionSequenceMock.Object);
             var expectedOutput = new IArgument[] { Arg1, Arg2 };
-            _vmMock.Setup(x => x.Execute(executionSequenceMock.Object)).Returns(expectedOutput.ToList()).Verifiable();
+            _vmMock.Setup(x => x.ShellExecutor.Execute(executionSequenceMock.Object,_vmMock.Object)).Returns(expectedOutput.ToList()).Verifiable();
 
             var res = _controlStructureEnvironment.If(new IArgument[] {
                 True,
@@ -223,8 +223,8 @@ namespace Adaos.Shell.Library.Standard.Tests
             var executionSequenceElseMock = new Mock<IExecutionSequence>();
             argExecutableElseMock.SetupGet(x => x.ExecutionSequence).Returns(executionSequenceElseMock.Object);
             var expectedOutput = new IArgument[] { };
-            _vmMock.Setup(x => x.Execute(executionSequenceElseMock.Object)).Returns(expectedOutput).Verifiable();
-            _vmMock.Setup(x => x.Execute(executionSequenceMock.Object)).Throws(new Exception("Execute should not be called"));
+            _vmMock.Setup(x => x.ShellExecutor.Execute(executionSequenceElseMock.Object, _vmMock.Object)).Returns(expectedOutput).Verifiable();
+            _vmMock.Setup(x => x.ShellExecutor.Execute(executionSequenceMock.Object, _vmMock.Object)).Throws(new Exception("Execute should not be called"));
 
             var res = _controlStructureEnvironment.If(new IArgument[] {
                 False,
@@ -248,8 +248,8 @@ namespace Adaos.Shell.Library.Standard.Tests
             var executionSequenceElseMock = new Mock<IExecutionSequence>();
             argExecutableElseMock.SetupGet(x => x.ExecutionSequence).Returns(executionSequenceElseMock.Object);
             var expectedOutput = Args(Arg3, Arg4);
-            _vmMock.Setup(x => x.Execute(executionSequenceMock.Object)).Throws(new Exception("Execute should not be called with this execution sequence"));
-            _vmMock.Setup(x => x.Execute(executionSequenceElseMock.Object)).Returns(expectedOutput).Verifiable();
+            _vmMock.Setup(x => x.ShellExecutor.Execute(executionSequenceMock.Object,_vmMock.Object)).Throws(new Exception("Execute should not be called with this execution sequence"));
+            _vmMock.Setup(x => x.ShellExecutor.Execute(executionSequenceElseMock.Object,_vmMock.Object)).Returns(expectedOutput).Verifiable();
 
             var res = _controlStructureEnvironment.If(new IArgument[] {
                 False,

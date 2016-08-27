@@ -28,6 +28,7 @@ namespace Adaos.Shell.Execution
         private ErrorHandler _handleError;
         private IEnvironmentContainer _envContainer;
         private IEnumerable<IArgument>[] NoArguments = new IEnumerable<IArgument>[] {new IArgument[0] };
+        private IShellExecutor _shellExecutor;
 
         public VirtualMachine(StreamWriter output, StreamWriter log)
         {
@@ -46,6 +47,7 @@ namespace Adaos.Shell.Execution
             _parser = new Parser();
             _resolver = new Resolver();
             _moduleManager = new ModuleManager(this);
+            _shellExecutor = new ShellExecutor();
         }
 
         public VirtualMachine(StreamWriter output, StreamWriter log, IEnvironmentContainer container)
@@ -69,6 +71,11 @@ namespace Adaos.Shell.Execution
             _parser = new Parser();
             _resolver = new Resolver();
             _moduleManager = new ModuleManager(this);
+            _shellExecutor = new ShellExecutor();
+        }
+
+        public VirtualMachine(IVirtualMachine virtualMachine) : this(virtualMachine.Log,virtualMachine.Output, virtualMachine.EnvironmentContainer)
+        {
         }
 
         public virtual void Execute(string command)
@@ -91,41 +98,6 @@ namespace Adaos.Shell.Execution
             }*/
         }
 
-        public virtual IEnumerable<IArgument> Execute(IExecutionSequence prog)
-        {
-            return Execute(prog, NoArguments);
-        }
-
-        public IEnumerable<IArgument> Execute(IExecutionSequence prog, IEnumerable<IArgument>[] args)
-        {
-            if (prog.Errors.Count() > 0)
-            {
-                foreach (var error in prog.Errors)
-                {
-                    HandleError(error);
-                }
-                return new IArgument[0];
-            }
-            try
-            {
-                return InternExecute(prog,args).ToArray();
-            }
-            catch (ExitTerminalException)
-            {
-                throw;
-            }
-            catch (AdaosException e)
-            {
-                HandleError(e);
-                return new IArgument[0];
-            }
-            /*catch (Exception e)
-            {
-                HandleError(new UndefinedException(-1,"Unknown", e));
-            }*/
-        }
-
-
         public IEnumerable<IArgument> InternExecute(string command, int initialPosition = 0)
         {
             IExecutionSequence prog = _parser.Parse(command, initialPosition);
@@ -137,98 +109,7 @@ namespace Adaos.Shell.Execution
                 }
                 return new List<IArgument>();
             }
-            return InternExecute(prog, NoArguments);
-        }
-
-        internal IEnumerable<IArgument> InternExecute(IExecutionSequence prog, IEnumerable<IArgument>[] args)
-        {
-            IEnumerable<IEnumerable<IArgument>> result = args;
-
-            foreach (IExecution comm in prog.Executions)
-            {
-                Adaos.Shell.Interface.Command toExec = null;
-                if (!comm.IsPipeRecipient())
-                {
-                    foreach(var temp in result)
-                        temp.ToArray(); //Execute previous before trying to resolve (maybe a new environment has been loaded just before)
-                }
-
-                toExec = _resolver.Resolve(comm, EnvironmentContainer.LoadedEnvironments);
-
-                var commandlineArguments = new IEnumerable<IArgument>[] { HandleArguments(comm.Arguments).ToArray() };
-
-                switch (comm.RelationToPrevious)
-                {
-                    case CommandRelation.Concatenated:
-                        result = result.Then(toExec(commandlineArguments));
-                        break;
-                    case CommandRelation.Piped:
-                        var output = toExec(commandlineArguments.Then(result).ToArray());
-                        result = new IEnumerable<IArgument>[] { output };
-                        break;
-                    case CommandRelation.Separated:
-                        output = toExec(commandlineArguments);
-                        result = new IEnumerable<IArgument>[] { output };
-                        break;
-                }
-            }
-
-            foreach (var arg in result.First())
-            {
-                yield return arg;
-            }
-        }
-
-        public ErrorHandler HandleError
-        {
-            get
-            {
-                if (_handleError == null)
-                {
-                    _handleError = (AdaosException e) => { throw e; }; 
-                }
-                return _handleError;
-            }
-            set
-            {
-                _handleError = value;
-            }
-        }
-
-        private IEnumerable<IArgument> HandleArguments(IEnumerable<IArgument> args)
-        {
-            VirtualMachine vm = null;
-            foreach (var arg in args)
-            {
-                if (arg.ToExecute)
-                {
-                    if(vm == null)
-                    {
-                        vm = new VirtualMachine(_output, _log, EnvironmentContainer);
-                        vm.Parser.ScannerTable = Parser.ScannerTable.Copy();
-                    }
-                    IEnumerable<IArgument> results;
-                    try
-                    {
-                        if (arg is IArgumentExecutable)
-                            results = vm.InternExecute((arg as IArgumentExecutable).ExecutionSequence, new[] { new IArgument[0] }).ToArray();
-                        else
-                            results = vm.InternExecute(arg.Value, arg.Position - 1).ToArray();
-                    }
-                    catch (ExitTerminalException)
-                    {
-                        results = new IArgument[0];
-                    }
-                    foreach (var res in results)
-                    {
-                        yield return res;
-                    }
-                }
-                else
-                {
-                    yield return arg;
-                }
-            }
+            return ShellExecutor.Execute(prog,this);
         }
 
         #region Properties
@@ -306,8 +187,35 @@ namespace Adaos.Shell.Execution
             }
             set
             {
-                if (value == null) throw new ArgumentNullException("EnvironmentContainer");
+                if (value == null) throw new ArgumentNullException(nameof(EnvironmentContainer));
                 _envContainer = value;
+            }
+        }
+
+        public IShellExecutor ShellExecutor
+        {
+            get
+            {
+                return _shellExecutor;
+            }
+
+            set
+            {
+                if (value == null) throw new ArgumentNullException(nameof(ShellExecutor));
+                _shellExecutor = value;
+            }
+        }
+
+        public ErrorHandler HandleError
+        {
+            get
+            {
+                return ShellExecutor.HandleError;
+            }
+
+            set
+            {
+                ShellExecutor.HandleError = value;
             }
         }
 
@@ -336,6 +244,16 @@ namespace Adaos.Shell.Execution
                 return  suggestion.ToString();
             }
             return null;
+        }
+
+        public IEnumerable<IArgument> Execute(IExecutionSequence prog)
+        {
+            return ShellExecutor.Execute(prog, this);
+        }
+
+        public IEnumerable<IArgument> Execute(IExecutionSequence prog, IEnumerable<IArgument>[] args)
+        {
+            return ShellExecutor.Execute(prog, args, this);
         }
     }
 }
