@@ -20,7 +20,7 @@ namespace Adaos.Shell.Terminal
             VirtualMachine = new VirtualMachineBuilder()
                 .SetLogStream(log)
                 .SetOutputStream(new StreamWriter(Console.OpenStandardOutput()))
-                .AddContextBuilder(ContextBuilder.Instance)
+                .AddContextBuilder(StandardLibraryContextBuilder.Instance)
                 .Build();
                 
             _commands = new List<string>();

@@ -54,7 +54,7 @@
     <Compile Include="Standard\ModuleEnvironment.cs" />
     <Compile Include="Standard\StandardEnvironment.cs" />
     <Compile Include="Standard\SyntaxEnvironment.cs" />
-    <Compile Include="ContextBuilder.cs" />
+    <Compile Include="StandardLibraryContextBuilder.cs" />
     <Compile Include="Standard\VariableEnvironment.cs" />
   </ItemGroup>
   <ItemGroup>

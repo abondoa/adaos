@@ -43,7 +43,7 @@ namespace Adaos.Shell.Execution
             _output = output;
             _log = log;
 
-            _envContainer = new EnvironmentContainer(Library.ContextBuilder.Instance.BuildEnvironments(this));
+            _envContainer = new EnvironmentContainer(Library.StandardLibraryContextBuilder.Instance.BuildEnvironments(this));
             _parser = new Parser();
             _resolver = new Resolver();
             _moduleManager = new ModuleManager();

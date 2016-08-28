@@ -15,10 +15,10 @@ namespace Adaos.Shell.Execution
         private StreamWriter _logStream;
         private StreamWriter _ouputStream;
         private IEnvironmentContainer _container;
-        private Parser _parser;
-        private Resolver _resolver;
-        private ModuleManager _moduleManager;
-        private ShellExecutor _shellExecutor;
+        private IShellParser _parser;
+        private IResolver _resolver;
+        private IModuleManager _moduleManager;
+        private IShellExecutor _shellExecutor;
         private IList<IContextBuilder> _contextBuilders;
 
         public VirtualMachineBuilder()
@@ -27,7 +27,7 @@ namespace Adaos.Shell.Execution
             _resolver = new Resolver();
             _moduleManager = new ModuleManager();
             _shellExecutor = new ShellExecutor();
-            _contextBuilders = new List<IContextBuilder>();
+            _contextBuilders = new List<IContextBuilder> { new Environments.SystemEnvironmentContextBuilder() };
             _container = new EnvironmentContainer();
         }
 
@@ -42,6 +42,37 @@ namespace Adaos.Shell.Execution
             _ouputStream = ouputStream;
             return this;
         }
+
+        public VirtualMachineBuilder SetParser(IShellParser parser)
+        {
+            _parser = parser;
+            return this;
+        }
+
+        public VirtualMachineBuilder SetResolver(IResolver resolver)
+        {
+            _resolver = resolver;
+            return this;
+        }
+
+        public VirtualMachineBuilder SetModuleManager(IModuleManager moduleManager)
+        {
+            _moduleManager = moduleManager;
+            return this;
+        }
+
+        public VirtualMachineBuilder SetExecutor(IShellExecutor shellExecutor)
+        {
+            _shellExecutor = shellExecutor;
+            return this;
+        }
+
+        public VirtualMachineBuilder SetEnvironmentContainer(IEnvironmentContainer container)
+        {
+            _container = container;
+            return this;
+        }
+
         public VirtualMachineBuilder AddContextBuilder(IContextBuilder contextBuilder)
         {
             _contextBuilders.Add(contextBuilder);
@@ -65,8 +96,6 @@ namespace Adaos.Shell.Execution
             var vm = new VirtualMachine(_ouputStream, _logStream, _container);
             foreach (var contextBuilder in _contextBuilders)
                 _container.LoadEnvironments(contextBuilder.BuildEnvironments(vm));
-
-            vm.EnvironmentContainer = _container;
 
             return vm;
         }

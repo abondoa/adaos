@@ -33,7 +33,11 @@ namespace Adaos.Shell.Execution.Test
             systemLog.AutoFlush = true;
             systemOut = new StreamWriter(new MemoryStream());
             systemOut.AutoFlush = true;
-            systemMachine = new VirtualMachine(systemOut, systemLog);
+            systemMachine = new VirtualMachineBuilder()
+                .SetOutputStream(systemOut)
+                .SetLogStream(systemLog)
+                .AddContextBuilder(Library.StandardLibraryContextBuilder.Instance)
+                .Build();
         }
 
         [TestCleanup]

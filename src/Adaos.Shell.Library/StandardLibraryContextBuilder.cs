@@ -7,21 +7,21 @@ using System.Collections.Generic;
 
 namespace Adaos.Shell.Library
 {
-	public class ContextBuilder : IContextBuilder
+	public class StandardLibraryContextBuilder : IContextBuilder
 	{
-        static ContextBuilder _instance = null;
+        static StandardLibraryContextBuilder _instance = null;
 
-		public ContextBuilder ()
+		public StandardLibraryContextBuilder ()
 		{
 		}
 
-        public static ContextBuilder Instance 
+        public static StandardLibraryContextBuilder Instance 
         { 
             get 
             { 
                 if(_instance == null)
                 {
-                    _instance = new ContextBuilder();
+                    _instance = new StandardLibraryContextBuilder();
                 }
                 return _instance;
             } 
