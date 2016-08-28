@@ -20,11 +20,17 @@ namespace Adaos.Shell.Execution.Environments
         public SystemEnvironment()
         {
             Bind(Exit,"exit","quit");
+            Bind(Adaos, "adaos");
         }
 
         private IEnumerable<IArgument> Exit(IEnumerable<IArgument> args)
         {
             throw new ExitTerminalException("Bye!");
+        }
+
+        private IEnumerable<IArgument> Adaos(IEnumerable<IArgument> args)
+        {
+            yield return new DummyArgument("Adaos Debugging And Operating Shell");
         }
     }
 }
