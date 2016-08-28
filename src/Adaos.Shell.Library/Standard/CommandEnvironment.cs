@@ -37,7 +37,7 @@ namespace Adaos.Shell.Library.Standard
             verbose = !verbose;
             foreach (var arg in lookup.Lookup["environments"].Then(args.Flatten()))
             {
-                IEnvironment env = _vm.EnvironmentContainer.LoadedEnvironments.FirstOrDefault(x => x.QualifiedName (_vm.Parser.ScannerTable.EnvironmentSeparator).ToLower().Equals(arg.Value.ToLower()));
+                IEnvironment env = _vm.EnvironmentContainer.EnabledEnvironments.FirstOrDefault(x => x.QualifiedName (_vm.Parser.ScannerTable.EnvironmentSeparator).ToLower().Equals(arg.Value.ToLower()));
                 if (env == null)
                 {
                     throw new SemanticException(arg.Position, arg.Value + " is not a loaded environment");
@@ -91,7 +91,7 @@ namespace Adaos.Shell.Library.Standard
                 throw new SemanticException(-1, str.ToString());
             }
             IExecution command = commandSeq.Executions.First();
-            var executableCommand = res.Resolve(command, _vm.EnvironmentContainer.LoadedEnvironments);
+            var executableCommand = res.Resolve(command, _vm.EnvironmentContainer.EnabledEnvironments);
             foreach (var arg in args.Skip(1))
             {
                 foreach (var result in executableCommand(new List<IArgument>{arg}))

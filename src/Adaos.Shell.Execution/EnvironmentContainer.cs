@@ -16,6 +16,12 @@ namespace Adaos.Shell.Execution
         IList< IEnvironmentContext> _innerList;
         private IEnvironmentContext _rootEnvironment;
 
+        public EnvironmentContainer()
+        {
+            _rootEnvironment = new RootEnvironment();
+            _innerList = new List<IEnvironmentContext>();
+        }
+
         public EnvironmentContainer(IEnumerable<IEnvironment> environments)
         {
             _rootEnvironment = new RootEnvironment();
@@ -26,12 +32,12 @@ namespace Adaos.Shell.Execution
             _innerList = new List<IEnvironmentContext>(_rootEnvironment.ChildEnvironments.Select(x => x.FamilyEnvironments()).Flatten());
         }
 
-        public IEnumerable<IEnvironmentContext> LoadedEnvironments
+        public IEnumerable<IEnvironmentContext> EnabledEnvironments
         {
             get { return _innerList.Where(x => x.IsEnabled); }
         }
 
-        public IEnumerable<IEnvironmentContext> UnloadedEnvironments
+        public IEnumerable<IEnvironmentContext> DisabledEnvironments
         {
             get { return _innerList.Where(x => !x.IsEnabled); }
         }
@@ -39,12 +45,20 @@ namespace Adaos.Shell.Execution
         public void LoadEnvironment(IEnvironment environment)
         {
             _rootEnvironment.AddChild(environment);
-            var contextAdded = _rootEnvironment.ChildEnvironments.FirstOrDefault(x => x.Inner == environment);
+            IEnvironmentContext contextAdded;
+            if (environment is IEnvironmentContext)
+                contextAdded = environment as IEnvironmentContext;
+            else
+                contextAdded = _rootEnvironment.ChildEnvironments.FirstOrDefault(x => x.Inner == environment);
             if (contextAdded == null)
             {
-                throw new ArgumentException("Trying to remove unknown environment '" + environment + "'");
+                throw new ArgumentException("Failed to load environment '" + environment + "'");
             }
             _innerList.Add(contextAdded);
+            foreach(var decendent in contextAdded.DecendentEnvironments())
+            {
+                _innerList.Add(decendent);
+            }
         }
 
         public void UnloadEnvironment(IEnvironment environment)

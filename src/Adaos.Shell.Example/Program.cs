@@ -52,7 +52,7 @@ namespace Adaos.Shell.Machine
             }
             else
             {
-                shell = new Adaos.Shell.Terminal.Terminal(input, output, log);
+                shell = new Terminal.Terminal(input, output, log);
             }
             shell.Start();
         }

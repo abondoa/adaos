@@ -42,7 +42,7 @@ namespace Adaos.Shell.Library.Standard
             foreach (var arg in args)
             {
                 string fileName = arg.Value;
-                IModule module = _moduleManager.GetInstance(fileName);
+                IModule module = _moduleManager.GetInstance(fileName, _vm);
                 envs.AddRange(module.Environments);
                 _loadedModules.Add(new List<string> { fileName, module.Name }, module);
             }

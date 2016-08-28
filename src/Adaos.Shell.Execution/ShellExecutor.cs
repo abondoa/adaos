@@ -98,7 +98,7 @@ namespace Adaos.Shell.Execution
                         temp.ToArray(); //Execute previous before trying to resolve (maybe a new environment has been loaded just before)
                 }
 
-                var toExec = virtualMachine.Resolver.Resolve(comm, virtualMachine.EnvironmentContainer.LoadedEnvironments);
+                var toExec = virtualMachine.Resolver.Resolve(comm, virtualMachine.EnvironmentContainer.EnabledEnvironments);
 
                 var commandlineArguments = new IEnumerable<IArgument>[] { HandleArguments(comm.Arguments, virtualMachine).ToArray() };
 

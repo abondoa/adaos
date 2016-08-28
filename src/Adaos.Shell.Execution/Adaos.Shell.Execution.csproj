@@ -62,6 +62,7 @@
     <Compile Include="Environments\SystemEnvironment.cs" />
     <Compile Include="ShellExecutor.cs" />
     <Compile Include="VirtualMachine.cs" />
+    <Compile Include="VirtualMachineBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Adaos.Common\Adaos.Common.csproj">

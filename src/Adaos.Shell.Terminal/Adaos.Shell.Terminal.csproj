@@ -70,5 +70,9 @@
       <Project>{9C0DD7D3-1766-4F63-9849-98CEFCDF5DF6}</Project>
       <Name>Adaos.Shell.Execution</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Adaos.Shell.Library\Adaos.Shell.Library.csproj">
+      <Project>{03374E9C-9B88-41A8-9B19-41CFCD9F7EFF}</Project>
+      <Name>Adaos.Shell.Library</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

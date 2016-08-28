@@ -6,6 +6,7 @@ using System.Text;
 using Adaos.Shell.Execution;
 using Adaos.Shell.Interface;
 using Adaos.Shell.Interface.Exceptions;
+using Adaos.Shell.Library;
 
 namespace Adaos.Shell.Terminal
 {
@@ -16,8 +17,12 @@ namespace Adaos.Shell.Terminal
         public ConsoleTerminal(StreamWriter log = null)
         {
             if (log == null) log = new StreamWriter(Stream.Null);
-            VirtualMachine = new VirtualMachine(new StreamWriter(Console.OpenStandardOutput()), log);
-
+            VirtualMachine = new VirtualMachineBuilder()
+                .SetLogStream(log)
+                .SetOutputStream(new StreamWriter(Console.OpenStandardOutput()))
+                .AddContextBuilder(ContextBuilder.Instance)
+                .Build();
+                
             _commands = new List<string>();
             Reader = new ConsoleReader();
             Reader.AddSpecialChar(ConsoleKey.Tab, x => 

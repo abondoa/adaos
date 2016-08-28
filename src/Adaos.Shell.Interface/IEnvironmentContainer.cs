@@ -10,12 +10,12 @@ namespace Adaos.Shell.Interface
         /// <summary>
         /// Get the loaded environments ordered by promotions. Promoted environments first.
         /// </summary>
-        IEnumerable<IEnvironmentContext> LoadedEnvironments { get; }
+        IEnumerable<IEnvironmentContext> EnabledEnvironments { get; }
 
         /// <summary>
         /// Get the unloaded environments ordered by promotions. Promoted environments first.
         /// </summary>
-        IEnumerable<IEnvironmentContext> UnloadedEnvironments { get; }
+        IEnumerable<IEnvironmentContext> DisabledEnvironments { get; }
 
         /// <summary>
         /// Load the given environment into the container at the root.
@@ -40,5 +40,16 @@ namespace Adaos.Shell.Interface
         /// </summary>
         /// <param name="context">The context to to the back.</param>
         void DemoteEnvironment(IEnvironmentContext context);
+    }
+
+    public static class EnvironmentContainerExtender
+    {
+        public static void LoadEnvironments(this IEnvironmentContainer self, IEnumerable<IEnvironment> environments)
+        {
+            foreach(var environment in environments)
+            {
+                self.LoadEnvironment(environment);
+            }
+        }
     }
 }

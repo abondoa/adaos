@@ -77,7 +77,7 @@ namespace Adaos.Shell.Library.Standard
         {
             get
             {
-                IEnvironment custom = _vm.EnvironmentContainer.LoadedEnvironments.FirstOrDefault(x => x.Name.Equals("custom"));
+                IEnvironment custom = _vm.EnvironmentContainer.EnabledEnvironments.FirstOrDefault(x => x.Name.Equals("custom"));
                 if (custom == null)
                 {
                     throw new SemanticException(-1, "ADAOS VM does not have a custom environment loaded");

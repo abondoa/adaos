@@ -43,10 +43,10 @@ namespace Adaos.Shell.Execution
             _output = output;
             _log = log;
 
-            _envContainer = new EnvironmentContainer(Library.ContextBuilder.Instance.BuildStandardEnvironment(this).ToEnum<IEnvironment>());
+            _envContainer = new EnvironmentContainer(Library.ContextBuilder.Instance.BuildEnvironments(this));
             _parser = new Parser();
             _resolver = new Resolver();
-            _moduleManager = new ModuleManager(this);
+            _moduleManager = new ModuleManager();
             _shellExecutor = new ShellExecutor();
         }
 
@@ -70,7 +70,7 @@ namespace Adaos.Shell.Execution
             _envContainer = container;
             _parser = new Parser();
             _resolver = new Resolver();
-            _moduleManager = new ModuleManager(this);
+            _moduleManager = new ModuleManager();
             _shellExecutor = new ShellExecutor();
         }
 
@@ -229,7 +229,7 @@ namespace Adaos.Shell.Execution
 				return null;
 			string qualifiedEnvName = lastCommand.EnvironmentNames.Aggregate (
 				(x,y) => x + Parser.ScannerTable.EnvironmentSeparator + y);
-            var envs = EnvironmentContainer.LoadedEnvironments.Where(y => y.Name.StartsWith(qualifiedEnvName));
+            var envs = EnvironmentContainer.EnabledEnvironments.Where(y => y.Name.StartsWith(qualifiedEnvName));
             if (envs.FirstOrDefault() != null && envs.Skip(1).FirstOrDefault() == null)
             {
 				StringBuilder suggestion = new StringBuilder (envs.First().Name);

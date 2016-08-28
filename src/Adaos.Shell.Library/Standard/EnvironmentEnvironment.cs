@@ -42,7 +42,7 @@ namespace Adaos.Shell.Library.Standard
             }
             foreach (var arg in args)
             {
-				var toEnable = _vm.EnvironmentContainer.UnloadedEnvironments.FirstOrDefault (
+				var toEnable = _vm.EnvironmentContainer.DisabledEnvironments.FirstOrDefault (
 					x => x.QualifiedName (_vm.Parser.ScannerTable.EnvironmentSeparator) == arg.Value);
                 if (toEnable == null)
                 {
@@ -61,7 +61,7 @@ namespace Adaos.Shell.Library.Standard
             }
             foreach (var arg in args)
             {
-				var toDisable = _vm.EnvironmentContainer.LoadedEnvironments.FirstOrDefault (
+				var toDisable = _vm.EnvironmentContainer.EnabledEnvironments.FirstOrDefault (
 					x => x.QualifiedName (_vm.Parser.ScannerTable.EnvironmentSeparator) == arg.Value);
 				if (toDisable == null)
 				{
@@ -93,14 +93,14 @@ namespace Adaos.Shell.Library.Standard
                     _output.WriteLine(name);
                 }
             };
-            foreach (var env in _vm.EnvironmentContainer.LoadedEnvironments)
+            foreach (var env in _vm.EnvironmentContainer.EnabledEnvironments)
             {
                 envWriter(env);
             }
-            if (verbose && _vm.EnvironmentContainer.UnloadedEnvironments.Any())
+            if (verbose && _vm.EnvironmentContainer.DisabledEnvironments.Any())
             {
                 _output.WriteLine("Additional environments:");
-                foreach (var item in _vm.EnvironmentContainer.UnloadedEnvironments)
+                foreach (var item in _vm.EnvironmentContainer.DisabledEnvironments)
                 {
                     if (verbose)
                     {
@@ -119,7 +119,7 @@ namespace Adaos.Shell.Library.Standard
             verbose = !verbose;
             foreach (var arg in lookup.Lookup["environments"].Then(args.Flatten()))
             {
-                IEnvironment env = _vm.EnvironmentContainer.LoadedEnvironments.FirstOrDefault(x => x.Name.ToLower().Equals(arg.Value.ToLower()));
+                IEnvironment env = _vm.EnvironmentContainer.EnabledEnvironments.FirstOrDefault(x => x.Name.ToLower().Equals(arg.Value.ToLower()));
                 if (env == null)
                 {
                     throw new SemanticException(arg.Position, arg.Value + " is not a loaded environment");
@@ -163,7 +163,7 @@ namespace Adaos.Shell.Library.Standard
             var environments = lookup.Lookup["environments"].Then(args.Flatten());
             if (environments.Count() == 0)
             {
-                IEnvironmentContext env = _vm.EnvironmentContainer.LoadedEnvironments.FirstOrDefault();
+                IEnvironmentContext env = _vm.EnvironmentContainer.EnabledEnvironments.FirstOrDefault();
                 if (env == null)
                 {
                     throw new SemanticException(-1, "No environments loaded - Cannot get primary environment.");
@@ -181,10 +181,10 @@ namespace Adaos.Shell.Library.Standard
                 foreach (var arg in environments.Reverse())
                 {
                     IArgument result = null;
-                    var toSet = _vm.EnvironmentContainer.LoadedEnvironments.FirstOrDefault(x => x.Name.ToLower().Equals(arg.Value.ToLower()));
+                    var toSet = _vm.EnvironmentContainer.EnabledEnvironments.FirstOrDefault(x => x.Name.ToLower().Equals(arg.Value.ToLower()));
                     if (toSet == null)
                     {
-                        if (_vm.EnvironmentContainer.UnloadedEnvironments.FirstOrDefault(x => x.Name.ToLower().Equals(arg.Value.ToLower())) != null)
+                        if (_vm.EnvironmentContainer.DisabledEnvironments.FirstOrDefault(x => x.Name.ToLower().Equals(arg.Value.ToLower())) != null)
                         {
                             throw new SemanticException(arg.Position, "Environment '" + arg.Value + "' is not loaded. Use 'loadenvironment' to load it");
                         }
@@ -194,7 +194,7 @@ namespace Adaos.Shell.Library.Standard
                     {
                         if (verbose)
                         {
-                            IEnvironmentContext env = _vm.EnvironmentContainer.LoadedEnvironments.FirstOrDefault();
+                            IEnvironmentContext env = _vm.EnvironmentContainer.EnabledEnvironments.FirstOrDefault();
                             _output.Write("Former primary environment was: ");
                             _output.WriteLine(env.QualifiedName(_vm.Parser.ScannerTable.EnvironmentSeparator));
                         }

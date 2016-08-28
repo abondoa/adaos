@@ -12,14 +12,7 @@ namespace Adaos.Shell.ModuleHandling
 {
     public class ModuleManager : IModuleManager
     {
-        private IVirtualMachine _vm;
-
-        public ModuleManager(IVirtualMachine vm)
-        {
-            _vm = vm;
-        }
-
-        public IModule GetInstance(string fileName)
+        public IModule GetInstance(string fileName, IVirtualMachine virtualMachine)
         {
             try
             {
@@ -31,7 +24,7 @@ namespace Adaos.Shell.ModuleHandling
                     throw new ModuleMangingException(
                         "Module file: '" + fileName + "' does not contain a module with the interface 'Adaos.Shell.Interface.IModule'");
                 }
-                return Instantiate(moduleType);
+                return Instantiate(moduleType, virtualMachine);
             }
             catch (System.IO.FileNotFoundException ex)
             {
@@ -43,11 +36,11 @@ namespace Adaos.Shell.ModuleHandling
             }
         }
 
-        private IModule Instantiate(Type module)
+        private IModule Instantiate(Type module, IVirtualMachine virtualMachine)
         {
             if (module.GetConstructor(new Type[] { typeof(IVirtualMachine) }) != null)
             {
-                return (IModule)Activator.CreateInstance(module, new object[] { _vm });
+                return (IModule)Activator.CreateInstance(module, new object[] { virtualMachine });
             }
             else if (module.GetConstructor(new Type[] { }) != null)
             {

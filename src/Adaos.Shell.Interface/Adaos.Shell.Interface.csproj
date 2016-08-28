@@ -53,6 +53,7 @@
     <Compile Include="IArgumentExecutable.cs" />
     <Compile Include="IArgument.cs" />
     <Compile Include="IArgumentValueLookup.cs" />
+    <Compile Include="IContextBuilder.cs" />
     <Compile Include="IExecution.cs" />
     <Compile Include="IEnvironment.cs" />
     <Compile Include="ErrorHandler.cs" />

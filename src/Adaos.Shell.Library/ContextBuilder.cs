@@ -3,10 +3,11 @@ using Adaos.Shell.Interface;
 using Adaos.Shell.Library.Standard;
 using Adaos.Shell.Core.Extenders;
 using Adaos.Common.Extenders;
+using System.Collections.Generic;
 
 namespace Adaos.Shell.Library
 {
-	public class ContextBuilder
+	public class ContextBuilder : IContextBuilder
 	{
         static ContextBuilder _instance = null;
 
@@ -26,7 +27,7 @@ namespace Adaos.Shell.Library
             } 
         }
 
-		public IEnvironmentContext BuildStandardEnvironment(IVirtualMachine vm)
+		public IEnumerable<IEnvironmentContext> BuildEnvironments(IVirtualMachine vm)
 		{
 			var std = new StandardEnvironment();
             var stdContext = std.AsContext();
@@ -43,7 +44,7 @@ namespace Adaos.Shell.Library
 			stdContext.AddChild(new ControlStructureEnvironment(vm));
 			stdContext.AddChild(new VariableEnvironment(vm));
             stdContext.AddChild(new BareWordsEnvironment()).Do(x => x.IsEnabled = false);
-            return stdContext;
+            yield return stdContext;
 		}
 	}
 }

@@ -10,6 +10,6 @@
         /// </summary>
         /// <param name="fileName">The name of the file containing the module.</param>
         /// <returns>An instance of a <see cref="IModule"/> from the given file.</returns>
-        IModule GetInstance(string fileName);
+        IModule GetInstance(string fileName, IVirtualMachine virtualMachine);
     }
 }
