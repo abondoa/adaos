@@ -291,5 +291,82 @@ namespace Adaos.Shell.Library.Standard.Tests
 
             AssertContent(Args(Arg2), res);
         }
+
+        [TestMethod()]
+        public void While_False_NothingReturned()
+        {
+            var res = _controlStructureEnvironment.While(new[] {
+                False,
+                Arg1
+            });
+
+            AssertContent(EmptyArgs, res);
+        }
+
+        [TestMethod()]
+        public void While_ExecutionTrueThenFalse_ReturnOnce()
+        {
+            var argExecutableMock = new Mock<IArgumentExecutable>();
+            var executionSequenceMock = new Mock<IExecutionSequence>();
+            argExecutableMock.SetupGet(x => x.ExecutionSequence).Returns(executionSequenceMock.Object);
+            _vmMock.SetupSequence(x => x.ShellExecutor.Execute(executionSequenceMock.Object, _vmMock.Object))
+                .Returns(Args(True))
+                .Returns(Args(False));
+            var res = _controlStructureEnvironment.While(new[] {
+                argExecutableMock.Object,
+                Arg1
+            }).ToArray();
+
+            AssertContent(Args(Arg1), res);
+        }
+
+        [TestMethod()]
+        public void While_ExecutionTrueThenTrueThenFalse_ReturnTwice()
+        {
+            var argExecutableMock = new Mock<IArgumentExecutable>();
+            var executionSequenceMock = new Mock<IExecutionSequence>();
+            argExecutableMock.SetupGet(x => x.ExecutionSequence).Returns(executionSequenceMock.Object);
+            _vmMock.SetupSequence(x => x.ShellExecutor.Execute(executionSequenceMock.Object, _vmMock.Object))
+                .Returns(Args(True))
+                .Returns(Args(True))
+                .Returns(Args(False));
+            var res = _controlStructureEnvironment.While(new[] {
+                argExecutableMock.Object,
+                Arg1
+            }).ToArray();
+
+            AssertContent(Args(Arg1,Arg1), res);
+        }
+
+        [TestMethod()]
+        public void While_FirstArgumentNotBoolean_ExceptionThrown()
+        {
+            try
+            {
+                _controlStructureEnvironment.While(Args(
+                    new DummyArgument("derp"), 
+                    Arg1
+                )).ToArray();
+                Assert.Fail($"{nameof(SemanticException)} should have been thrown");
+            }
+            catch (SemanticException e)
+            {
+                Assert.IsTrue(e.Message.Contains("bool"));
+            }
+        }
+
+        [TestMethod()]
+        public void While_NoBody_ExceptionThrown()
+        {
+            try
+            {
+                _controlStructureEnvironment.While(Args(True)).ToArray();
+                Assert.Fail($"{nameof(SemanticException)} should have been thrown");
+            }
+            catch (SemanticException e)
+            {
+                Assert.IsTrue(e.Message.Contains("argument"),e.Message);
+            }
+        }
     }
 }

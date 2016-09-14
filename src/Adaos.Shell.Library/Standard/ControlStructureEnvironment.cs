@@ -21,6 +21,7 @@ namespace Adaos.Shell.Library.Standard
         {
             _vm = vm;
             Bind(If, "if");
+            Bind(While, "while");
         }
 
         public  IEnumerable<IArgument> If(IEnumerable<IArgument> args)
@@ -38,39 +39,53 @@ namespace Adaos.Shell.Library.Standard
                     throw new SemanticException(-1, "When using the 'if' command with the 'else' argument, something must come after the else argument.");
                 }
             }
-            bool res;
-            args.First().TryParseTo(out res, x => { throw new SemanticException(args.First().Position, x); });
             
-            if (res)
+            if (ConvertToBoolean(args.First()))
             {
-                var then = args.Second();
-                if (then is IArgumentExecutable)
-                {
-                    var arg = then as IArgumentExecutable;
-                    return _vm.ShellExecutor.Execute(arg.ExecutionSequence,_vm);
-                }
-                else
-                {
-                    return new[] { then };
-                }
+                return Execute(args.Second());
             }
             else if (args.ThirdOrDefault() != null)
             {
                 var elseValue = args.Skip(3).First();
-                if (elseValue is IArgumentExecutable)
-                {
-                    var arg = elseValue as IArgumentExecutable;
-                    return _vm.ShellExecutor.Execute(arg.ExecutionSequence,_vm);
-                }
+                if (elseValue.Value == "if")
+                    return If(args.Skip(4));
                 else
-                {
-                    if (elseValue.Value == "if")
-                        return If(args.Skip(4));
-                    else
-                        return new[] { elseValue };
-                }
+                    return Execute(elseValue);
             }
             return new IArgument[0];
+        }
+
+        private IEnumerable<IArgument> Execute(IArgument arg)
+        {
+            if (arg is IArgumentExecutable)
+            {
+                var argExec = arg as IArgumentExecutable;
+                return _vm.ShellExecutor.Execute(argExec.ExecutionSequence, _vm);
+            }
+            else
+            {
+                return new[] { arg };
+            }
+        }
+
+        public IEnumerable<IArgument> While(IEnumerable<IArgument> args)
+        {
+            args.VerifyArgumentCount(2, x => { throw new SemanticException(-1, x); });
+
+            while (ConvertToBoolean(args.First()))
+            {
+                foreach(var arg in Execute(args.Second()))
+                {
+                    yield return arg;
+                }
+            }
+        }
+
+        private bool ConvertToBoolean(IArgument arg)
+        {
+            bool res;
+            Execute(arg).First().TryParseTo(out res, x => { throw new SemanticException(arg.Position, x); });
+            return res;
         }
     }
 }
