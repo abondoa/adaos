@@ -5,6 +5,7 @@ using System.Text;
 using Adaos.Shell.SyntaxAnalysis.Parsing;
 using Adaos.Shell.SyntaxAnalysis.ASTs;
 using Adaos.Shell.Interface;
+using Adaos.Shell.Interface.SyntaxAnalysis;
 using Adaos.Shell.SyntaxAnalysis.Exceptions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Adaos.Shell.SyntaxAnalysis;

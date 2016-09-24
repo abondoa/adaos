@@ -1,4 +1,6 @@
-﻿namespace Adaos.Shell.Interface
+﻿using Adaos.Shell.Interface.Execution;
+
+namespace Adaos.Shell.Interface
 {
     /// <summary>
     /// An interface describing a manager for Adaos modules, that serves as packages of environments.

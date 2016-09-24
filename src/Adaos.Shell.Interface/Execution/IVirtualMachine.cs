@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
+using Adaos.Shell.Interface.SyntaxAnalysis;
 using System.IO;
 
-namespace Adaos.Shell.Interface
+namespace Adaos.Shell.Interface.Execution
 {
     /// <summary>
     /// An interface describing a virtual machine used to execute commands of the Adaos language.

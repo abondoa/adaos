@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Adaos.Shell.SyntaxAnalysis.ASTs;
 using Adaos.Shell.Interface;
+using Adaos.Shell.Interface.SyntaxAnalysis;
 
 namespace Adaos.Shell.SyntaxAnalysis
 {

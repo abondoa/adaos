@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Adaos.Shell.Interface
+namespace Adaos.Shell.Interface.SyntaxAnalysis
 {
     /// <summary>
     /// An interface describing execution node in the Adaos AST. 

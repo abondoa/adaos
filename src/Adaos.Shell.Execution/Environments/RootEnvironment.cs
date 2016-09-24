@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Adaos.Shell.Interface;
+using Adaos.Shell.Interface.Execution;
 
 namespace Adaos.Shell.Execution.Environments
 {
@@ -119,6 +120,5 @@ namespace Adaos.Shell.Execution.Environments
         }
 		public Command EnvironmentCommand {get {
 				throw new InvalidOperationException("Never get the EnvironmentCommand of the root environment"); }}
-
     }
 }

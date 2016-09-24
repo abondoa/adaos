@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using Adaos.Shell.Interface;
+using Adaos.Shell.Interface.Execution;
+using Adaos.Shell.Interface.SyntaxAnalysis;
 using System.Collections.Generic;
 
 namespace ModuleA

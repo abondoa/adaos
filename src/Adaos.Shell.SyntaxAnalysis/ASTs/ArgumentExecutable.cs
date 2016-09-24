@@ -1,4 +1,5 @@
 ﻿using Adaos.Shell.Interface;
+using Adaos.Shell.Interface.SyntaxAnalysis;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,4 +1,6 @@
 ﻿using Adaos.Shell.Interface;
+using Adaos.Shell.Interface.SyntaxAnalysis;
+using Adaos.Shell.Interface.Execution;
 using Adaos.Shell.ModuleHandling;
 using Adaos.Shell.SyntaxAnalysis.Parsing;
 using System;

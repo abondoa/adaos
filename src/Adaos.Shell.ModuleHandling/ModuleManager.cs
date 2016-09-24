@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using Adaos.Shell.Interface.Exceptions;
+using Adaos.Shell.Interface.Execution;
 
 namespace Adaos.Shell.ModuleHandling
 {

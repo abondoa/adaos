@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Adaos.Shell.Interface.Exceptions;
 
-namespace Adaos.Shell.Interface
+namespace Adaos.Shell.Interface.SyntaxAnalysis
 {
     /// <summary>
     /// An interface descrbining a programsequence node of the Adaos AST. 

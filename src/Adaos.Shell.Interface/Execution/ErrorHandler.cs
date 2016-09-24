@@ -1,4 +1,4 @@
-﻿namespace Adaos.Shell.Interface
+﻿namespace Adaos.Shell.Interface.Execution
 {
     /// <summary>
     /// A delegate for handling erros in Adoas. 

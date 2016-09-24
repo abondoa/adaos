@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Adaos.Shell.Interface;
+using Adaos.Shell.Interface.SyntaxAnalysis;
+using Adaos.Shell.Interface.Execution;
 using Adaos.Shell.Interface.Exceptions;
 using Adaos.Shell.SyntaxAnalysis.ASTs;
 using Adaos.Common.Extenders;

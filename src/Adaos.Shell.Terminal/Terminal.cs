@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Adaos.Shell.Interface;
 using Adaos.Shell.Interface.Exceptions;
+using Adaos.Shell.Interface.Execution;
 using Adaos.Shell.Execution;
 using System.IO;
 using Adaos.Shell.Library;

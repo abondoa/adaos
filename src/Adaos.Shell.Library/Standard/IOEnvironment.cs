@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Adaos.Shell.Interface;
+using Adaos.Shell.Interface.SyntaxAnalysis;
 using System.IO;
 using Adaos.Common.Extenders;
 using Adaos.Shell.Core;

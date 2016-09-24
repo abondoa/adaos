@@ -1,5 +1,7 @@
 ﻿using Adaos.Common.Extenders;
 using Adaos.Shell.Interface;
+using Adaos.Shell.Interface.SyntaxAnalysis;
+using Adaos.Shell.Interface.Execution;
 using Adaos.Shell.Interface.Exceptions;
 using System;
 using System.Collections.Generic;
