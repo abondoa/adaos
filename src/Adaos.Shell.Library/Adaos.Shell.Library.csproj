@@ -52,6 +52,7 @@
     <Compile Include="Standard\IOEnvironment.cs" />
     <Compile Include="Standard\MathEnvironment.cs" />
     <Compile Include="Standard\ModuleEnvironment.cs" />
+    <Compile Include="AdHoc\ScopeEnvironment.cs" />
     <Compile Include="Standard\StandardEnvironment.cs" />
     <Compile Include="Standard\SyntaxEnvironment.cs" />
     <Compile Include="StandardLibraryContextBuilder.cs" />

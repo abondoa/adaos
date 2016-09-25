@@ -10,10 +10,9 @@ using Adaos.Shell.Core.Extenders;
 using Adaos.Common.Extenders;
 using Adaos.Shell.Interface.Exceptions;
 using Adaos.Shell.Interface.Execution;
-using Adaos.Shell.Interface.SyntaxAnalysis;
 
 namespace Adaos.Shell.Library.Standard
-{
+{    
     class EnvironmentEnvironment : BaseEnvironment
     {
         virtual protected StreamWriter _output {get; private set;}

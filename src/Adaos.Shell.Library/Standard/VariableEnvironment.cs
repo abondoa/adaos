@@ -11,20 +11,40 @@ using Adaos.Shell.Interface.Exceptions;
 using Adaos.Shell.SyntaxAnalysis.ASTs;
 using Adaos.Common.Extenders;
 using Adaos.Shell.Core.Extenders;
+using Adaos.Shell.Library.AdHoc;
 
 namespace Adaos.Shell.Library.Standard
 {
+    static class VariableEnvironmentVirtualMachineExtender
+    {
+        public static IEnvironmentContext GetVariableEnvironmentContext(this IVirtualMachine self)
+        {
+            return self?.EnvironmentContainer?.EnabledEnvironments?.FirstOrDefault(x => x?.Name == "variable");
+        }
+    }
+
     class VariableEnvironment : BaseEnvironment
     {
+        private int _scope;
+        private ControlStructureEnvironment _ctrlStructEnv;
+
         public override string Name => "variable";
         virtual protected IVirtualMachine _vm { get; private set; }
 
 
-        public VariableEnvironment(IVirtualMachine vm) : base(true)
+        public VariableEnvironment(IVirtualMachine vm, ControlStructureEnvironment ctrlStructEnv) : base(true)
         {
             _vm = vm;
+            _ctrlStructEnv = ctrlStructEnv;
+            _ctrlStructEnv.ScopeOpened += OnScopeOpen;
+            _ctrlStructEnv.ScopeClosed += OnScopeClose;
             Bind(DeclareVariable, "var");
             Bind(DeleteVariable, "delete");
+        }
+
+        public override void VirtualMachineLoaded(IVirtualMachine vm)
+        {
+            OnScopeOpen();
         }
 
         public override Command Retrieve(string commandName)
@@ -36,7 +56,14 @@ namespace Adaos.Shell.Library.Standard
             }
             else
             {
-                return base.Retrieve(commandName);
+                var cmd = base.Retrieve(commandName);
+                if(cmd == null)
+                foreach(var child in _vm.GetVariableEnvironmentContext().ChildEnvironments)
+                {
+                    cmd = child.Retrieve(commandName);
+                    if (cmd != null) break;
+                }
+                return cmd;
             }
         }
 
@@ -79,7 +106,7 @@ namespace Adaos.Shell.Library.Standard
         {
             get
             {
-                IEnvironment custom = _vm.EnvironmentContainer.EnabledEnvironments.FirstOrDefault(x => x.Name.Equals("custom"));
+                IEnvironment custom = _vm.GetVariableEnvironmentContext().ChildEnvironments.FirstOrDefault(x => x.Name == $"{_scope}");
                 if (custom == null)
                 {
                     throw new SemanticException(-1, "ADAOS VM does not have a custom environment loaded");
@@ -160,13 +187,37 @@ namespace Adaos.Shell.Library.Standard
             {
                 return VariableFunction(arguments.Skip(1).First().Value, values, arguments.Skip(2), position, (x, y) => x / y);
             }
+            else if (operatorArg.Value == "==")
+            {
+                return VariableFunctionBool(arguments.Skip(1).First().Value, values, arguments.Skip(2), position, (x, y) => x == y);
+            }
+            else if (operatorArg.Value == "!=")
+            {
+                return VariableFunctionBool(arguments.Skip(1).First().Value, values, arguments.Skip(2), position, (x, y) => x != y);
+            }
+            else if (operatorArg.Value == ">")
+            {
+                return VariableFunction(arguments.Skip(1).First().Value, values, arguments.Skip(2), position, (x, y) => x > y);
+            }
+            else if (operatorArg.Value == "<")
+            {
+                return VariableFunction(arguments.Skip(1).First().Value, values, arguments.Skip(2), position, (x, y) => x < y);
+            }
+            else if (operatorArg.Value == ">=")
+            {
+                return VariableFunction(arguments.Skip(1).First().Value, values, arguments.Skip(2), position, (x, y) => x >= y);
+            }
+            else if (operatorArg.Value == "<=")
+            {
+                return VariableFunction(arguments.Skip(1).First().Value, values, arguments.Skip(2), position, (x, y) => x <= y);
+            }
             else
             {
                 throw new SemanticException(operatorArg.Position, $"Unknown operator '{operatorArg.Value}' for handling variable '{variable}'");
             }
         }
 
-        private IEnumerable<IArgument> VariableFunction(string variable, IEnumerable<IArgument> values, IEnumerable<IArgument> arguments, int position, Func<int,int,int> func)
+        private IEnumerable<IArgument> VariableFunction<TReturn>(string variable, IEnumerable<IArgument> values, IEnumerable<IArgument> arguments, int position, Func<int,int, TReturn> func)
         {
             var rightHandSide = CustomEnvironment.Retrieve(variable)?.Invoke(new[] { arguments });
             foreach (var pair in values.Zip(rightHandSide, (l,r) => Tuple.Create(l,r)))
@@ -183,6 +234,27 @@ namespace Adaos.Shell.Library.Standard
                 }
                 yield return new DummyArgument((func(leftHand,rightHand)).ToString());
             }
+        }
+
+        private IEnumerable<IArgument> VariableFunctionBool(string variable, IEnumerable<IArgument> values, IEnumerable<IArgument> arguments, int position, Func<string, string, bool> func)
+        {
+            var rightHandSide = CustomEnvironment.Retrieve(variable)?.Invoke(new[] { arguments });
+            foreach (var pair in values.Zip(rightHandSide, (l, r) => Tuple.Create(l, r)))
+            {
+                yield return new DummyArgument((func(pair.Item1.Value, pair.Item2.Value)).ToString());
+            }
+        }
+
+        private void OnScopeOpen()
+        {
+            _scope++;
+            _vm.GetVariableEnvironmentContext().AddChild(new ScopeEnvironment($"{_scope}"));
+        }
+
+        private void OnScopeClose()
+        {
+            _vm.GetVariableEnvironmentContext().RemoveChild(_vm.GetVariableEnvironmentContext().ChildEnvironments.First(x => x.Name == $"{_scope}"));
+            _scope--;
         }
     }
 }

@@ -7,15 +7,7 @@ using Adaos.Shell.Interface.SyntaxAnalysis;
 using Adaos.Shell.Interface.Execution;
 using Adaos.Shell.Interface.Exceptions;
 using Adaos.Shell.SyntaxAnalysis.Parsing;
-using Adaos.Shell.SyntaxAnalysis;
-using Adaos.Shell.SyntaxAnalysis.ASTs;
-using Adaos.Shell.SyntaxAnalysis.Exceptions;
 using System.IO;
-using Adaos.Shell.Execution.Exceptions;
-using Adaos.Shell.Core;
-using Adaos.Shell.Core.Extenders;
-using Adaos.Common.Extenders;
-using Adaos.Shell.Library.Standard;
 using Adaos.Shell.ModuleHandling;
 
 namespace Adaos.Shell.Execution
@@ -27,7 +19,6 @@ namespace Adaos.Shell.Execution
         private StreamWriter _log;
         private IResolver _resolver;
         private IModuleManager _moduleManager;
-        private ErrorHandler _handleError;
         private IEnvironmentContainer _envContainer;
         private IEnumerable<IArgument>[] NoArguments = new IEnumerable<IArgument>[] {new IArgument[0] };
         private IShellExecutor _shellExecutor;
@@ -240,7 +231,7 @@ namespace Adaos.Shell.Execution
 					var cmds = envs.First ().Commands.Where(x => x.StartsWith(lastCommand.CommandName));
 					if (cmds.FirstOrDefault () != null && cmds.Skip (1).FirstOrDefault () == null) 
 					{
-					    suggestion.Append (_parser.ScannerTable.EnvironmentSeparator + cmds.First());
+					    suggestion.Append(_parser.ScannerTable.EnvironmentSeparator + cmds.First());
 					}
 				}
                 return  suggestion.ToString();

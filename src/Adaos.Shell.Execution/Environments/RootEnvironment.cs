@@ -93,6 +93,10 @@ namespace Adaos.Shell.Execution.Environments
             throw new InvalidOperationException("Never get the QualifiedName of the root environment");
         }
 
+        public void VirtualMachineLoaded(IVirtualMachine vm)
+        {
+        }
+
         public IEnumerable<string> EnvironmentNames
         {
             get { throw new InvalidOperationException("Never read the EnvironmentNames of the root environment"); }

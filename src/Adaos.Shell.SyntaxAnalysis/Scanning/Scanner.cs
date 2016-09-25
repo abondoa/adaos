@@ -112,6 +112,9 @@ namespace Adaos.Shell.SyntaxAnalysis.Scanning
                 case '*':
                 case '/':
                 case '=':
+                case '!':
+                case '>':
+                case '<':
                     return true;
                 default:
                     return false;
@@ -124,6 +127,8 @@ namespace Adaos.Shell.SyntaxAnalysis.Scanning
             {
                 case "++":
                 case "--":
+                case "==":
+                case "!=":
                     return true;
                 default:
                     return false;

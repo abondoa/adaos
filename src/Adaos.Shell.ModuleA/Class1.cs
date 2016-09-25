@@ -111,6 +111,10 @@ namespace ModuleA
         {
             return Name;
         }
+
+        public void VirtualMachineLoaded(IVirtualMachine vm)
+        {
+        }
     }
 
     internal class EnvironmentContext : IEnvironmentContext
@@ -209,6 +213,11 @@ namespace ModuleA
         public void Unbind(string commandName)
         {
             env.Unbind(commandName);
+        }
+
+        public void VirtualMachineLoaded(IVirtualMachine vm)
+        {
+            Inner.VirtualMachineLoaded(vm);
         }
     }
 

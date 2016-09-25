@@ -63,5 +63,11 @@ namespace Adaos.Shell.Interface
         /// Converts the environment into an IEnvironmentContext or returns self if it is a an IEnvironmentContext.
         /// </summary>
         IEnvironmentContext AsContext();
+
+        /// <summary>
+        /// Called when the virtual machine is fully loaded
+        /// </summary>
+        /// <param name="vm">The virtual machine which has been loaded</param>
+        void VirtualMachineLoaded(IVirtualMachine vm);
     }
 }

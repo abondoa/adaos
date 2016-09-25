@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Adaos.Common.Extenders;
 
 namespace Adaos.Shell.Execution
 {
@@ -96,8 +97,12 @@ namespace Adaos.Shell.Execution
                 throw new InvalidOperationException($"{_container} not set");
             }
             var vm = new VirtualMachine(_ouputStream, _logStream, _container);
+
             foreach (var contextBuilder in _contextBuilders)
                 _container.LoadEnvironments(contextBuilder.BuildEnvironments(vm));
+
+            foreach (var context in _container.EnabledEnvironments.Then(_container.DisabledEnvironments))
+                context.Inner.VirtualMachineLoaded(vm);
 
             return vm;
         }

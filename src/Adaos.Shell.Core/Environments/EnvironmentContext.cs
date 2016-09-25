@@ -204,6 +204,11 @@ namespace Adaos.Shell.Core.Environments
             }
         }
 
-		public Command EnvironmentCommand {get {return _environmentCommand;}}
+        public void VirtualMachineLoaded(IVirtualMachine vm)
+        {
+            Inner.VirtualMachineLoaded(vm);
+        }
+
+        public Command EnvironmentCommand {get {return _environmentCommand;}}
     }
 }

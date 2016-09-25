@@ -14,8 +14,21 @@ using Adaos.Shell.SyntaxAnalysis.ASTs;
 
 namespace Adaos.Shell.Library.Standard
 {
+    static class ControlStructureVirtualMachineExtender
+    {
+        public static ControlStructureEnvironment GetControlStructure(this IVirtualMachine self)
+        {
+            return self?.EnvironmentContainer?.EnabledEnvironments?.FirstOrDefault(x => x?.Name == "controlstructure").Inner as ControlStructureEnvironment;
+        }
+    }
+
     public class ControlStructureEnvironment : BaseEnvironment
     {
+        public delegate void ScopeListener();
+
+        public event ScopeListener ScopeOpened;
+        public event ScopeListener ScopeClosed;
+
         public override string Name => "controlstructure"; 
         virtual protected IVirtualMachine _vm { get; private set; }
 
@@ -59,10 +72,14 @@ namespace Adaos.Shell.Library.Standard
 
         private IEnumerable<IArgument> Execute(IArgument arg)
         {
+
             if (arg is IArgumentExecutable)
             {
                 var argExec = arg as IArgumentExecutable;
-                return _vm.ShellExecutor.Execute(argExec.ExecutionSequence, _vm);
+                ScopeOpened?.Invoke();
+                var result = _vm.ShellExecutor.Execute(argExec.ExecutionSequence, _vm);
+                ScopeClosed?.Invoke();
+                return result;
             }
             else
             {

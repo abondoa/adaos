@@ -211,6 +211,10 @@ namespace Adaos.Shell.Core
             return Name;
         }
 
+        public virtual void VirtualMachineLoaded(IVirtualMachine vm)
+        {
+        }
+
         public virtual IEnumerable<Type> Dependencies
         {
             get { yield break; }

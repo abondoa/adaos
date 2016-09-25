@@ -115,5 +115,9 @@ namespace Adaos.Shell.Library.AdHoc
         {
             return Name;
         }
+
+        public void VirtualMachineLoaded(IVirtualMachine vm)
+        {
+        }
     }
 }

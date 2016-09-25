@@ -35,15 +35,16 @@ namespace Adaos.Shell.Library
 			
 			var envEnv = new EnvironmentEnvironment(vm.Output, vm);
 			stdContext.AddChild(envEnv);
-			stdContext.AddChild(new IOEnvironment(vm.Output, vm.Log));
+            var ctrlStructEnv = new ControlStructureEnvironment(vm);
+            stdContext.AddChild(new IOEnvironment(vm.Output, vm.Log));
 			stdContext.AddChild(new CustomEnvironment());
 			stdContext.AddChild(new MathEnvironment(vm.Output));
 			stdContext.AddChild(new ArgumentEnvironment());
 			stdContext.AddChild(new CommandEnvironment(vm.Output, vm));
 			stdContext.AddChild(new ModuleEnvironment(vm.Output, envEnv, vm));
 			stdContext.AddChild(new SyntaxEnvironment(vm));
-			stdContext.AddChild(new ControlStructureEnvironment(vm));
-			stdContext.AddChild(new VariableEnvironment(vm));
+			stdContext.AddChild(ctrlStructEnv);
+			stdContext.AddChild(new VariableEnvironment(vm, ctrlStructEnv));
             stdContext.AddChild(new BareWordsEnvironment()).Do(x => x.IsEnabled = false);
             yield return stdContext;
 		}
