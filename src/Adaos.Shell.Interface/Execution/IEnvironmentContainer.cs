@@ -24,10 +24,24 @@ namespace Adaos.Shell.Interface.Execution
         void LoadEnvironment(IEnvironment environment);
 
         /// <summary>
+        /// Load given environment into this container as a child of <paramref name="parent"/>.
+        /// </summary>
+        /// <param name="environment">The environment that will be loaded</param>
+        /// <param name="parent">The environment context underwhich the new environment is loaded</param>
+        void LoadEnvironment(IEnvironment environment, IEnvironmentContext parent);
+
+        /// <summary>
         /// Unload the given environment from the container at the root.
         /// </summary>
         /// <param name="environment">The environment to unload.</param>
         void UnloadEnvironment(IEnvironment environment);
+
+        /// <summary>
+        /// Unload given environment from this container and as a child of <paramref name="parent"/>.
+        /// </summary>
+        /// <param name="environment">The environment that will be unloaded</param>
+        /// <param name="parent">The environment context underwhich the new environment is unloaded</param>
+        void UnloadEnvironment(IEnvironment environment, IEnvironmentContext parent);
 
         /// <summary>
         /// Move context to the front of contexts when getting loaded/unloaded environments.

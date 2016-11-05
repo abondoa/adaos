@@ -26,6 +26,7 @@ namespace Adaos.Shell.Library.Standard
     class VariableEnvironment : BaseEnvironment
     {
         private int _scope;
+        private Stack<ScopeEnvironment> _scopes;
         private IEnvironment _global;
 
         public override string Name => "variable";
@@ -37,6 +38,7 @@ namespace Adaos.Shell.Library.Standard
             _global = global;
             vm.ShellExecutor.ScopeOpened += OnScopeOpen;
             vm.ShellExecutor.ScopeClosed += OnScopeClose;
+            _scopes = new Stack<ScopeEnvironment>();
             Bind(DeclareVariable, "var");
             Bind(DeleteVariable, "delete");
         }
@@ -72,11 +74,11 @@ namespace Adaos.Shell.Library.Standard
 
             if (arguments.Skip(1).Any())
             {
-                return SetVariable(name.Value, arguments.Skip(1), true, name.Position);
+                return SetVariable(name.Value, arguments.Skip(1), true, name.Position, CustomEnvironment);
             }
             else
             {
-                return SetVariable(name.Value, new [] { new DummyArgument("=") }, true, name.Position);
+                return SetVariable(name.Value, new [] { new DummyArgument("=") }, true, name.Position, CustomEnvironment);
             }
         }
 
@@ -100,17 +102,13 @@ namespace Adaos.Shell.Library.Standard
         {
             get
             {
+                if (_scopes.Any())
+                    return _scopes.Peek();
                 return _global;
-                //IEnvironment custom = _vm.GetVariableEnvironmentContext().ChildEnvironments.FirstOrDefault(x => x.Name == $"{_scope}");
-                //if (custom == null)
-                //{
-                //    throw new SemanticException(-1, "ADAOS VM does not have a custom environment loaded");
-                //}
-                //return this;
             }
         }
 
-        private IEnumerable<IArgument> SetVariable(string variable, IEnumerable<IArgument> arguments, bool newVariable, int position)
+        private IEnumerable<IArgument> SetVariable(string variable, IEnumerable<IArgument> arguments, bool newVariable, int position, IEnvironment environment)
         {
             var op = arguments.First();
             var values = arguments.Skip(1);
@@ -142,19 +140,19 @@ namespace Adaos.Shell.Library.Standard
                 {
                     if (args.Flatten().Any())
                     {
-                        return HandleVariable(variable, values, args.Flatten(), position);
+                        return HandleVariable(variable, values, args.Flatten(), position, environment);
                     }
                     return values;
                 };
             }
             if(!newVariable)
-                CustomEnvironment.Unbind(variable);
-            CustomEnvironment.Bind(command, variable);
+                environment.Unbind(variable);
+            environment.Bind(command, variable);
 
             yield break;
         }
 
-        private IEnumerable<IArgument> HandleVariable(string variable, IEnumerable<IArgument> values, IEnumerable<IArgument> arguments, int position)
+        private IEnumerable<IArgument> HandleVariable(string variable, IEnumerable<IArgument> values, IEnumerable<IArgument> arguments, int position, IEnvironment environment)
         {
             var operatorArg = arguments.FirstOrDefault();
             if (operatorArg == null)
@@ -164,7 +162,7 @@ namespace Adaos.Shell.Library.Standard
 
             if (operatorArg.Value == "=")
             {
-                return SetVariable(variable, arguments, false, position);
+                return SetVariable(variable, arguments, false, position, environment);
             }
             else if (operatorArg.Value == "+")
             {
@@ -240,15 +238,24 @@ namespace Adaos.Shell.Library.Standard
             }
         }
 
-        private void OnScopeOpen()
+        private void OnScopeOpen(IExecutionSequence programSequence)
         {
             _scope++;
-            _vm.GetVariableEnvironmentContext().AddChild(new ScopeEnvironment($"{_scope}"));
+            if (_scope > 1)
+            {
+                var newScope = new ScopeEnvironment($"{_scope}");
+                _scopes.Push(newScope);
+                _vm.EnvironmentContainer.LoadEnvironment(newScope, _vm.GetVariableEnvironmentContext());
+            }
         }
 
-        private void OnScopeClose()
+        private void OnScopeClose(IExecutionSequence programSequence)
         {
-            _vm.GetVariableEnvironmentContext().RemoveChild(_vm.GetVariableEnvironmentContext().ChildEnvironments.First(x => x.Name == $"{_scope}"));
+            if (_scopes.Any())
+            {
+                var scopeToRemove = _scopes.Pop();
+                _vm.EnvironmentContainer.UnloadEnvironment(scopeToRemove, _vm.GetVariableEnvironmentContext());
+            }
             _scope--;
         }
     }

@@ -96,8 +96,10 @@ namespace Adaos.Shell.Library.Standard
 
         private bool ConvertToBoolean(IArgument arg)
         {
-            bool res;
-            Execute(arg).First().TryParseTo(out res, x => { throw new SemanticException(arg.Position, x); });
+            bool res = false;
+            var executionResult = Execute(arg);
+            if(executionResult.Any())
+                executionResult.First().TryParseTo(out res, x => { throw new SemanticException(arg.Position, x); });
             return res;
         }
     }

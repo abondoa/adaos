@@ -313,7 +313,25 @@ namespace Adaos.Shell.Execution.Test
 7
 8
 9
-"); 
+");
+        }
+
+        [TestMethod]
+        public void Execute_WhileLoopWithIncrmentingVariableInFunction()
+        {
+            long temp = systemOut.BaseStream.Position;
+            systemMachine.Execute("var func = (var i = 0; while (i < 10) (echo $i; i = $(i+1))); func");
+            Assert.AreEqual(GetOutputString(30), @"0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+");
         }
     }
 }

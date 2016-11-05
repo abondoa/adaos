@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Adaos.Shell.Interface.Execution
 {
-    public delegate void ScopeListener();
+    public delegate void ScopeListener(IExecutionSequence programSequence);
     /// <summary>
     /// An interface describing a virtual machine used to execute commands of the Adaos language.
     /// </summary>

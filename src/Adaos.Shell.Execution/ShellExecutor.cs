@@ -70,7 +70,7 @@ namespace Adaos.Shell.Execution
                     try
                     {
                         if (arg is IArgumentExecutable)
-                            results = InternExecute((arg as IArgumentExecutable).ExecutionSequence, new[] { new IArgument[0] },vm).ToArray();
+                            results = InternExecute((arg as IArgumentExecutable).ExecutionSequence, new[] { new IArgument[0] }, vm).ToArray();
                         else
                             results = vm.InternExecute(arg.Value, arg.Position - 1).ToArray();
                     }
@@ -95,7 +95,7 @@ namespace Adaos.Shell.Execution
         {
             IEnumerable<IEnumerable<IArgument>> result = args;
 
-            ScopeOpened?.Invoke();
+            ScopeOpened?.Invoke(prog);
             try
             {
                 foreach (IExecution comm in prog.Executions)
@@ -128,7 +128,8 @@ namespace Adaos.Shell.Execution
             }
             finally
             {
-                ScopeClosed?.Invoke();
+                result.First().ToArray();
+                ScopeClosed?.Invoke(prog);
             }
             foreach (var arg in result.First())
             {

@@ -64,15 +64,10 @@ namespace Adaos.Shell.Execution
 
         public void LoadEnvironment(IEnvironment environment, IEnvironmentContext parent)
         {
-            parent.AddChild(environment);
-            IEnvironmentContext contextAdded;
-            if (environment is IEnvironmentContext)
-                contextAdded = environment as IEnvironmentContext;
-            else
-                contextAdded = _rootEnvironment.ChildEnvironments.FirstOrDefault(x => x.Inner == environment);
+            IEnvironmentContext contextAdded = parent.AddChild(environment);
             if (contextAdded == null)
             {
-                throw new ArgumentException("Failed to load environment '" + environment + "'");
+                throw new ArgumentException($"Failed to load environment '{environment}'");
             }
             _innerList.Add(contextAdded);
             foreach(var decendent in contextAdded.DecendentEnvironments())
@@ -89,6 +84,21 @@ namespace Adaos.Shell.Execution
                 throw new ArgumentException("Trying to remove unknown environment '"+environment+"'");
             }
             _rootEnvironment.RemoveChild(contextToRemove);
+            _innerList.Remove(contextToRemove);
+        }
+
+        public void UnloadEnvironment(IEnvironment environment, IEnvironmentContext parent)
+        {
+            IEnvironmentContext contextToRemove;
+            if (environment is IEnvironmentContext)
+                contextToRemove = environment as IEnvironmentContext;
+            else
+                contextToRemove = parent.ChildEnvironments.FirstOrDefault(x => x.Inner == environment);
+            if (contextToRemove == null)
+            {
+                throw new ArgumentException($"Trying to remove unknown environment '{environment}' from parent '{parent}'");
+            }
+            parent.RemoveChild(contextToRemove);
             _innerList.Remove(contextToRemove);
         }
 
