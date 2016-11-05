@@ -26,25 +26,19 @@ namespace Adaos.Shell.Library.Standard
     class VariableEnvironment : BaseEnvironment
     {
         private int _scope;
-        private ControlStructureEnvironment _ctrlStructEnv;
+        private IEnvironment _global;
 
         public override string Name => "variable";
         virtual protected IVirtualMachine _vm { get; private set; }
 
-
-        public VariableEnvironment(IVirtualMachine vm, ControlStructureEnvironment ctrlStructEnv) : base(true)
+        public VariableEnvironment(IVirtualMachine vm, IEnvironment global) : base(true)
         {
             _vm = vm;
-            _ctrlStructEnv = ctrlStructEnv;
-            _ctrlStructEnv.ScopeOpened += OnScopeOpen;
-            _ctrlStructEnv.ScopeClosed += OnScopeClose;
+            _global = global;
+            vm.ShellExecutor.ScopeOpened += OnScopeOpen;
+            vm.ShellExecutor.ScopeClosed += OnScopeClose;
             Bind(DeclareVariable, "var");
             Bind(DeleteVariable, "delete");
-        }
-
-        public override void VirtualMachineLoaded(IVirtualMachine vm)
-        {
-            OnScopeOpen();
         }
 
         public override Command Retrieve(string commandName)
@@ -106,12 +100,13 @@ namespace Adaos.Shell.Library.Standard
         {
             get
             {
-                IEnvironment custom = _vm.GetVariableEnvironmentContext().ChildEnvironments.FirstOrDefault(x => x.Name == $"{_scope}");
-                if (custom == null)
-                {
-                    throw new SemanticException(-1, "ADAOS VM does not have a custom environment loaded");
-                }
-                return this;
+                return _global;
+                //IEnvironment custom = _vm.GetVariableEnvironmentContext().ChildEnvironments.FirstOrDefault(x => x.Name == $"{_scope}");
+                //if (custom == null)
+                //{
+                //    throw new SemanticException(-1, "ADAOS VM does not have a custom environment loaded");
+                //}
+                //return this;
             }
         }
 

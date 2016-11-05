@@ -24,10 +24,6 @@ namespace Adaos.Shell.Library.Standard
 
     public class ControlStructureEnvironment : BaseEnvironment
     {
-        public delegate void ScopeListener();
-
-        public event ScopeListener ScopeOpened;
-        public event ScopeListener ScopeClosed;
 
         public override string Name => "controlstructure"; 
         virtual protected IVirtualMachine _vm { get; private set; }
@@ -76,9 +72,7 @@ namespace Adaos.Shell.Library.Standard
             if (arg is IArgumentExecutable)
             {
                 var argExec = arg as IArgumentExecutable;
-                ScopeOpened?.Invoke();
                 var result = _vm.ShellExecutor.Execute(argExec.ExecutionSequence, _vm);
-                ScopeClosed?.Invoke();
                 return result;
             }
             else

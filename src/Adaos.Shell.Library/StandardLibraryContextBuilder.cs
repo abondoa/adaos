@@ -5,6 +5,7 @@ using Adaos.Shell.Core.Extenders;
 using Adaos.Common.Extenders;
 using System.Collections.Generic;
 using Adaos.Shell.Interface.Execution;
+using Adaos.Shell.Library.AdHoc;
 
 namespace Adaos.Shell.Library
 {
@@ -32,10 +33,11 @@ namespace Adaos.Shell.Library
 		{
 			var std = new StandardEnvironment();
             var stdContext = std.AsContext();
-			
-			var envEnv = new EnvironmentEnvironment(vm.Output, vm);
+            var globalVariableEnv = new ScopeEnvironment("global");
+
+
+            var envEnv = new EnvironmentEnvironment(vm.Output, vm);
 			stdContext.AddChild(envEnv);
-            var ctrlStructEnv = new ControlStructureEnvironment(vm);
             stdContext.AddChild(new IOEnvironment(vm.Output, vm.Log));
 			stdContext.AddChild(new CustomEnvironment());
 			stdContext.AddChild(new MathEnvironment(vm.Output));
@@ -43,8 +45,8 @@ namespace Adaos.Shell.Library
 			stdContext.AddChild(new CommandEnvironment(vm.Output, vm));
 			stdContext.AddChild(new ModuleEnvironment(vm.Output, envEnv, vm));
 			stdContext.AddChild(new SyntaxEnvironment(vm));
-			stdContext.AddChild(ctrlStructEnv);
-			stdContext.AddChild(new VariableEnvironment(vm, ctrlStructEnv));
+			stdContext.AddChild(new ControlStructureEnvironment(vm));
+			stdContext.AddChild(new VariableEnvironment(vm, globalVariableEnv)).Do(x => x.AddChild(globalVariableEnv));
             stdContext.AddChild(new BareWordsEnvironment()).Do(x => x.IsEnabled = false);
             yield return stdContext;
 		}

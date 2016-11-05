@@ -13,8 +13,6 @@ namespace Adaos.Shell.Execution.Test
     public class VirtualMachineTest
     {
         VirtualMachine vm;
-        IEnvironment math;
-        StreamWriter mathOut;
         StreamWriter systemOut;
         StreamWriter systemLog;
         IVirtualMachine systemMachine;
@@ -26,9 +24,6 @@ namespace Adaos.Shell.Execution.Test
         [TestInitialize]
         public void SetUp()
         {
-            mathOut = new StreamWriter(new MemoryStream());
-            mathOut.AutoFlush = true;
-            math = new MathEnvironment(mathOut);
             systemLog = new StreamWriter(new MemoryStream());
             systemLog.AutoFlush = true;
             systemOut = new StreamWriter(new MemoryStream());
@@ -51,7 +46,7 @@ namespace Adaos.Shell.Execution.Test
         {
             vm = new VirtualMachine(systemOut, systemLog);
             Assert.IsNotNull(vm);
-            Assert.AreEqual(12, vm.EnvironmentContainer.EnabledEnvironments.Count());
+            Assert.AreEqual(13, vm.EnvironmentContainer.EnabledEnvironments.Count());
         }
 
         //TODO: We are not using the environment input for anything as it is...
@@ -149,13 +144,7 @@ namespace Adaos.Shell.Execution.Test
             long temp = systemOut.BaseStream.Position;
             systemMachine.Execute("echo " + simpleEcho);
             Assert.AreNotEqual(temp, systemOut.BaseStream.Position);
-            byte[] buffer = new byte[simpleEcho.Length];
-            string str = "";
-            systemOut.BaseStream.Seek(0, SeekOrigin.Begin);
-            systemOut.BaseStream.Read(buffer, 0, simpleEcho.Length);
-            System.Text.UTF8Encoding enc = new System.Text.UTF8Encoding();
-            str = enc.GetString(buffer);
-            Assert.AreEqual(simpleEcho, str);
+            Assert.AreEqual(simpleEcho, GetOutputString(simpleEcho.Length));
         }
 
 
@@ -165,13 +154,7 @@ namespace Adaos.Shell.Execution.Test
             long temp = systemOut.BaseStream.Position;
             systemMachine.Execute("return " + simpleEcho + " | echo");
             Assert.AreNotEqual(temp, systemOut.BaseStream.Position);
-            byte[] buffer = new byte[simpleEcho.Length];
-            string str = "";
-            systemOut.BaseStream.Seek(0, SeekOrigin.Begin);
-            systemOut.BaseStream.Read(buffer, 0, simpleEcho.Length);
-            System.Text.UTF8Encoding enc = new System.Text.UTF8Encoding();
-            str = enc.GetString(buffer);
-            Assert.AreEqual(simpleEcho, str);
+            Assert.AreEqual(simpleEcho, GetOutputString(simpleEcho.Length));
         }
 
 
@@ -182,13 +165,7 @@ namespace Adaos.Shell.Execution.Test
             int len = simpleEcho.Length * 2 + 1;
             systemMachine.Execute("return " + simpleEcho + ", return " + simpleEcho + " | echo");
             Assert.AreNotEqual(temp, systemOut.BaseStream.Position);
-            byte[] buffer = new byte[len];
-            string str = "";
-            systemOut.BaseStream.Seek(0, SeekOrigin.Begin);
-            systemOut.BaseStream.Read(buffer, 0, len);
-            System.Text.UTF8Encoding enc = new System.Text.UTF8Encoding();
-            str = enc.GetString(buffer);
-            Assert.AreEqual(simpleEcho + " " + simpleEcho, str);
+            Assert.AreEqual(simpleEcho + " " + simpleEcho, GetOutputString(len));
         }
 
         [TestMethod]
@@ -197,13 +174,16 @@ namespace Adaos.Shell.Execution.Test
             long temp = systemOut.BaseStream.Position;
             systemMachine.Execute("echo " + complexEcho);
             Assert.AreNotEqual(temp, systemOut.BaseStream.Position);
-            byte[] buffer = new byte[complexEcho.Length-2];
-            string str = "";
+            Assert.AreEqual("\"" + GetOutputString(complexEcho.Length - 2) + "\"", complexEcho);
+        }
+
+        private string GetOutputString(int length)
+        {
+            byte[] buffer = new byte[length];
             systemOut.BaseStream.Seek(0, SeekOrigin.Begin);
-            systemOut.BaseStream.Read(buffer, 0, complexEcho.Length-2);
+            systemOut.BaseStream.Read(buffer, 0, length);
             System.Text.UTF8Encoding enc = new System.Text.UTF8Encoding();
-            str = enc.GetString(buffer);
-            Assert.AreEqual(complexEcho, "\"" + str + "\"");
+            return enc.GetString(buffer);
         }
 
         [TestMethod]
@@ -235,167 +215,6 @@ namespace Adaos.Shell.Execution.Test
             str = enc.GetString(buffer);
             Assert.AreEqual(complexEcho, "\"" + str + "\"");
         }
-
-        //TODO: Do we want the redo command at all?
-        //[TestMethod]
-        //public void Redo()
-        //{
-        //    systemMachine.Execute("echo " + simpleEcho);
-        //    long temp = systemOut.BaseStream.Position;
-        //    systemMachine.Execute("redo");
-        //    Assert.AreNotEqual(temp, systemOut.BaseStream.Position);
-        //    byte[] buffer = new byte[simpleEcho.Length];
-        //    string str = "";
-        //    systemOut.BaseStream.Seek(simpleEcho.Length + 1, SeekOrigin.Begin);
-        //    systemOut.BaseStream.Read(buffer, 0, simpleEcho.Length);
-        //    System.Text.UTF8Encoding enc = new System.Text.UTF8Encoding();
-        //    str = enc.GetString(buffer);
-        //    Assert.AreEqual(simpleEcho, str);
-        //}
-
-
-        //[TestMethod]
-        //public void RedoWithoutEnvironment()
-        //{
-        //    systemMachine.Execute("echo " + simpleEcho);
-        //    long temp = systemOut.BaseStream.Position;
-        //    systemMachine.Execute("redo");
-        //    Assert.AreNotEqual(temp, systemOut.BaseStream.Position);
-        //    byte[] buffer = new byte[simpleEcho.Length];
-        //    string str = "";
-        //    systemOut.BaseStream.Seek(simpleEcho.Length + 1, SeekOrigin.Begin);
-        //    systemOut.BaseStream.Read(buffer, 0, simpleEcho.Length);
-        //    System.Text.UTF8Encoding enc = new System.Text.UTF8Encoding();
-        //    str = enc.GetString(buffer);
-        //    Assert.AreEqual(simpleEcho, str);
-        //}
-
-
-        //[TestMethod]
-        //public void RedoWithArgumentsCASEinsensiTIVE()
-        //{
-        //    _redoHelper("1#1", simpleEcho, 1, 1, 1);
-        //}
-
-
-        //[TestMethod]
-        //public void RedoWithWrongArguments()
-        //{
-        //    systemMachine.Execute("echo " + simpleEcho);
-        //    long temp = systemOut.BaseStream.Position;
-        //    try
-        //    {
-        //        systemMachine.Execute("redo back 1 limit 1 count 1");
-        //        Assert.Fail();
-                
-        //    }
-        //    catch (AdaosException)
-        //    {
-        //        Assert.AreEqual(temp, systemOut.BaseStream.Position);
-        //    }
-        //}
-
-
-        //[TestMethod]
-        //public void RedoWithArgumentsGoFurtherBackThanSizeOfExecutedCache()
-        //{
-        //    _redoHelper("1#1", simpleEcho, 1000, 1, 1);
-        //}
-
-        //[TestMethod]
-        //public void RedoSingleLogManyATime()
-        //{
-        //    _redoHelper("2#1", simpleEcho, 2, 2, 1);
-        //}
-
-        //[TestMethod]
-        //public void RedoStressTest()
-        //{
-        //    _redoHelper("5#6", simpleEcho, 324234, 5, 6);
-        //}
-
-        //[TestMethod]
-        //public void RedoStressTestDifferentStrings()
-        //{
-        //    _redoHelper("2#6", new string[]{simpleEcho,complexEcho},
-        //        new string[]{simpleEcho,complexEcho.Substring(1,complexEcho.Length-2)}, 324234, 5, 6);
-        //}
-
-        //[TestMethod]
-        //public void RedoStressTest100()
-        //{
-        //    _redoHelper("1#100", simpleEcho, 1, 1, 1);
-        //}
-
-        //private void _redoHelper(string sequence, string echoString)
-        //{
-        //    _redoHelper(sequence, echoString, 1, 1, 1);
-        //}
-
-        //private void _redoHelper(string sequence, string echoString, int back, int limit, int times)
-        //{
-        //    string[] exploded = sequence.Split('#');
-        //    int initialLogs = int.Parse(exploded[0]);
-        //    string[] strings = new string[initialLogs];
-        //    for(int i = 0 ; i < initialLogs ; ++i)
-        //    {
-        //        strings[i] = echoString;
-        //    }
-        //    _redoHelper(sequence, strings, strings, back, limit, times);
-        //}
-
-        //private void _redoHelper(string sequence, string[] echoStrings, string[] expectedStrings, int back, int limit, int times)
-        //{
-        //    if (echoStrings.Length != expectedStrings.Length)
-        //    {
-        //        Assert.Inconclusive();
-        //    }
-        //    int initialLogs;
-        //    int initialRedos;
-        //    int logCounter = 0;
-        //    int expectedCounter = 0;
-        //    string[] exploded = sequence.Split('#');
-        //    initialLogs = int.Parse(exploded[0]);
-        //    initialRedos = int.Parse(exploded[1]);
-        //    if(echoStrings.Length != initialLogs)
-        //    {
-        //        Assert.Inconclusive();
-        //    }
-        //    for (int i = 0; i < initialLogs; ++i)
-        //    {
-        //        systemMachine.Execute("echo " + echoStrings[logCounter]);
-        //        logCounter++;
-        //    }
-        //    long temp = systemOut.BaseStream.Position;
-        //    long currentPos = temp;
-            
-        //    for (int i = 0; i < initialRedos; ++i)
-        //    {
-        //        systemMachine.Execute("redo back " + back + " Limit " + limit + " TIMES " + times + "");
-        //        back = Math.Min(initialLogs, back);
-        //        systemOut.BaseStream.Seek(temp, SeekOrigin.Begin);
-
-        //        for (int j = 0; j < times; ++j )
-        //        {
-        //            int end = Math.Min(initialLogs - back + limit,initialLogs);
-        //            for (expectedCounter = initialLogs - back; expectedCounter < end; expectedCounter++)
-        //            {
-        //                currentPos += expectedStrings[expectedCounter].Length +1;
-
-        //                byte[] buffer = new byte[expectedStrings[expectedCounter].Length];
-        //                string str = "";
-        //                systemOut.BaseStream.Read(buffer, 0, expectedStrings[expectedCounter].Length);
-        //                System.Text.UTF8Encoding enc = new System.Text.UTF8Encoding();
-        //                str = enc.GetString(buffer);
-        //                Assert.AreEqual(expectedStrings[expectedCounter], str);
-        //                systemOut.BaseStream.Seek(currentPos, SeekOrigin.Begin);
-        //            }
-        //        }
-        //        systemOut.BaseStream.Seek(0,SeekOrigin.End);
-        //        Assert.AreEqual(systemOut.BaseStream.Position,currentPos);
-        //    }
-        //}
-
 
         [TestMethod]
         public void TryToAddANewEnvironmentWithTheSameNameAsAnExistingOne()
@@ -468,7 +287,7 @@ namespace Adaos.Shell.Execution.Test
             vm.Parser.ScannerTable.Escaper = "###";
             vm.InternExecute(@"module.load ""C:\Users\AlexBondo\code-playground\adaos\src\Adaos.Shell.ModuleA\bin\Debug\Adaos.Shell.ModuleA.dll""").ToArray();
 
-            Assert.AreEqual(temp, mathOut.BaseStream.Position);
+            Assert.AreEqual(temp, systemOut.BaseStream.Position);
         }
 
         [TestMethod]
@@ -476,7 +295,25 @@ namespace Adaos.Shell.Execution.Test
         {
             long temp = systemOut.BaseStream.Position;
             systemMachine.Execute("echo $exit"); // Should not throw exit terminal exception
-            Assert.AreEqual(temp, mathOut.BaseStream.Position);
+            Assert.AreNotEqual(temp, systemOut.BaseStream.Position); // echo should print linebreak
+        }
+
+        [TestMethod]
+        public void Execute_WhileLoopWithIncrmentingVariable()
+        {
+            long temp = systemOut.BaseStream.Position;
+            systemMachine.Execute("var i = 0; while (i < 10) (echo $i; i = $(i+1))");
+            Assert.AreEqual(GetOutputString(30), @"0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+"); 
         }
     }
 }

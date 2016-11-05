@@ -36,11 +36,11 @@ namespace Adaos.Shell.Execution
             _output = output;
             _log = log;
 
-            _envContainer = new EnvironmentContainer(Library.StandardLibraryContextBuilder.Instance.BuildEnvironments(this));
             _parser = new Parser();
             _resolver = new Resolver();
             _moduleManager = new ModuleManager();
             _shellExecutor = new ShellExecutor();
+            _envContainer = new EnvironmentContainer(Library.StandardLibraryContextBuilder.Instance.BuildEnvironments(this));
         }
 
         public VirtualMachine(StreamWriter output, StreamWriter log, IEnvironmentContainer container)

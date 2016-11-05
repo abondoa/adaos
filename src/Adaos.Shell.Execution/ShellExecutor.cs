@@ -16,6 +16,9 @@ namespace Adaos.Shell.Execution
         private static readonly IEnumerable<IArgument>[] NoArguments = new IEnumerable<IArgument>[] { new IArgument[0] };
         private ErrorHandler _handleError;
 
+        public event ScopeListener ScopeOpened;
+        public event ScopeListener ScopeClosed;
+
         public virtual IEnumerable<IArgument> Execute(IExecutionSequence prog, IVirtualMachine virtualMachine)
         {
             return Execute(prog, NoArguments, virtualMachine);
@@ -92,34 +95,41 @@ namespace Adaos.Shell.Execution
         {
             IEnumerable<IEnumerable<IArgument>> result = args;
 
-            foreach (IExecution comm in prog.Executions)
+            ScopeOpened?.Invoke();
+            try
             {
-                if (!comm.IsPipeRecipient())
+                foreach (IExecution comm in prog.Executions)
                 {
-                    foreach (var temp in result)
-                        temp.ToArray(); //Execute previous before trying to resolve (maybe a new environment has been loaded just before)
-                }
+                    if (!comm.IsPipeRecipient())
+                    {
+                        foreach (var temp in result)
+                            temp.ToArray(); //Execute previous before trying to resolve (maybe a new environment has been loaded just before)
+                    }
 
-                var toExec = virtualMachine.Resolver.Resolve(comm, virtualMachine.EnvironmentContainer.EnabledEnvironments);
+                    var toExec = virtualMachine.Resolver.Resolve(comm, virtualMachine.EnvironmentContainer.EnabledEnvironments);
 
-                var commandlineArguments = new IEnumerable<IArgument>[] { HandleArguments(comm.Arguments, virtualMachine).ToArray() };
+                    var commandlineArguments = new IEnumerable<IArgument>[] { HandleArguments(comm.Arguments, virtualMachine).ToArray() };
 
-                switch (comm.RelationToPrevious)
-                {
-                    case CommandRelation.Concatenated:
-                        result = result.Then(toExec(commandlineArguments));
-                        break;
-                    case CommandRelation.Piped:
-                        var output = toExec(commandlineArguments.Then(result).ToArray());
-                        result = new IEnumerable<IArgument>[] { output };
-                        break;
-                    case CommandRelation.Separated:
-                        output = toExec(commandlineArguments);
-                        result = new IEnumerable<IArgument>[] { output };
-                        break;
+                    switch (comm.RelationToPrevious)
+                    {
+                        case CommandRelation.Concatenated:
+                            result = result.Then(toExec(commandlineArguments));
+                            break;
+                        case CommandRelation.Piped:
+                            var output = toExec(commandlineArguments.Then(result).ToArray());
+                            result = new IEnumerable<IArgument>[] { output };
+                            break;
+                        case CommandRelation.Separated:
+                            output = toExec(commandlineArguments);
+                            result = new IEnumerable<IArgument>[] { output };
+                            break;
+                    }
                 }
             }
-
+            finally
+            {
+                ScopeClosed?.Invoke();
+            }
             foreach (var arg in result.First())
             {
                 yield return arg;

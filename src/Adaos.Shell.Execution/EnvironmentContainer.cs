@@ -56,6 +56,25 @@ namespace Adaos.Shell.Execution
                 throw new ArgumentException("Failed to load environment '" + environment + "'");
             }
             _innerList.Add(contextAdded);
+            foreach (var decendent in contextAdded.DecendentEnvironments())
+            {
+                _innerList.Add(decendent);
+            }
+        }
+
+        public void LoadEnvironment(IEnvironment environment, IEnvironmentContext parent)
+        {
+            parent.AddChild(environment);
+            IEnvironmentContext contextAdded;
+            if (environment is IEnvironmentContext)
+                contextAdded = environment as IEnvironmentContext;
+            else
+                contextAdded = _rootEnvironment.ChildEnvironments.FirstOrDefault(x => x.Inner == environment);
+            if (contextAdded == null)
+            {
+                throw new ArgumentException("Failed to load environment '" + environment + "'");
+            }
+            _innerList.Add(contextAdded);
             foreach(var decendent in contextAdded.DecendentEnvironments())
             {
                 _innerList.Add(decendent);

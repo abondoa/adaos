@@ -4,6 +4,7 @@ using System.IO;
 
 namespace Adaos.Shell.Interface.Execution
 {
+    public delegate void ScopeListener();
     /// <summary>
     /// An interface describing a virtual machine used to execute commands of the Adaos language.
     /// </summary>
@@ -27,6 +28,9 @@ namespace Adaos.Shell.Interface.Execution
         /// Get or set the errorhandler.
         /// </summary>
         ErrorHandler HandleError { get; set; }
+
+        event ScopeListener ScopeOpened;
+        event ScopeListener ScopeClosed;
     }
 }
 
