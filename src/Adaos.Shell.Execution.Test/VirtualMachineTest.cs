@@ -6,6 +6,7 @@ using Adaos.Common.Extenders;
 using Adaos.Shell.Interface.Execution;
 using Adaos.Shell.Library.Standard;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Adaos.Shell.Execution.Exceptions;
 
 namespace Adaos.Shell.Execution.Test
 {
@@ -48,16 +49,6 @@ namespace Adaos.Shell.Execution.Test
             Assert.IsNotNull(vm);
             Assert.AreEqual(13, vm.EnvironmentContainer.EnabledEnvironments.Count());
         }
-
-        //TODO: We are not using the environment input for anything as it is...
-        //[TestMethod]
-        //public void ConstructVirtualMachineOneEnvironment()
-        //{
-        //    vm = new VirtualMachine(systemOut, systemLog, math);
-        //    Assert.IsNotNull(vm);
-        //    Assert.AreEqual(vm.EnvironmentContainer.LoadedEnvironments.ToArray().Length,0);
-        //    Assert.AreSame(math, vm.EnvironmentContainer.LoadedEnvironments.ToArray()[0]);
-        //}
 
         [TestMethod]
         public void SumWithoutEnvironment()
@@ -141,9 +132,9 @@ namespace Adaos.Shell.Execution.Test
         [TestMethod]
         public void EchoSimple()
         {
-            long temp = systemOut.BaseStream.Position;
+            long initialStreamPosition = systemOut.BaseStream.Position;
             systemMachine.Execute("echo " + simpleEcho);
-            Assert.AreNotEqual(temp, systemOut.BaseStream.Position);
+            Assert.AreNotEqual(initialStreamPosition, systemOut.BaseStream.Position);
             Assert.AreEqual(simpleEcho, GetOutputString(simpleEcho.Length));
         }
 
@@ -151,9 +142,9 @@ namespace Adaos.Shell.Execution.Test
         [TestMethod]
         public void ReturnPipedToEcho()
         {
-            long temp = systemOut.BaseStream.Position;
+            long initialStreamPosition = systemOut.BaseStream.Position;
             systemMachine.Execute("return " + simpleEcho + " | echo");
-            Assert.AreNotEqual(temp, systemOut.BaseStream.Position);
+            Assert.AreNotEqual(initialStreamPosition, systemOut.BaseStream.Position);
             Assert.AreEqual(simpleEcho, GetOutputString(simpleEcho.Length));
         }
 
@@ -161,19 +152,19 @@ namespace Adaos.Shell.Execution.Test
         [TestMethod]
         public void ReturnConcatenatedPipedToEcho()
         {
-            long temp = systemOut.BaseStream.Position;
+            long initialStreamPosition = systemOut.BaseStream.Position;
             int len = simpleEcho.Length * 2 + 1;
             systemMachine.Execute("return " + simpleEcho + ", return " + simpleEcho + " | echo");
-            Assert.AreNotEqual(temp, systemOut.BaseStream.Position);
+            Assert.AreNotEqual(initialStreamPosition, systemOut.BaseStream.Position);
             Assert.AreEqual(simpleEcho + " " + simpleEcho, GetOutputString(len));
         }
 
         [TestMethod]
         public void EchoComplex()
         {
-            long temp = systemOut.BaseStream.Position;
+            long initialStreamPosition = systemOut.BaseStream.Position;
             systemMachine.Execute("echo " + complexEcho);
-            Assert.AreNotEqual(temp, systemOut.BaseStream.Position);
+            Assert.AreNotEqual(initialStreamPosition, systemOut.BaseStream.Position);
             Assert.AreEqual("\"" + GetOutputString(complexEcho.Length - 2) + "\"", complexEcho);
         }
 
@@ -189,9 +180,9 @@ namespace Adaos.Shell.Execution.Test
         [TestMethod]
         public void LogSimple()
         {
-            long temp = systemLog.BaseStream.Position;
+            long initialStreamPosition = systemLog.BaseStream.Position;
             systemMachine.Execute("log " + simpleEcho);
-            Assert.AreNotEqual(temp, systemLog.BaseStream.Position);
+            Assert.AreNotEqual(initialStreamPosition, systemLog.BaseStream.Position);
             byte[] buffer = new byte[simpleEcho.Length];
             string str = "";
             systemLog.BaseStream.Seek(logStartLength, SeekOrigin.Begin);
@@ -204,9 +195,9 @@ namespace Adaos.Shell.Execution.Test
         [TestMethod]
         public void LogComplex()
         {
-            long temp = systemLog.BaseStream.Position;
+            long initialStreamPosition = systemLog.BaseStream.Position;
             systemMachine.Execute("log " + complexEcho);
-            Assert.AreNotEqual(temp, systemLog.BaseStream.Position);
+            Assert.AreNotEqual(initialStreamPosition, systemLog.BaseStream.Position);
             byte[] buffer = new byte[complexEcho.Length - 2];
             string str = "";
             systemLog.BaseStream.Seek(logStartLength, SeekOrigin.Begin);
@@ -283,25 +274,24 @@ namespace Adaos.Shell.Execution.Test
         public void LoadNewModule()
         {
             vm = (systemMachine as VirtualMachine);
-            long temp = systemOut.BaseStream.Position;
+            long initialStreamPosition = systemOut.BaseStream.Position;
             vm.Parser.ScannerTable.Escaper = "###";
             vm.InternExecute(@"module.load ""C:\Users\AlexBondo\code-playground\adaos\src\Adaos.Shell.ModuleA\bin\Debug\Adaos.Shell.ModuleA.dll""").ToArray();
 
-            Assert.AreEqual(temp, systemOut.BaseStream.Position);
+            Assert.AreEqual(initialStreamPosition, systemOut.BaseStream.Position);
         }
 
         [TestMethod]
         public void Execute_ExitInsideSubExecution_ShouldNotThrowExistException()
         {
-            long temp = systemOut.BaseStream.Position;
+            long initialStreamPosition = systemOut.BaseStream.Position;
             systemMachine.Execute("echo $exit"); // Should not throw exit terminal exception
-            Assert.AreNotEqual(temp, systemOut.BaseStream.Position); // echo should print linebreak
+            Assert.AreNotEqual(initialStreamPosition, systemOut.BaseStream.Position); // echo should print linebreak
         }
 
         [TestMethod]
         public void Execute_WhileLoopWithIncrmentingVariable()
         {
-            long temp = systemOut.BaseStream.Position;
             systemMachine.Execute("var i = 0; while (i < 10) (echo $i; i = $(i+1))");
             Assert.AreEqual(GetOutputString(30), @"0
 1
@@ -319,7 +309,6 @@ namespace Adaos.Shell.Execution.Test
         [TestMethod]
         public void Execute_WhileLoopWithIncrmentingVariableInFunction()
         {
-            long temp = systemOut.BaseStream.Position;
             systemMachine.Execute("var func = (var i = 0; while (i < 10) (echo $i; i = $(i+1))); func");
             Assert.AreEqual(GetOutputString(30), @"0
 1
@@ -331,6 +320,41 @@ namespace Adaos.Shell.Execution.Test
 7
 8
 9
+");
+        }
+
+        [TestMethod]
+        public void Scoping_ScopedVariableDiesWithScope()
+        {
+            systemMachine.Execute("eval (var i = 0; echo $i)");
+            Assert.AreEqual(GetOutputString(3), @"0
+");
+            try
+            {
+                systemMachine.Execute("i");
+                Assert.Fail("'i' could be executed even though it should be out of scope");
+            }
+            catch(VMException)
+            {
+
+            }
+        }
+
+        [TestMethod]
+        public void Scoping_CreateScopedVariableThatExistsGlobally()
+        {
+            systemMachine.Execute("var i = 0; eval (echo $i; var i = 5; echo $i)");
+            Assert.AreEqual(GetOutputString(6), @"0
+5
+");
+        }
+
+        [TestMethod]
+        public void Scoping_CreateScopedVariableThatExistsOuterScope()
+        {
+            systemMachine.Execute("eval (var i = 0; eval (echo $i; var i = 5; echo $i))");
+            Assert.AreEqual(GetOutputString(6), @"0
+5
 ");
         }
     }

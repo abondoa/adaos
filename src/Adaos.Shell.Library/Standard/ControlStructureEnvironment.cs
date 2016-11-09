@@ -33,6 +33,7 @@ namespace Adaos.Shell.Library.Standard
             _vm = vm;
             Bind(If, "if");
             Bind(While, "while");
+            Bind(Eval, "eval");
         }
 
         public  IEnumerable<IArgument> If(IEnumerable<IArgument> args)
@@ -66,9 +67,15 @@ namespace Adaos.Shell.Library.Standard
             return new IArgument[0];
         }
 
+        public IEnumerable<IArgument> Eval(IEnumerable<IArgument> args)
+        {
+            foreach(var arg in args)
+                foreach(var res in Execute(arg))
+                    yield return res;
+        }
+
         private IEnumerable<IArgument> Execute(IArgument arg)
         {
-
             if (arg is IArgumentExecutable)
             {
                 var argExec = arg as IArgumentExecutable;

@@ -43,7 +43,7 @@ namespace Adaos.Shell.Execution
             get { return _innerList.Where(x => !x.IsEnabled); }
         }
 
-        public void LoadEnvironment(IEnvironment environment)
+        public IEnvironmentContext LoadEnvironment(IEnvironment environment)
         {
             _rootEnvironment.AddChild(environment);
             IEnvironmentContext contextAdded;
@@ -60,9 +60,10 @@ namespace Adaos.Shell.Execution
             {
                 _innerList.Add(decendent);
             }
+            return contextAdded;
         }
 
-        public void LoadEnvironment(IEnvironment environment, IEnvironmentContext parent)
+        public IEnvironmentContext LoadEnvironment(IEnvironment environment, IEnvironmentContext parent)
         {
             IEnvironmentContext contextAdded = parent.AddChild(environment);
             if (contextAdded == null)
@@ -74,6 +75,7 @@ namespace Adaos.Shell.Execution
             {
                 _innerList.Add(decendent);
             }
+            return contextAdded;
         }
 
         public void UnloadEnvironment(IEnvironment environment)

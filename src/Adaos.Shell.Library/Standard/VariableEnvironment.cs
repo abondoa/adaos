@@ -245,7 +245,8 @@ namespace Adaos.Shell.Library.Standard
             {
                 var newScope = new ScopeEnvironment($"{_scope}");
                 _scopes.Push(newScope);
-                _vm.EnvironmentContainer.LoadEnvironment(newScope, _vm.GetVariableEnvironmentContext());
+                var scopeContext = _vm.EnvironmentContainer.LoadEnvironment(newScope, _vm.GetVariableEnvironmentContext());
+                _vm.EnvironmentContainer.PromoteEnvironment(scopeContext);
             }
         }
 
