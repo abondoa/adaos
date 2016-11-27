@@ -34,6 +34,16 @@ namespace Adaos.Shell.Library.Standard
             Bind(DependenciesCommand, "dependencies/deps silent/si=false environments/*");
             Bind(args => UnloadEnvironment(args).Then(EnableEnvironment(args)), "demoteenvironments", "demenv");
             Bind(DrawEnvironmentTree, "drawenviroments/denvs/printenvs");
+            Bind(Where, "where");
+        }
+
+        private IEnumerable<IArgument> Where(IEnumerable<IArgument>[] arguments)
+        {
+            foreach(var arg in arguments.Flatten())
+            {
+                var env = _vm.Resolver.GetEnvironmentOf(_vm.Parser.Parse(arg.Value).Executions.First(), _vm.EnvironmentContainer.EnabledEnvironments);
+                yield return new DummyArgument(env.QualifiedName(_vm.Parser.ScannerTable.EnvironmentSeparator));
+            }
         }
 
         private IEnumerable<IArgument> EnableEnvironment(IEnumerable<IArgument> args)
