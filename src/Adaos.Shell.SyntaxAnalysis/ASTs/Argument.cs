@@ -71,7 +71,7 @@ namespace Adaos.Shell.SyntaxAnalysis.ASTs
         public bool Equals(IArgument other)
         {
             return HasName == other.HasName &&
-                (HasName || Name.Equals(other.Name)) &&
+                (!HasName || Name.Equals(other.Name)) &&
                 Position == other.Position &&
                 ToExecute == other.ToExecute &&
                 Value.Equals(other.Value);
