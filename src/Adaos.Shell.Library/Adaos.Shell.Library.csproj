@@ -45,11 +45,13 @@
     <Compile Include="AdHoc\BareWord.cs" />
     <Compile Include="Standard\ArgumentEnvironment.cs" />
     <Compile Include="Standard\BareWordsEnvironment.cs" />
+    <Compile Include="Standard\BaseVariableEnvironment.cs" />
     <Compile Include="Standard\CommandEnvironment.cs" />
     <Compile Include="Standard\ControlStructureEnvironment.cs" />
     <Compile Include="Standard\CustomEnvironment.cs" />
     <Compile Include="Standard\EnvironmentEnvironment.cs" />
     <Compile Include="Standard\IOEnvironment.cs" />
+    <Compile Include="Standard\LiteralEnvironment.cs" />
     <Compile Include="Standard\MathEnvironment.cs" />
     <Compile Include="Standard\ModuleEnvironment.cs" />
     <Compile Include="AdHoc\ScopeEnvironment.cs" />

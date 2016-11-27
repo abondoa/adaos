@@ -21,12 +21,12 @@ namespace Adaos.Shell.Core
             private set;
         }
 
-        public DummyExecutionSequence(params IExecution[] commands) : this(new AdaosException[0],commands) {  }
+        public DummyExecutionSequence(params IExecution[] executions) : this(new AdaosException[0],executions) {  }
 
-        public DummyExecutionSequence(IEnumerable<AdaosException> errors, params IExecution[] commands)
+        public DummyExecutionSequence(IEnumerable<AdaosException> errors, params IExecution[] executions)
         {
             Errors = errors;
-            Executions = commands;
+            Executions = executions;
         }
     }
 }

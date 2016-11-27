@@ -47,6 +47,7 @@ namespace Adaos.Shell.Library
 			stdContext.AddChild(new SyntaxEnvironment(vm));
 			stdContext.AddChild(new ControlStructureEnvironment(vm));
 			stdContext.AddChild(new VariableEnvironment(vm, globalVariableEnv)).Do(x => x.AddChild(globalVariableEnv));
+            stdContext.AddChild(new LiteralEnvironment(vm));
             stdContext.AddChild(new BareWordsEnvironment()).Do(x => x.IsEnabled = false);
             yield return stdContext;
 		}

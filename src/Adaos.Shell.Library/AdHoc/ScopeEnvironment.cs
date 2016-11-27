@@ -17,18 +17,5 @@ namespace Adaos.Shell.Library.AdHoc
         {
             Name = name;
         }
-
-        public override Command Retrieve(string commandName)
-        {
-            int temp;
-            if (int.TryParse(commandName, out temp))
-            {
-                return args => { return new[] { new DummyArgument(commandName) }.Then(args.Flatten()); };
-            }
-            else
-            {
-                return base.Retrieve(commandName);
-            }
-        }
     }
 }

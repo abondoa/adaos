@@ -51,7 +51,7 @@
     <Compile Include="ArgumentLookup\ArgumentValueDictionary.cs" />
     <Compile Include="ArgumentLookup\ArgumentValueLookup.cs" />
     <Compile Include="DummyArgument.cs" />
-    <Compile Include="DummyCommand.cs" />
+    <Compile Include="DummyExecution.cs" />
     <Compile Include="DummyExecutionSequence.cs" />
     <Compile Include="BaseEnvironment.cs" />
     <Compile Include="Environments\EnvironmentContext.cs" />

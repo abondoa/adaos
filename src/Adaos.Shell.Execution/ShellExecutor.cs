@@ -53,7 +53,6 @@ namespace Adaos.Shell.Execution
             }*/
         }
 
-
         private IEnumerable<IArgument> HandleArguments(IEnumerable<IArgument> args, IVirtualMachine virtualMachine)
         {
             VirtualMachine vm = null;
@@ -89,7 +88,6 @@ namespace Adaos.Shell.Execution
                 }
             }
         }
-
 
         internal IEnumerable<IArgument> InternExecute(IExecutionSequence prog, IEnumerable<IArgument>[] args, IVirtualMachine virtualMachine)
         {

@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Standard\ControlStructureEnvironmentTests.cs" />
+    <Compile Include="Standard\LiteralEnvironmentTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Adaos.Shell.Core\Adaos.Shell.Core.csproj">

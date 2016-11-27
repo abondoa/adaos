@@ -7,9 +7,9 @@ using Adaos.Shell.Interface.SyntaxAnalysis;
 
 namespace Adaos.Shell.Core
 {
-    public class DummyCommand : IExecution
+    public class DummyExecution : IExecution
     {
-        public DummyCommand(string commandName,
+        public DummyExecution(string commandName,
             IEnumerable<string> environmentNames = null, 
             IEnumerable<IArgument> arguments = null,
             int position = -1,

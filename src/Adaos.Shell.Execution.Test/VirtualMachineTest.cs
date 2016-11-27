@@ -47,7 +47,7 @@ namespace Adaos.Shell.Execution.Test
         {
             vm = new VirtualMachine(systemOut, systemLog);
             Assert.IsNotNull(vm);
-            Assert.AreEqual(13, vm.EnvironmentContainer.EnabledEnvironments.Count());
+            Assert.AreEqual(14, vm.EnvironmentContainer.EnabledEnvironments.Count());
         }
 
         [TestMethod]

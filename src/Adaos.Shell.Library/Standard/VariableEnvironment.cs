@@ -23,44 +23,22 @@ namespace Adaos.Shell.Library.Standard
         }
     }
 
-    class VariableEnvironment : BaseEnvironment
+    class VariableEnvironment : BaseVariableEnvironment
     {
         private int _scope;
         private Stack<ScopeEnvironment> _scopes;
         private IEnvironment _global;
 
         public override string Name => "variable";
-        virtual protected IVirtualMachine _vm { get; private set; }
 
-        public VariableEnvironment(IVirtualMachine vm, IEnvironment global) : base(true)
+        public VariableEnvironment(IVirtualMachine vm, IEnvironment global) : base(vm, true)
         {
-            _vm = vm;
             _global = global;
             vm.ShellExecutor.ScopeOpened += OnScopeOpen;
             vm.ShellExecutor.ScopeClosed += OnScopeClose;
             _scopes = new Stack<ScopeEnvironment>();
             Bind(DeclareVariable, "var");
             Bind(DeleteVariable, "delete");
-        }
-
-        public override Command Retrieve(string commandName)
-        {
-            int temp;
-            if (int.TryParse(commandName, out temp))
-            {
-                return args => { return new[] { new DummyArgument(commandName) }.Then(args.Flatten()); };
-            }
-            else
-            {
-                var cmd = base.Retrieve(commandName);
-                if(cmd == null)
-                foreach(var child in _vm.GetVariableEnvironmentContext().ChildEnvironments)
-                {
-                    cmd = child.Retrieve(commandName);
-                    if (cmd != null) break;
-                }
-                return cmd;
-            }
         }
 
         private IEnumerable<IArgument> DeclareVariable(IEnumerable<IArgument> arguments)
@@ -152,7 +130,7 @@ namespace Adaos.Shell.Library.Standard
             yield break;
         }
 
-        private IEnumerable<IArgument> HandleVariable(string variable, IEnumerable<IArgument> values, IEnumerable<IArgument> arguments, int position, IEnvironment environment)
+        protected IEnumerable<IArgument> HandleVariable(string variable, IEnumerable<IArgument> values, IEnumerable<IArgument> arguments, int position, IEnvironment environment)
         {
             var operatorArg = arguments.FirstOrDefault();
             if (operatorArg == null)
@@ -164,50 +142,7 @@ namespace Adaos.Shell.Library.Standard
             {
                 return SetVariable(variable, arguments, false, position, environment);
             }
-            else if (operatorArg.Value == "+")
-            {
-                return VariableFunction(arguments.Skip(1).First().Value, values, arguments.Skip(2), position, (x, y) => x + y);
-            }
-            else if (operatorArg.Value == "-")
-            {
-                return VariableFunction(arguments.Skip(1).First().Value, values, arguments.Skip(2), position, (x, y) => x - y);
-            }
-            else if (operatorArg.Value == "*")
-            {
-                return VariableFunction(arguments.Skip(1).First().Value, values, arguments.Skip(2), position, (x, y) => x * y);
-            }
-            else if (operatorArg.Value == "/")
-            {
-                return VariableFunction(arguments.Skip(1).First().Value, values, arguments.Skip(2), position, (x, y) => x / y);
-            }
-            else if (operatorArg.Value == "==")
-            {
-                return VariableFunctionBool(arguments.Skip(1).First().Value, values, arguments.Skip(2), position, (x, y) => x == y);
-            }
-            else if (operatorArg.Value == "!=")
-            {
-                return VariableFunctionBool(arguments.Skip(1).First().Value, values, arguments.Skip(2), position, (x, y) => x != y);
-            }
-            else if (operatorArg.Value == ">")
-            {
-                return VariableFunction(arguments.Skip(1).First().Value, values, arguments.Skip(2), position, (x, y) => x > y);
-            }
-            else if (operatorArg.Value == "<")
-            {
-                return VariableFunction(arguments.Skip(1).First().Value, values, arguments.Skip(2), position, (x, y) => x < y);
-            }
-            else if (operatorArg.Value == ">=")
-            {
-                return VariableFunction(arguments.Skip(1).First().Value, values, arguments.Skip(2), position, (x, y) => x >= y);
-            }
-            else if (operatorArg.Value == "<=")
-            {
-                return VariableFunction(arguments.Skip(1).First().Value, values, arguments.Skip(2), position, (x, y) => x <= y);
-            }
-            else
-            {
-                throw new SemanticException(operatorArg.Position, $"Unknown operator '{operatorArg.Value}' for handling variable '{variable}'");
-            }
+            return HandleVariable(variable, values, arguments, position);
         }
 
         private IEnumerable<IArgument> VariableFunction<TReturn>(string variable, IEnumerable<IArgument> values, IEnumerable<IArgument> arguments, int position, Func<int,int, TReturn> func)
