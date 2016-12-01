@@ -357,5 +357,29 @@ namespace Adaos.Shell.Execution.Test
 5
 ");
         }
+
+        [TestMethod]
+        public void VariableScopes_Bugfix1()
+        {
+            try
+            {
+                systemMachine.Execute("eval (eval $std)");
+            }
+            catch(Exception)
+            {
+                systemMachine.Execute("envs");
+
+                //Check that all scopes are closed
+                Assert.IsFalse(GetOutputString(500).Contains("std.variable.#"));
+            }
+        }
+
+        [TestMethod]
+        public void VariableScopes_Bugfix2()
+        {
+            systemMachine.Execute("1 + 2 | echo");
+            Assert.AreEqual(GetOutputString(3), @"3
+");
+        }
     }
 }

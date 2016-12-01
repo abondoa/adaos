@@ -178,7 +178,7 @@ namespace Adaos.Shell.Library.Standard
             _scope++;
             if (_scope > 1)
             {
-                var newScope = new ScopeEnvironment($"{_scope}");
+                var newScope = new ScopeEnvironment($"#scope_{_scope}");
                 _scopes.Push(newScope);
                 var scopeContext = _vm.EnvironmentContainer.LoadEnvironment(newScope, _vm.GetVariableEnvironmentContext());
                 _vm.EnvironmentContainer.PromoteEnvironment(scopeContext);

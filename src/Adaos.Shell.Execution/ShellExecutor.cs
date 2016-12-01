@@ -123,10 +123,10 @@ namespace Adaos.Shell.Execution
                             break;
                     }
                 }
+                result.First().ToArray();
             }
             finally
             {
-                result.First().ToArray();
                 ScopeClosed?.Invoke(prog);
             }
             foreach (var arg in result.First())
