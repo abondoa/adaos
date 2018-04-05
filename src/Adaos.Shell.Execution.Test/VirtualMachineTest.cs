@@ -168,11 +168,13 @@ namespace Adaos.Shell.Execution.Test
             Assert.AreEqual("\"" + GetOutputString(complexEcho.Length - 2) + "\"", complexEcho);
         }
 
-        private string GetOutputString(int length)
+        private string GetOutputString() => GetOutputString(systemOut.BaseStream.Length);
+
+        private string GetOutputString(long length)
         {
             byte[] buffer = new byte[length];
             systemOut.BaseStream.Seek(0, SeekOrigin.Begin);
-            systemOut.BaseStream.Read(buffer, 0, length);
+            systemOut.BaseStream.Read(buffer, 0, (int)length);
             System.Text.UTF8Encoding enc = new System.Text.UTF8Encoding();
             return enc.GetString(buffer);
         }
@@ -293,7 +295,7 @@ namespace Adaos.Shell.Execution.Test
         public void Execute_WhileLoopWithIncrmentingVariable()
         {
             systemMachine.Execute("var i = 0; while (i < 10) (echo $i; i = $(i+1))");
-            Assert.AreEqual(GetOutputString(30), @"0
+            Assert.AreEqual(@"0
 1
 2
 3
@@ -303,14 +305,14 @@ namespace Adaos.Shell.Execution.Test
 7
 8
 9
-");
+", GetOutputString());
         }
 
         [TestMethod]
         public void Execute_WhileLoopWithIncrmentingVariableInFunction()
         {
             systemMachine.Execute("var func = (var i = 0; while (i < 10) (echo $i; i = $(i+1))); func");
-            Assert.AreEqual(GetOutputString(30), @"0
+            Assert.AreEqual(@"0
 1
 2
 3
@@ -320,15 +322,15 @@ namespace Adaos.Shell.Execution.Test
 7
 8
 9
-");
+", GetOutputString());
         }
 
         [TestMethod]
         public void Scoping_ScopedVariableDiesWithScope()
         {
             systemMachine.Execute("eval (var i = 0; echo $i)");
-            Assert.AreEqual(GetOutputString(3), @"0
-");
+            Assert.AreEqual(@"0
+", GetOutputString());
             try
             {
                 systemMachine.Execute("i");
@@ -344,18 +346,18 @@ namespace Adaos.Shell.Execution.Test
         public void Scoping_CreateScopedVariableThatExistsGlobally()
         {
             systemMachine.Execute("var i = 0; eval (echo $i; var i = 5; echo $i)");
-            Assert.AreEqual(GetOutputString(6), @"0
+            Assert.AreEqual(@"0
 5
-");
+", GetOutputString());
         }
 
         [TestMethod]
         public void Scoping_CreateScopedVariableThatExistsOuterScope()
         {
             systemMachine.Execute("eval (var i = 0; eval (echo $i; var i = 5; echo $i))");
-            Assert.AreEqual(GetOutputString(6), @"0
+            Assert.AreEqual(@"0
 5
-");
+", GetOutputString());
         }
 
         [TestMethod]
@@ -370,7 +372,7 @@ namespace Adaos.Shell.Execution.Test
                 systemMachine.Execute("envs");
 
                 //Check that all scopes are closed
-                Assert.IsFalse(GetOutputString(500).Contains("std.variable.#"));
+                Assert.IsFalse(GetOutputString().Contains("std.variable.#"));
             }
         }
 
@@ -378,8 +380,17 @@ namespace Adaos.Shell.Execution.Test
         public void VariableScopes_Bugfix2()
         {
             systemMachine.Execute("1 + 2 | echo");
-            Assert.AreEqual(GetOutputString(3), @"3
-");
+            Assert.AreEqual(@"3
+", GetOutputString());
+        }
+
+        [TestMethod]
+        public void Lazy_PipeOfVariableFunction()
+        {
+            systemMachine.Execute("var i = 0; var gen = (while (i < 10) (i = $(i + 1); ret $i)); gen | head 5 | echo; echo $i");
+            Assert.AreEqual(@"1 2 3 4 5
+5
+", GetOutputString());
         }
     }
 }

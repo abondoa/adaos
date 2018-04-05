@@ -36,7 +36,7 @@ namespace Adaos.Shell.Execution
             }
             try
             {
-                return InternExecute(prog, args, virtualMachine).ToArray();
+                return InternExecute(prog, args, virtualMachine);
             }
             catch (ExitTerminalException)
             {
@@ -123,15 +123,14 @@ namespace Adaos.Shell.Execution
                             break;
                     }
                 }
-                result.First().ToArray();
+                foreach (var arg in result.First())
+                {
+                    yield return arg;
+                }
             }
             finally
             {
                 ScopeClosed?.Invoke(prog);
-            }
-            foreach (var arg in result.First())
-            {
-                yield return arg;
             }
         }
 
