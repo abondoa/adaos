@@ -3,3 +3,4 @@
 *.suo
 *.userprefs
 src/packages/
+src/.vs/
