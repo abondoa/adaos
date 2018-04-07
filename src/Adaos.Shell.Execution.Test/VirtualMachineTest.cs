@@ -392,5 +392,14 @@ namespace Adaos.Shell.Execution.Test
 5
 ", GetOutputString());
         }
+
+        [TestMethod]
+        public void Scope_PipeOfVariableFunction()
+        {
+            systemMachine.Execute("var i = 0; var gen = (var i = 0; while (i < 5) (i = $(i + 1); ret $i)); gen | echo; echo $i");
+            Assert.AreEqual(@"1 2 3 4 5
+0
+", GetOutputString());
+        }
     }
 }
