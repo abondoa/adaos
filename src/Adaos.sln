@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2046
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adaos.Shell.Core", "Adaos.Shell.Core\Adaos.Shell.Core.csproj", "{EF0146E7-8EC0-4B44-8B83-87CEEAA5A2FB}"
 EndProject
@@ -83,18 +83,18 @@ Global
 		{303E6284-A7DA-4E1C-8FF8-3E0B59DE6CFB}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{303E6284-A7DA-4E1C-8FF8-3E0B59DE6CFB}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{303E6284-A7DA-4E1C-8FF8-3E0B59DE6CFB}.Release|x86.ActiveCfg = Release|Any CPU
-		{09C9F123-5A32-4B8D-A440-CF73CF5D0BB7}.Debug|Any CPU.ActiveCfg = Release|x86
-		{09C9F123-5A32-4B8D-A440-CF73CF5D0BB7}.Debug|Any CPU.Build.0 = Release|x86
-		{09C9F123-5A32-4B8D-A440-CF73CF5D0BB7}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{09C9F123-5A32-4B8D-A440-CF73CF5D0BB7}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{09C9F123-5A32-4B8D-A440-CF73CF5D0BB7}.Debug|x86.ActiveCfg = Debug|x86
-		{09C9F123-5A32-4B8D-A440-CF73CF5D0BB7}.Debug|x86.Build.0 = Debug|x86
-		{09C9F123-5A32-4B8D-A440-CF73CF5D0BB7}.Release|Any CPU.ActiveCfg = Release|x86
-		{09C9F123-5A32-4B8D-A440-CF73CF5D0BB7}.Release|Any CPU.Build.0 = Release|x86
-		{09C9F123-5A32-4B8D-A440-CF73CF5D0BB7}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{09C9F123-5A32-4B8D-A440-CF73CF5D0BB7}.Release|Mixed Platforms.Build.0 = Release|x86
-		{09C9F123-5A32-4B8D-A440-CF73CF5D0BB7}.Release|x86.ActiveCfg = Release|x86
-		{09C9F123-5A32-4B8D-A440-CF73CF5D0BB7}.Release|x86.Build.0 = Release|x86
+		{09C9F123-5A32-4B8D-A440-CF73CF5D0BB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09C9F123-5A32-4B8D-A440-CF73CF5D0BB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09C9F123-5A32-4B8D-A440-CF73CF5D0BB7}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{09C9F123-5A32-4B8D-A440-CF73CF5D0BB7}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{09C9F123-5A32-4B8D-A440-CF73CF5D0BB7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{09C9F123-5A32-4B8D-A440-CF73CF5D0BB7}.Debug|x86.Build.0 = Debug|Any CPU
+		{09C9F123-5A32-4B8D-A440-CF73CF5D0BB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09C9F123-5A32-4B8D-A440-CF73CF5D0BB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09C9F123-5A32-4B8D-A440-CF73CF5D0BB7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{09C9F123-5A32-4B8D-A440-CF73CF5D0BB7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{09C9F123-5A32-4B8D-A440-CF73CF5D0BB7}.Release|x86.ActiveCfg = Release|Any CPU
+		{09C9F123-5A32-4B8D-A440-CF73CF5D0BB7}.Release|x86.Build.0 = Release|Any CPU
 		{8C504FFA-FEC7-4403-B253-0773659744D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8C504FFA-FEC7-4403-B253-0773659744D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C504FFA-FEC7-4403-B253-0773659744D8}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -204,6 +204,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0257E240-1EB3-46A7-8C30-0778E9F1F0A1}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Adaos.Shell.Example\Adaos.Shell.Example.csproj
